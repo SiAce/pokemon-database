@@ -1,0 +1,25 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { capitalizeFirstLetter } from "../../../utils/string";
+
+const pokemonsAPIResponse = await fetch(
+  "https://pokeapi.co/api/v2/pokemon?limit=20",
+);
+const pokemons: any[] = (await pokemonsAPIResponse.json())["results"];
+const headings = [
+  { depth: 2, slug: "#list-of-pokemons", text: "List of Pokemons" },
+];
+---
+
+<StarlightPage frontmatter={{ title: "Pokemons" }} headings={headings}>
+  <h2 id={headings[0].slug}>{headings[0].text}</h2>
+  {
+    pokemons.map((pokemon) => (
+      <div>
+        <a href={`/pokemons/pokemon/${pokemon.name}`}>
+          {capitalizeFirstLetter(pokemon.name)}
+        </a>
+      </div>
+    ))
+  }
+</StarlightPage>

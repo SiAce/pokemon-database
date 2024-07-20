@@ -1,0 +1,19 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+export async function getStaticPaths() {
+  const pokemonsAPIResponse = await fetch(
+    "https://pokeapi.co/api/v2/pokemon?limit=2000",
+  );
+  const pokemons: any[] = (await pokemonsAPIResponse.json())["results"];
+  return pokemons.map((pokemon) => ({
+    params: { pokemon: pokemon.name },
+  }));
+}
+
+const { pokemon } = Astro.params;
+---
+
+<StarlightPage frontmatter={{ title: pokemon.toUpperCase() }}>
+  <div>{pokemon}</div>
+</StarlightPage>
