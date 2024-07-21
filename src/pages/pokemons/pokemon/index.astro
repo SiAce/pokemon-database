@@ -1,25 +1,33 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import { capitalizeFirstLetter } from "../../../utils/string";
+import { capitalizeSnakeCase } from "../../../utils/string";
+import { Card, CardGrid } from "@astrojs/starlight/components";
 
 const pokemonsAPIResponse = await fetch(
   "https://pokeapi.co/api/v2/pokemon?limit=20",
 );
 const pokemons: any[] = (await pokemonsAPIResponse.json())["results"];
 const headings = [
-  { depth: 2, slug: "#list-of-pokemons", text: "List of Pokemons" },
+  { depth: 2, slug: "list-of-pokemons", text: "List of Pokemons" },
 ];
 ---
 
 <StarlightPage frontmatter={{ title: "Pokemons" }} headings={headings}>
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
-  {
-    pokemons.map((pokemon) => (
-      <div>
-        <a href={`/pokemons/pokemon/${pokemon.name}`}>
-          {capitalizeFirstLetter(pokemon.name)}
-        </a>
-      </div>
-    ))
-  }
+  <CardGrid>
+    {
+      pokemons.map((pokemon) => {
+        const id = pokemon.url.split("/").at(-2);
+        const pokemonName = capitalizeSnakeCase(pokemon.name);
+        return (
+          <a href={`/pokemons/pokemon/${pokemon.name}`}>
+            <Card title={pokemonName}>
+              <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`} />
+            </Card>
+          </a>
+        );
+      })
+    }
+    <Card title="..."> Explore more pokemons using the search bar. </Card>
+  </CardGrid>
 </StarlightPage>

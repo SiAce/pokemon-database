@@ -1,5 +1,12 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import {
+  capitalizeFirstLetter,
+  capitalizeSnakeCase,
+} from "../../../utils/string";
+import { Card, CardGrid } from "@astrojs/starlight/components";
+import typeColorJson from "../../../utils/type-color.json";
+import statColorJson from "../../../utils/stat-color.json";
 
 export async function getStaticPaths() {
   const pokemonsAPIResponse = await fetch(
@@ -12,8 +19,157 @@ export async function getStaticPaths() {
 }
 
 const { pokemon } = Astro.params;
+const pokemonName = capitalizeSnakeCase(pokemon);
+
+const pokemonAPIResponse = await fetch(
+  `https://pokeapi.co/api/v2/pokemon/${pokemon}`,
+);
+const { id, types, abilities, stats, base_experience, height, weight, moves } =
+  await pokemonAPIResponse.json();
+const headings = [
+  { depth: 2, slug: "overview", text: "Overview" },
+  { depth: 2, slug: "sprites", text: "Sprites" },
+  { depth: 2, slug: "moves", text: "Moves" },
+];
 ---
 
-<StarlightPage frontmatter={{ title: pokemon.toUpperCase() }}>
-  <div>{pokemon}</div>
+<StarlightPage frontmatter={{ title: pokemonName }} headings={headings}>
+  <h2 id={headings[0].slug}>{headings[0].text}</h2>
+  <Card title={pokemonName}>
+    <div class="flex flex-col divide-y-2 gap-4">
+      <img
+        class="mx-auto w-1/2"
+        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+      />
+      <div>
+        <h4 class="my-2">Type</h4>
+        <div>
+          {
+            types.map((type) => (
+              <a class="no-underline" href="#">
+                <span
+                  class={`px-4 py-2 mr-4 text-gray-50`}
+                  style={{
+                    backgroundColor: typeColorJson[type.type.name],
+                  }}
+                >
+                  {capitalizeFirstLetter(type.type.name)}
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+      <div>
+        <h4 class="my-2">Abilities</h4>
+        <div>
+          {
+            abilities.map((ability) => (
+              <a class="no-underline" href="#">
+                <span class="rounded-md bg-gray-400 px-4 py-2 mr-4 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
+                  {capitalizeFirstLetter(ability.ability.name)}
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+      <div>
+        <h4 class="my-2">Base Stats</h4>
+        <div class="flex justify-between flex-wrap gap-1">
+          {
+            stats.map((stat) => (
+              <a
+                class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
+                style={{
+                  backgroundColor: statColorJson[stat.stat.name],
+                }}
+                href="#"
+              >
+                <div class="flex flex-col justify-between text-gray-700 py-2 text-sm">
+                  <div>{capitalizeSnakeCase(stat.stat.name)}</div>
+                  <div>{stat.base_stat}</div>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+      <div>
+        <h4 class="my-2">Effort Value Yield</h4>
+        <div class="flex justify-between flex-wrap gap-1">
+          {
+            stats.map((stat) => (
+              <a
+                class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
+                style={{
+                  backgroundColor: statColorJson[stat.stat.name],
+                }}
+                href="#"
+              >
+                <div class="flex flex-col justify-between text-gray-700 py-2 text-sm">
+                  <div>{capitalizeSnakeCase(stat.stat.name)}</div>
+                  <div>{stat.effort}</div>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+      <div class="py-2">
+        <h4>Base Experience</h4>
+        <div class="pl-2">{base_experience}</div>
+      </div>
+      <div class="flex justify-stretch divide-x-2">
+        <div class="flex-auto mt-4 pl-2">
+          <h4>Height</h4>
+          <p>{height / 10} m</p>
+        </div>
+        <div class="flex-auto !mt-4 pl-2">
+          <h4>Weight</h4>
+          <p>{weight / 10} kg</p>
+        </div>
+      </div>
+    </div>
+  </Card>
+  <hr class="!my-4 border-gray-800" />
+  <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
+  <div class="flex flex-col gap-2">
+    {
+      moves.map((move) => (
+        <Card title={capitalizeSnakeCase(move.move.name)}>
+          <hr class="!my-2" />
+          <div class="flex flex-col divide-y-2">
+            <div>
+              <h4 class="!text-xl">Learnset</h4>
+              <table class=" border-2 px-2 !table !w-full">
+                <thead>
+                  <tr >
+                    <th>Generation</th>
+                    <th>Learn Method</th>
+                    <th>Level Learned At</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {move.version_group_details.map((version_group) => (
+                    <tr class="border-2 !m-2 p-2">
+                      <td>
+                        {capitalizeSnakeCase(version_group.version_group.name)}
+                      </td>
+                      <td>
+                        {capitalizeSnakeCase(
+                          version_group.move_learn_method.name,
+                        )}
+                      </td>
+                      <td>{version_group.level_learned_at}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </Card>
+      ))
+    }
+  </div>
 </StarlightPage>
