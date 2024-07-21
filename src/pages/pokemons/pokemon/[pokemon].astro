@@ -45,12 +45,12 @@ const headings = [
         <h4 class="my-2">Type</h4>
         <div>
           {
-            types.map((type) => (
+            types.map((type: any) => (
               <a class="no-underline" href="#">
                 <span
                   class={`px-4 py-2 mr-4 text-gray-50`}
                   style={{
-                    backgroundColor: typeColorJson[type.type.name],
+                    backgroundColor: (typeColorJson as any)[type.type.name],
                   }}
                 >
                   {capitalizeFirstLetter(type.type.name)}
@@ -64,7 +64,7 @@ const headings = [
         <h4 class="my-2">Abilities</h4>
         <div>
           {
-            abilities.map((ability) => (
+            abilities.map((ability: any) => (
               <a class="no-underline" href="#">
                 <span class="rounded-md bg-gray-400 px-4 py-2 mr-4 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
                   {capitalizeFirstLetter(ability.ability.name)}
@@ -78,11 +78,11 @@ const headings = [
         <h4 class="my-2">Base Stats</h4>
         <div class="flex justify-between flex-wrap gap-1">
           {
-            stats.map((stat) => (
+            stats.map((stat: any) => (
               <a
                 class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                 style={{
-                  backgroundColor: statColorJson[stat.stat.name],
+                  backgroundColor: (statColorJson as any)[stat.stat.name],
                 }}
                 href="#"
               >
@@ -99,11 +99,11 @@ const headings = [
         <h4 class="my-2">Effort Value Yield</h4>
         <div class="flex justify-between flex-wrap gap-1">
           {
-            stats.map((stat) => (
+            stats.map((stat: any) => (
               <a
                 class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                 style={{
-                  backgroundColor: statColorJson[stat.stat.name],
+                  backgroundColor: (statColorJson as any)[stat.stat.name],
                 }}
                 href="#"
               >
@@ -136,7 +136,7 @@ const headings = [
   <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
   <div class="flex flex-col gap-2">
     {
-      moves.map((move) => (
+      moves.map((move: any) => (
         <Card title={capitalizeSnakeCase(move.move.name)}>
           <hr class="!my-2" />
           <div class="flex flex-col divide-y-2">
@@ -151,7 +151,7 @@ const headings = [
                   </tr>
                 </thead>
                 <tbody>
-                  {move.version_group_details.map((version_group) => (
+                  {move.version_group_details.map((version_group: any) => (
                     <tr class="border-2 !m-2 p-2">
                       <td>
                         {capitalizeSnakeCase(version_group.version_group.name)}
