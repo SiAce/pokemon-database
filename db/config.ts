@@ -1,5 +1,83 @@
 import { defineDb, defineTable, column } from "astro:db";
 
+const GrowthRate = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+    formula: column.text(),
+  },
+});
+
+const PokemonHabitat = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+  },
+});
+
+const PokemonShape = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+  },
+});
+
+const PokemonColor = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+  },
+});
+
+const MoveTarget = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+  },
+});
+
+const MoveDamageClass = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+  },
+});
+
+const MoveEffect = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+  },
+});
+
+const ContestType = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+  },
+});
+
+const ContextEffect = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    appeal: column.number(),
+    jam: column.number(),
+  },
+});
+
+const SuperContextEffect = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    appeal: column.number(),
+  },
+});
+
+const PokemonMoveMethod = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+  },
+});
+
 const ItemPocket = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
@@ -28,11 +106,18 @@ const Item = defineTable({
     identifier: column.text(),
     category_id: column.number({ references: () => ItemCategory.columns.id }),
     cost: column.number(),
-    fling_power: column.number({optional: true}),
+    fling_power: column.number({ optional: true }),
     fling_effect_id: column.number({
       references: () => ItemFlingEffect.columns.id,
-      optional: true
+      optional: true,
     }),
+  },
+});
+
+const EvolutionChain = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    baby_trigger_item_id: column.number({ references: () => Item.columns.id, optional: true }),
   },
 });
 
@@ -70,12 +155,36 @@ const Version = defineTable({
   },
 });
 
+const PokemonSpecies = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+    generation_id: column.number({ references: () => Generation.columns.id }),
+    evolves_from_species_id: column.number({ optional: true }),
+    evolution_chain_id: column.number({ references: () => EvolutionChain.columns.id }),
+    color_id: column.number({ references: () => PokemonColor.columns.id }),
+    shape_id: column.number({ references: () => PokemonShape.columns.id, optional: true }),
+    habitat_id: column.number({ references: () => PokemonHabitat.columns.id, optional: true }),
+    gender_rate: column.number(),
+    capture_rate: column.number(),
+    base_happiness: column.number({ optional: true }),
+    is_baby: column.boolean(),
+    hatch_counter: column.number({ optional: true }),
+    has_gender_differences: column.boolean(),
+    growth_rate_id: column.number({ references: () => GrowthRate.columns.id }),
+    forms_switchable: column.boolean(),
+    is_legendary: column.boolean(),
+    is_mythical: column.boolean(),
+    order: column.number(),
+    conquest_order: column.number({ optional: true }),
+  },
+});
+
 const Pokemon = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
     identifier: column.number(),
-    // TODO
-    species_id: column.number(),
+    species_id: column.number({ references: () => PokemonSpecies.columns.id }),
     height: column.number(),
     weight: column.number(),
     base_experience: column.number({ optional: true }),
@@ -89,8 +198,7 @@ const Type = defineTable({
     id: column.number({ primaryKey: true }),
     identifier: column.text(),
     generation_id: column.number({ references: () => Generation.columns.id }),
-    // TODO
-    damage_class_id: column.number({ optional: true }),
+    damage_class_id: column.number({ references: () => MoveDamageClass.columns.id, optional: true }),
   },
 });
 
@@ -158,16 +266,61 @@ const PokemonItem = defineTable({
   indexes: [{ on: ["pokemon_id"] }],
 });
 
+const Move = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+    generation_id: column.number({ references: () => Generation.columns.id }),
+    type_id: column.number({ references: () => Type.columns.id }),
+    power: column.number({ optional: true }),
+    pp: column.number({ optional: true }),
+    accuracy: column.number({ optional: true }),
+    priority: column.number(),
+    target_id: column.number({ references: () => MoveTarget.columns.id }),
+    damage_class_id: column.number({ references: () => MoveDamageClass.columns.id }),
+    effect_id: column.number({ references: () => MoveEffect.columns.id, optional: true }),
+    effect_chance: column.number({ optional: true }),
+    contest_type_id: column.number({ references: () => ContestType.columns.id, optional: true }),
+    contest_effect_id: column.number({ references: () => ContextEffect.columns.id, optional: true }),
+    super_contest_effect_id: column.number({ references: () => SuperContextEffect.columns.id, optional: true }),
+  },
+});
+
+const PokemonMove = defineTable({
+  columns: {
+    pokemon_id: column.number({ references: () => Pokemon.columns.id }),
+    version_group_id: column.number({ references: () => VersionGroup.columns.id }),
+    move_id: column.number({ references: () => Move.columns.id }),
+    pokemon_move_method_id: column.number({ references: () => PokemonMoveMethod.columns.id }),
+    level: column.number(),
+    order: column.number({ optional: true }),
+  },
+  indexes: [{ on: ["pokemon_id"] }],
+});
+
 export default defineDb({
   tables: {
+    GrowthRate,
+    PokemonHabitat,
+    PokemonShape,
+    PokemonColor,
+    MoveTarget,
+    MoveDamageClass,
+    MoveEffect,
+    ContestType,
+    ContextEffect,
+    SuperContextEffect,
+    PokemonMoveMethod,
     ItemPocket,
     ItemCategory,
     ItemFlingEffect,
     Item,
+    EvolutionChain,
     Region,
     Generation,
     VersionGroup,
     Version,
+    PokemonSpecies,
     Pokemon,
     Type,
     PokemonType,
@@ -176,5 +329,7 @@ export default defineDb({
     PokemonForm,
     PokemonGameIndex,
     PokemonItem,
+    Move,
+    PokemonMove,
   },
 });
