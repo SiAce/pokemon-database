@@ -1,37 +1,74 @@
-import { defineDb, defineTable, column } from 'astro:db';
+import { defineDb, defineTable, column } from "astro:db";
 
+const ItemPocket = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+  },
+});
+
+const ItemCategory = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+    pocket_id: column.number({ references: () => ItemPocket.columns.id }),
+  },
+});
+
+const ItemFlingEffect = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+  },
+});
+
+const Item = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+    category_id: column.number({ references: () => ItemCategory.columns.id }),
+    cost: column.number(),
+    fling_power: column.number({optional: true}),
+    fling_effect_id: column.number({
+      references: () => ItemFlingEffect.columns.id,
+      optional: true
+    }),
+  },
+});
 
 const Region = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
     identifier: column.text(),
-  }
-})
+  },
+});
 
 const Generation = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
     identifier: column.text(),
     main_region_id: column.number({ references: () => Region.columns.id }),
-  }
-})
+  },
+});
 
 const VersionGroup = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
     identifier: column.text(),
     generation_id: column.number({ references: () => Generation.columns.id }),
-    order: column.number()
-  }
-})
+    order: column.number(),
+  },
+});
 
 const Version = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
     identifier: column.text(),
-    version_group_id: column.number({ references: () => VersionGroup.columns.id }),
-  }
-})
+    version_group_id: column.number({
+      references: () => VersionGroup.columns.id,
+    }),
+  },
+});
 
 const Pokemon = defineTable({
   columns: {
@@ -44,7 +81,7 @@ const Pokemon = defineTable({
     base_experience: column.number({ optional: true }),
     order: column.number({ optional: true }),
     is_default: column.boolean(),
-  }
+  },
 });
 
 const Type = defineTable({
@@ -53,8 +90,8 @@ const Type = defineTable({
     identifier: column.text(),
     generation_id: column.number({ references: () => Generation.columns.id }),
     // TODO
-    damage_class_id: column.number({ optional: true })
-  }
+    damage_class_id: column.number({ optional: true }),
+  },
 });
 
 const PokemonType = defineTable({
@@ -63,9 +100,7 @@ const PokemonType = defineTable({
     type_id: column.number({ references: () => Type.columns.id }),
     slot: column.number(),
   },
-  indexes: [
-    { on: ["pokemon_id"] }
-  ]
+  indexes: [{ on: ["pokemon_id"] }],
 });
 
 const Ability = defineTable({
@@ -73,8 +108,8 @@ const Ability = defineTable({
     id: column.number({ primaryKey: true }),
     identifier: column.text(),
     generation_id: column.number({ references: () => Generation.columns.id }),
-    is_main_series: column.boolean()
-  }
+    is_main_series: column.boolean(),
+  },
 });
 
 const PokemonAbility = defineTable({
@@ -84,9 +119,7 @@ const PokemonAbility = defineTable({
     is_hidden: column.boolean(),
     slot: column.number(),
   },
-  indexes: [
-    { on: ["pokemon_id"] }
-  ]
+  indexes: [{ on: ["pokemon_id"] }],
 });
 
 const PokemonForm = defineTable({
@@ -95,14 +128,16 @@ const PokemonForm = defineTable({
     identifier: column.text(),
     form_identifier: column.text({ optional: true }),
     pokemon_id: column.number({ references: () => Pokemon.columns.id }),
-    introduced_in_version_group_id: column.number({ references: () => VersionGroup.columns.id }),
+    introduced_in_version_group_id: column.number({
+      references: () => VersionGroup.columns.id,
+    }),
     is_default: column.boolean(),
     is_battle_only: column.boolean(),
     is_mega: column.boolean(),
     form_order: column.number(),
     order: column.number(),
-  }
-})
+  },
+});
 
 const PokemonGameIndex = defineTable({
   columns: {
@@ -110,11 +145,36 @@ const PokemonGameIndex = defineTable({
     version_id: column.number({ references: () => Version.columns.id }),
     game_index: column.number(),
   },
-  indexes: [
-    { on: ["pokemon_id"] }
-  ]
-})
+  indexes: [{ on: ["pokemon_id"] }],
+});
+
+const PokemonItem = defineTable({
+  columns: {
+    pokemon_id: column.number({ references: () => Pokemon.columns.id }),
+    version_id: column.number({ references: () => Version.columns.id }),
+    item_id: column.number({ references: () => Item.columns.id }),
+    rarity: column.number(),
+  },
+  indexes: [{ on: ["pokemon_id"] }],
+});
 
 export default defineDb({
-  tables: { Region, Generation, VersionGroup, Version, Pokemon, Type, PokemonType, Ability, PokemonAbility, PokemonForm, PokemonGameIndex },
-})
+  tables: {
+    ItemPocket,
+    ItemCategory,
+    ItemFlingEffect,
+    Item,
+    Region,
+    Generation,
+    VersionGroup,
+    Version,
+    Pokemon,
+    Type,
+    PokemonType,
+    Ability,
+    PokemonAbility,
+    PokemonForm,
+    PokemonGameIndex,
+    PokemonItem,
+  },
+});
