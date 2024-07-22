@@ -49,6 +49,16 @@ const MoveEffect = defineTable({
   },
 });
 
+const Stat = defineTable({
+  columns: {
+    id: column.number({ primaryKey: true }),
+    identifier: column.text(),
+    damage_class_id: column.number({ references: () => MoveDamageClass.columns.id, optional: true }),
+    is_battle_only: column.boolean(),
+    game_index: column.number({ optional: true }),
+  },
+});
+
 const ContestType = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
@@ -298,6 +308,16 @@ const PokemonMove = defineTable({
   indexes: [{ on: ["pokemon_id"] }],
 });
 
+const PokemonStat = defineTable({
+  columns: {
+    pokemon_id: column.number({ references: () => Pokemon.columns.id }),
+    stat_id: column.number({ references: () => Stat.columns.id }),
+    base_stat: column.number(),
+    effort: column.number(),
+  },
+  indexes: [{ on: ["pokemon_id"] }],
+});
+
 export default defineDb({
   tables: {
     GrowthRate,
@@ -307,6 +327,7 @@ export default defineDb({
     MoveTarget,
     MoveDamageClass,
     MoveEffect,
+    Stat,
     ContestType,
     ContextEffect,
     SuperContextEffect,
@@ -331,5 +352,6 @@ export default defineDb({
     PokemonItem,
     Move,
     PokemonMove,
+    PokemonStat,
   },
 });

@@ -7,6 +7,7 @@ import {
   MoveTarget,
   MoveDamageClass,
   MoveEffect,
+  Stat,
   ContestType,
   ContextEffect,
   SuperContextEffect,
@@ -31,6 +32,7 @@ import {
   PokemonItem,
   Move,
   PokemonMove,
+  PokemonStat,
 } from "astro:db";
 import { parseCsvFile } from "../src/utils/csv-parse";
 
@@ -43,6 +45,7 @@ const tableCsvPaths = [
   [MoveTarget, "data/csv/move_targets.csv"],
   [MoveDamageClass, "data/csv/move_damage_classes.csv"],
   [MoveEffect, "data/csv/move_effects.csv"],
+  [Stat, "data/csv/stats.csv"],
   [ContestType, "data/csv/contest_types.csv"],
   [ContextEffect, "data/csv/contest_effects.csv"],
   [SuperContextEffect, "data/csv/super_contest_effects.csv"],
@@ -67,6 +70,7 @@ const tableCsvPaths = [
   [PokemonItem, "data/csv/pokemon_items.csv"],
   [Move, "data/csv/moves.csv"],
   [PokemonMove, "data/csv/pokemon_moves.csv"],
+  [PokemonStat, "data/csv/pokemon_stats.csv"],
 ];
 
 export default async function () {
