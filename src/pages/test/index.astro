@@ -15,7 +15,7 @@ GROUP BY Pokemon.id;
 `)
 ).rows;
 
-console.log(pokemon)
+console.log(pokemon[0])
 ---
 
-<!-- <Code code={pokemon} /> -->
+<Code code={JSON.stringify(pokemon)} />

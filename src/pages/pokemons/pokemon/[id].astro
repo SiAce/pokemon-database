@@ -1,12 +1,8 @@
 ---
 import { Card } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import statColorJson from "../../../utils/stat-color.json";
-import { capitalizeFirstLetter, capitalizeSnakeCase } from "../../../utils/string";
-import typeColorJson from "../../../utils/type-color.json";
-import { db, Pokemon } from "astro:db";
-import { eq } from "astro:db";
-import { PokemonSpecies } from "astro:db";
+import { db, eq, Pokemon, PokemonSpecies } from "astro:db";
+import { capitalizeSnakeCase } from "../../../utils/string";
 
 export async function getStaticPaths() {
   const pokemons = await db.select({ id: Pokemon.id }).from(Pokemon).limit(20);
@@ -26,7 +22,7 @@ const pokemon = (
 )[0];
 
 const { identifier } = pokemon.Pokemon;
-const pokemonName = capitalizeSnakeCase(identifier)
+const pokemonName = capitalizeSnakeCase(identifier);
 
 const headings = [
   { depth: 2, slug: "overview", text: "Overview" },
@@ -133,5 +129,6 @@ const headings = [
         </div>
       </div>
     </div> -->
+    </div>
   </Card>
 </StarlightPage>
