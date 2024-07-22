@@ -193,7 +193,7 @@ const PokemonSpecies = defineTable({
 const Pokemon = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
-    identifier: column.number(),
+    identifier: column.text(),
     species_id: column.number({ references: () => PokemonSpecies.columns.id }),
     height: column.number(),
     weight: column.number(),

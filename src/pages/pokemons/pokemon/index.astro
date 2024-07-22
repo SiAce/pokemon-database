@@ -1,28 +1,25 @@
 ---
-import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import { capitalizeSnakeCase } from "../../../utils/string";
 import { Card, CardGrid } from "@astrojs/starlight/components";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { Pokemon, db } from "astro:db";
+import { capitalizeSnakeCase } from "../../../utils/string";
 
-const pokemonsAPIResponse = await fetch(
-  "https://pokeapi.co/api/v2/pokemon?limit=20",
-);
-const pokemons: any[] = (await pokemonsAPIResponse.json())["results"];
-const headings = [
-  { depth: 2, slug: "list-of-pokemons", text: "List of Pokemons" },
-];
+
+const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons" }];
+const pokemons = await db.select({ id: Pokemon.id, name: Pokemon.identifier }).from(Pokemon).limit(20);
 ---
 
 <StarlightPage frontmatter={{ title: "Pokemons" }} headings={headings}>
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
   <CardGrid>
     {
-      pokemons.map((pokemon) => {
-        const id = pokemon.url.split("/").at(-2);
-        const pokemonName = capitalizeSnakeCase(pokemon.name);
+      pokemons.map(({ id, name }) => {
         return (
-          <a href={`/pokemons/pokemon/${pokemon.name}`}>
-            <Card title={pokemonName}>
-              <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`} />
+          <a href={`/pokemons/pokemon/${id}`}>
+            <Card title={capitalizeSnakeCase(name)}>
+              <img
+                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+              />
             </Card>
           </a>
         );

@@ -1,0 +1,21 @@
+---
+import { Code } from "@astrojs/starlight/components";
+import { Pokemon, PokemonType, Type } from "astro:db";
+import { sql } from "astro:db";
+import { db } from "astro:db";
+
+const pokemon = (
+  await db.run(sql`
+SELECT Pokemon.identifier, json_group_array(Type.identifier) as types
+FROM Pokemon
+JOIN PokemonType ON Pokemon.id = PokemonType.pokemon_id
+JOIN Type ON PokemonType.type_id = Type.id
+WHERE Pokemon.id = 1
+GROUP BY Pokemon.id;
+`)
+).rows;
+
+console.log(pokemon)
+---
+
+<!-- <Code code={pokemon} /> -->

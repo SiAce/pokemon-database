@@ -1,31 +1,33 @@
 ---
+import { Card } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import {
-  capitalizeFirstLetter,
-  capitalizeSnakeCase,
-} from "../../../utils/string";
-import { Card, CardGrid } from "@astrojs/starlight/components";
-import typeColorJson from "../../../utils/type-color.json";
 import statColorJson from "../../../utils/stat-color.json";
+import { capitalizeFirstLetter, capitalizeSnakeCase } from "../../../utils/string";
+import typeColorJson from "../../../utils/type-color.json";
+import { db, Pokemon } from "astro:db";
+import { eq } from "astro:db";
+import { PokemonSpecies } from "astro:db";
 
 export async function getStaticPaths() {
-  const pokemonsAPIResponse = await fetch(
-    "https://pokeapi.co/api/v2/pokemon?limit=2000",
-  );
-  const pokemons: any[] = (await pokemonsAPIResponse.json())["results"];
+  const pokemons = await db.select({ id: Pokemon.id }).from(Pokemon).limit(20);
   return pokemons.map((pokemon) => ({
-    params: { pokemon: pokemon.name },
+    params: { id: pokemon.id },
   }));
 }
 
-const { pokemon } = Astro.params;
-const pokemonName = capitalizeSnakeCase(pokemon);
+const { id } = Astro.params;
 
-const pokemonAPIResponse = await fetch(
-  `https://pokeapi.co/api/v2/pokemon/${pokemon}`,
-);
-const { id, types, abilities, stats, base_experience, height, weight, moves } =
-  await pokemonAPIResponse.json();
+const pokemon = (
+  await db
+    .select()
+    .from(Pokemon)
+    .innerJoin(PokemonSpecies, eq(Pokemon.species_id, PokemonSpecies.id))
+    .where(eq(Pokemon.id, id))
+)[0];
+
+const { identifier } = pokemon.Pokemon;
+const pokemonName = capitalizeSnakeCase(identifier)
+
 const headings = [
   { depth: 2, slug: "overview", text: "Overview" },
   { depth: 2, slug: "sprites", text: "Sprites" },
@@ -41,7 +43,7 @@ const headings = [
         class="mx-auto w-1/2"
         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
       />
-      <div>
+      <!-- <div>
         <h4 class="my-2">Type</h4>
         <div>
           {
@@ -130,46 +132,6 @@ const headings = [
           <p>{weight / 10} kg</p>
         </div>
       </div>
-    </div>
+    </div> -->
   </Card>
-  <hr class="!my-4 border-gray-800" />
-  <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
-  <div class="flex flex-col gap-2">
-    {
-      moves.map((move: any) => (
-        <Card title={capitalizeSnakeCase(move.move.name)}>
-          <hr class="!my-2" />
-          <div class="flex flex-col divide-y-2">
-            <div>
-              <h4 class="!text-xl">Learnset</h4>
-              <table class=" border-2 px-2 !table !w-full">
-                <thead>
-                  <tr >
-                    <th>Generation</th>
-                    <th>Learn Method</th>
-                    <th>Level Learned At</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {move.version_group_details.map((version_group: any) => (
-                    <tr class="border-2 !m-2 p-2">
-                      <td>
-                        {capitalizeSnakeCase(version_group.version_group.name)}
-                      </td>
-                      <td>
-                        {capitalizeSnakeCase(
-                          version_group.move_learn_method.name,
-                        )}
-                      </td>
-                      <td>{version_group.level_learned_at}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </Card>
-      ))
-    }
-  </div>
 </StarlightPage>
