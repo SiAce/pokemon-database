@@ -1,7 +1,8 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-
 import tailwind from "@astrojs/tailwind";
+
+import db from "@astrojs/db";
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,10 +19,9 @@ export default defineConfig({
       }]
     }],
     customCss: [
-      // Path to your Tailwind base styles:
-      './src/tailwind.css',
-    ],
+    // Path to your Tailwind base styles:
+    './src/tailwind.css']
   }), tailwind({
-    applyBaseStyles: false,
-  })]
+    applyBaseStyles: false
+  }), db()]
 });
