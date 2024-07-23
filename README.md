@@ -3,7 +3,9 @@
 # Versions
 
 v1: Get data from PokemonAPI
+
 v2: Get data from Astro DB
+
 v3: Get data from JSON
 
 Check out different version branches for more information
