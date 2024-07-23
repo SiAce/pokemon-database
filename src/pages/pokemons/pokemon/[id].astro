@@ -1,20 +1,20 @@
 ---
 import { Card } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import pokemons from "@data/json/pokemons.json";
 import statColorJson from "../../../utils/stat-color.json";
 import { capitalizeFirstLetter, capitalizeSnakeCase } from "../../../utils/string";
 import typeColorJson from "../../../utils/type-color.json";
-import pokemons from "@data/json/pokemons.json";
 
 export function getStaticPaths() {
-  return pokemons.map((pokemon) => ({
-    params: { id: pokemon.id },
+  return Object.keys(pokemons).map((id) => ({
+    params: { id },
   }));
 }
 
 const { id } = Astro.params;
 
-const pokemon = pokemons.find((pokemon) => pokemon.id === Number(id))!;
+const pokemon = pokemons[id];
 
 const {
   height,
@@ -153,7 +153,7 @@ const headings = [
   <div class="flex flex-col gap-2">
     {
       moves.map((move) => (
-        <Card title={capitalizeSnakeCase(move.move_name)}>
+        <Card title={capitalizeSnakeCase(move.name)}>
           <hr class="!my-2" />
           <div class="flex flex-col divide-y-2">
             {/* <div>

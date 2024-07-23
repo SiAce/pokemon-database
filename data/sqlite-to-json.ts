@@ -3,8 +3,6 @@ import { Database } from "bun:sqlite";
 const db = new Database("data/sqlite/pokemon.db", { readonly: true });
 
 const query = db.query(`
--- SQLite
--- SQLite
 SELECT
   Pokemon.id,
   Pokemon.identifier as name,
@@ -77,12 +75,7 @@ SELECT
   (
     SELECT
       json_group_array(
-        json_object(
-          'game_index',
-          game_index,
-          'version_name',
-          Version.identifier
-        )
+        json_object('index', game_index, 'name', Version.identifier)
       )
     FROM
       PokemonGameIndex
@@ -93,7 +86,7 @@ SELECT
   (
     SELECT
       json_group_array(
-        DISTINCT json_object('item_id', Item.id, 'item_name', Item.identifier)
+        DISTINCT json_object('id', Item.id, 'name', Item.identifier)
       )
     FROM
       PokemonItem
@@ -103,9 +96,7 @@ SELECT
   ) as items,
   (
     SELECT
-      json_group_array(
-        json_object('move_id', M.id, 'move_name', M.identifier)
-      )
+      json_group_array(json_object('id', M.id, 'name', M.identifier))
     FROM
       (
         SELECT DISTINCT
@@ -123,14 +114,20 @@ FROM
   JOIN PokemonSpecies ON PokemonSpecies.id = Pokemon.species_id
   JOIN PokemonColor ON PokemonColor.id = PokemonSpecies.color_id
   JOIN Generation ON PokemonSpecies.generation_id = Generation.id
-
 `);
 
-const pokemons = query.all();
+const pokemons: any[] = query.all();
 const fieldsToParse = ["types", "abilities", "stats", "forms", "game_indices", "items", "moves"];
 
-pokemons.map((pokemon: any) => {
-  fieldsToParse.forEach((fieldToParse) => (pokemon[fieldToParse] = JSON.parse(pokemon[fieldToParse])));
-});
+const pokemonsObject: any = {};
 
-Bun.write("data/json/pokemons.json", JSON.stringify(pokemons));
+for (let i = 0; i < pokemons.length; i++) {
+  const pokemon = pokemons[i];
+  for (let j = 0; j < fieldsToParse.length; j++) {
+    const fieldToParse = fieldsToParse[j];
+    pokemon[fieldToParse] = JSON.parse(pokemon[fieldToParse]);
+  }
+  pokemonsObject[pokemon.id] = pokemon;
+}
+
+Bun.write("data/json/pokemons.json", JSON.stringify(pokemonsObject));

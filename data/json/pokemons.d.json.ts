@@ -37,19 +37,23 @@ type Pokemon = {
     form_name: string;
   }[];
   game_indices: {
-    game_index: number;
-    version_name: string;
+    index: number;
+    name: string;
   }[];
   items: {
-    item_id: number;
-    item_name: string;
+    id: number;
+    ame: string;
   }[];
   moves: {
-    move_id: number;
-    move_name: string;
+    id: number;
+    name: string;
   }[];
 };
 
-declare const pokemons: Pokemon[];
+type Pokemons = {
+  [key: string]: Pokemon
+}
+
+declare const pokemons: Pokemons;
 
 export default pokemons;

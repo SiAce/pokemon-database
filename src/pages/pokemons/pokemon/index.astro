@@ -1,9 +1,9 @@
 ---
 import { Card } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import pokemons from "@data/json/pokemons.json";
 import { Picture } from "astro:assets";
 import { capitalizeSnakeCase } from "../../../utils/string";
-import pokemons from "@data/json/pokemons.json";
 
 const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons" }];
 ---
@@ -12,23 +12,25 @@ const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons"
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
   <div class="pokemon-grid">
     {
-      pokemons.slice(0, 20).map((pokemon) => {
-        const id = pokemon.id;
-        const pokemonName = capitalizeSnakeCase(pokemon.name);
-        return (
-          <a href={`/pokemons/pokemon/${id}`}>
-            <Card title={pokemonName}>
-              <Picture
-                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
-                width={100}
-                height={100}
-                formats={["avif", "webp"]}
-                alt={pokemonName}
-              />
-            </Card>
-          </a>
-        );
-      })
+      Object.values(pokemons)
+        .slice(0, 20)
+        .map((pokemon) => {
+          const id = pokemon.id;
+          const pokemonName = capitalizeSnakeCase(pokemon.name);
+          return (
+            <a href={`/pokemons/pokemon/${id}`}>
+              <Card title={pokemonName}>
+                <Picture
+                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+                  width={100}
+                  height={100}
+                  formats={["avif", "webp"]}
+                  alt={pokemonName}
+                />
+              </Card>
+            </a>
+          );
+        })
     }
     <Card title="..."> Explore more pokemons using the search bar. </Card>
   </div>
