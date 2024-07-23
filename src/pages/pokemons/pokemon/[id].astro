@@ -5,6 +5,7 @@ import pokemons from "@data/json/pokemons.json";
 import statColorJson from "../../../utils/stat-color.json";
 import { capitalizeFirstLetter, capitalizeSnakeCase } from "../../../utils/string";
 import typeColorJson from "../../../utils/type-color.json";
+import { Picture } from "astro:assets";
 
 export function getStaticPaths() {
   return Object.keys(pokemons).map((id) => ({
@@ -53,9 +54,12 @@ const headings = [
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
   <Card title={name}>
     <div class="flex flex-col divide-y-2 gap-4">
-      <img
-        class="mx-auto w-1/2"
+      <Picture class="mx-auto"
         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+        width={300}
+        height={300}
+        formats={["avif", "webp"]}
+        alt={name}
       />
       <div>
         <h4 class="my-2">Type</h4>

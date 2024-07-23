@@ -5,6 +5,9 @@ import { defineConfig } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
+  image: {
+    domains: ["raw.githubusercontent.com"],
+  },
   integrations: [
     starlight({
       title: "Pokémon Database",
