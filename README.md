@@ -1,6 +1,6 @@
 # Version 3
 
-Use drizzle instead of Astro DB
+Read data directly from JSON files
 
 # Starlight Starter Kit: Basics
 
