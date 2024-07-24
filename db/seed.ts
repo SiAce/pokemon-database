@@ -74,7 +74,6 @@ const tableCsvPaths: [SQLiteTableWithColumns<any>, string, boolean?][] = [
   [PokemonStat, "data/csv/pokemon_stats.csv"],
 ];
 
-// const tableDatas =
 await Promise.all(
   tableCsvPaths.map(async ([tableConfig, csvFilePath, fastMode]) => {
     const tableData = await parseCsvFile(csvFilePath, fastMode === false ? false : true);
@@ -92,16 +91,3 @@ await Promise.all(
     return Promise.all(chunkInsertOperations);
   })
 );
-// // await Promise.all(
-// tableCsvPaths.map(async ([tableConfig], i) => {
-//   const tableData = tableDatas[i];
-//   if (tableData.length <= TABLE_INSERT_CHUNK_SIZE) {
-//     return bunDb.insert(tableConfig).values(tableDatas[i]);
-//   }
-
-//   for (let offset = 0; offset < tableData.length; offset += TABLE_INSERT_CHUNK_SIZE) {
-//     const tableDataChunk = tableData.slice(offset, offset + TABLE_INSERT_CHUNK_SIZE);
-//     await bunDb.insert(tableConfig).values(tableDataChunk);
-//   }
-// });
-// // );

@@ -1,4 +1,5 @@
-import { integer, primaryKey, sqliteTable, text, type AnySQLiteColumn } from "drizzle-orm/sqlite-core";
+import { relations } from "drizzle-orm";
+import { index, integer, primaryKey, sqliteTable, text, type AnySQLiteColumn } from "drizzle-orm/sqlite-core";
 
 export const GrowthRate = sqliteTable("GrowthRate", {
   id: integer("id").primaryKey(),
@@ -35,13 +36,26 @@ export const MoveEffect = sqliteTable("MoveEffect", {
   id: integer("id").primaryKey(),
 });
 
-export const Stat = sqliteTable("Stat", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  damage_class_id: integer("id").references(() => MoveDamageClass.id),
-  is_battle_only: integer("is_battle_only", { mode: "boolean" }),
-  game_index: integer("game_index"),
-});
+export const Stat = sqliteTable(
+  "Stat",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    damage_class_id: integer("id").references(() => MoveDamageClass.id),
+    is_battle_only: integer("is_battle_only", { mode: "boolean" }),
+    game_index: integer("game_index"),
+  },
+  (table) => ({
+    damage_class_id_index: index("damage_class_id_index").on(table.damage_class_id),
+  })
+);
+
+export const StatRelation = relations(Stat, ({ one }) => ({
+  damage_class: one(MoveDamageClass, {
+    fields: [Stat.damage_class_id],
+    references: [MoveDamageClass.id],
+  }),
+}));
 
 export const ContestType = sqliteTable("ContestType", {
   id: integer("id").primaryKey(),
@@ -69,11 +83,24 @@ export const ItemPocket = sqliteTable("ItemPocket", {
   identifier: text("identifier"),
 });
 
-export const ItemCategory = sqliteTable("ItemCategory", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  pocket_id: integer("pocket_id").references(() => ItemPocket.id),
-});
+export const ItemCategory = sqliteTable(
+  "ItemCategory",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    pocket_id: integer("pocket_id").references(() => ItemPocket.id),
+  },
+  (table) => ({
+    pocket_id_index: index("pocket_id_index").on(table.pocket_id),
+  })
+);
+
+export const ItemCategoryRelation = relations(ItemCategory, ({ one }) => ({
+  pocket: one(ItemPocket, {
+    fields: [ItemCategory.pocket_id],
+    references: [ItemPocket.id],
+  }),
+}));
 
 export const ItemFlingEffect = sqliteTable("ItemFlingEffect", {
   id: integer("id").primaryKey(),
@@ -89,10 +116,28 @@ export const Item = sqliteTable("Item", {
   fling_effect_id: integer("fling_effect_id").references(() => ItemFlingEffect.id),
 });
 
+export const ItemRelation = relations(Item, ({ one }) => ({
+  category: one(ItemCategory, {
+    fields: [Item.category_id],
+    references: [ItemCategory.id],
+  }),
+  fling_effect: one(ItemFlingEffect, {
+    fields: [Item.fling_effect_id],
+    references: [ItemFlingEffect.id],
+  }),
+}));
+
 export const EvolutionChain = sqliteTable("EvolutionChain", {
   id: integer("id").primaryKey(),
   baby_trigger_item_id: integer("baby_trigger_item_id").references(() => Item.id),
 });
+
+export const EvolutionChainRelation = relations(EvolutionChain, ({ one }) => ({
+  baby_trigger_item: one(Item, {
+    fields: [EvolutionChain.baby_trigger_item_id],
+    references: [Item.id],
+  }),
+}));
 
 export const Region = sqliteTable("Region", {
   id: integer("id").primaryKey(),
@@ -105,6 +150,13 @@ export const Generation = sqliteTable("Generation", {
   main_region_id: integer("main_region_id").references(() => Region.id),
 });
 
+export const GenerationRelation = relations(Generation, ({ one }) => ({
+  main_region: one(Region, {
+    fields: [Generation.main_region_id],
+    references: [Region.id],
+  }),
+}));
+
 export const VersionGroup = sqliteTable("VersionGroup", {
   id: integer("id").primaryKey(),
   identifier: text("identifier"),
@@ -112,11 +164,25 @@ export const VersionGroup = sqliteTable("VersionGroup", {
   order: integer("order"),
 });
 
+export const VersionGroupRelation = relations(VersionGroup, ({ one }) => ({
+  generation: one(Generation, {
+    fields: [VersionGroup.generation_id],
+    references: [Generation.id],
+  }),
+}));
+
 export const Version = sqliteTable("Version", {
   id: integer("id").primaryKey(),
   identifier: text("identifier"),
   version_group_id: integer("generation_id").references(() => VersionGroup.id),
 });
+
+export const VersionRelation = relations(Version, ({ one }) => ({
+  version_group: one(VersionGroup, {
+    fields: [Version.version_group_id],
+    references: [VersionGroup.id],
+  }),
+}));
 
 export const PokemonSpecies = sqliteTable("PokemonSpecies", {
   id: integer("id").primaryKey(),
@@ -141,6 +207,37 @@ export const PokemonSpecies = sqliteTable("PokemonSpecies", {
   conquest_order: integer("conquest_order"),
 });
 
+export const PokemonSpeciesRelation = relations(PokemonSpecies, ({ one }) => ({
+  generation: one(Generation, {
+    fields: [PokemonSpecies.generation_id],
+    references: [Generation.id],
+  }),
+  evolves_from_species: one(PokemonSpecies, {
+    fields: [PokemonSpecies.evolves_from_species_id],
+    references: [PokemonSpecies.id],
+  }),
+  evolution_chain: one(EvolutionChain, {
+    fields: [PokemonSpecies.evolution_chain_id],
+    references: [EvolutionChain.id],
+  }),
+  color: one(PokemonColor, {
+    fields: [PokemonSpecies.color_id],
+    references: [PokemonColor.id],
+  }),
+  shape: one(PokemonShape, {
+    fields: [PokemonSpecies.shape_id],
+    references: [PokemonShape.id],
+  }),
+  habitat: one(PokemonHabitat, {
+    fields: [PokemonSpecies.habitat_id],
+    references: [PokemonHabitat.id],
+  }),
+  growth_rate: one(GrowthRate, {
+    fields: [PokemonSpecies.growth_rate_id],
+    references: [GrowthRate.id],
+  }),
+}));
+
 export const Pokemon = sqliteTable("Pokemon", {
   id: integer("id").primaryKey(),
   identifier: text("identifier"),
@@ -152,12 +249,37 @@ export const Pokemon = sqliteTable("Pokemon", {
   is_default: integer("is_default", { mode: "boolean" }),
 });
 
+export const PokemonRelation = relations(Pokemon, ({ one, many }) => ({
+  species: one(PokemonSpecies, {
+    fields: [Pokemon.species_id],
+    references: [PokemonSpecies.id],
+  }),
+  types: many(PokemonType),
+  abilities: many(PokemonAbility),
+  forms: many(PokemonForm),
+  game_indices: many(PokemonGameIndex),
+  items: many(PokemonItem),
+  moves: many(PokemonMove),
+  stats: many(PokemonStat),
+}));
+
 export const Type = sqliteTable("Type", {
   id: integer("id").primaryKey(),
   identifier: text("identifier"),
   generation_id: integer("generation_id").references(() => Generation.id),
   damage_class_id: integer("damage_class_id").references(() => MoveDamageClass.id),
 });
+
+export const TypeRelation = relations(Type, ({ one }) => ({
+  generation: one(Generation, {
+    fields: [Type.generation_id],
+    references: [Generation.id],
+  }),
+  damage_class: one(MoveDamageClass, {
+    fields: [Type.damage_class_id],
+    references: [MoveDamageClass.id],
+  }),
+}));
 
 export const PokemonType = sqliteTable(
   "PokemonType",
@@ -171,12 +293,30 @@ export const PokemonType = sqliteTable(
   })
 );
 
+export const PokemonTypeRelation = relations(PokemonType, ({ one }) => ({
+  pokemon: one(Pokemon, {
+    fields: [PokemonType.pokemon_id],
+    references: [Pokemon.id],
+  }),
+  type: one(Type, {
+    fields: [PokemonType.type_id],
+    references: [Type.id],
+  }),
+}));
+
 export const Ability = sqliteTable("Ability", {
   id: integer("id").primaryKey(),
   identifier: text("identifier"),
   generation_id: integer("generation_id").references(() => Generation.id),
   is_main_series: integer("is_main_series", { mode: "boolean" }),
 });
+
+export const AbilityRelation = relations(Ability, ({ one }) => ({
+  generation: one(Generation, {
+    fields: [Ability.generation_id],
+    references: [Generation.id],
+  }),
+}));
 
 export const PokemonAbility = sqliteTable(
   "PokemonAbility",
@@ -191,6 +331,17 @@ export const PokemonAbility = sqliteTable(
   })
 );
 
+export const PokemonAbilityRelation = relations(PokemonAbility, ({ one }) => ({
+  pokemon: one(Pokemon, {
+    fields: [PokemonAbility.pokemon_id],
+    references: [Pokemon.id],
+  }),
+  ability: one(Ability, {
+    fields: [PokemonAbility.ability_id],
+    references: [Ability.id],
+  }),
+}));
+
 export const PokemonForm = sqliteTable("PokemonForm", {
   id: integer("id").primaryKey(),
   identifier: text("identifier"),
@@ -204,6 +355,17 @@ export const PokemonForm = sqliteTable("PokemonForm", {
   order: integer("order"),
 });
 
+export const PokemonFormRelation = relations(PokemonForm, ({ one }) => ({
+  pokemon: one(Pokemon, {
+    fields: [PokemonForm.pokemon_id],
+    references: [Pokemon.id],
+  }),
+  introduced_in_version_group: one(VersionGroup, {
+    fields: [PokemonForm.introduced_in_version_group_id],
+    references: [VersionGroup.id],
+  }),
+}));
+
 export const PokemonGameIndex = sqliteTable(
   "PokemonGameIndex",
   {
@@ -215,6 +377,17 @@ export const PokemonGameIndex = sqliteTable(
     pk: primaryKey({ columns: [table.pokemon_id, table.version_id] }),
   })
 );
+
+export const PokemonGameIndexRelation = relations(PokemonGameIndex, ({ one }) => ({
+  pokemon: one(Pokemon, {
+    fields: [PokemonGameIndex.pokemon_id],
+    references: [Pokemon.id],
+  }),
+  version: one(Version, {
+    fields: [PokemonGameIndex.version_id],
+    references: [Version.id],
+  }),
+}));
 
 export const PokemonItem = sqliteTable(
   "PokemonItem",
@@ -228,6 +401,21 @@ export const PokemonItem = sqliteTable(
     pk: primaryKey({ columns: [table.pokemon_id, table.version_id, table.item_id] }),
   })
 );
+
+export const PokemonItemRelation = relations(PokemonItem, ({ one }) => ({
+  pokemon: one(Pokemon, {
+    fields: [PokemonItem.pokemon_id],
+    references: [Pokemon.id],
+  }),
+  version: one(Version, {
+    fields: [PokemonItem.version_id],
+    references: [Version.id],
+  }),
+  item: one(Item, {
+    fields: [PokemonItem.item_id],
+    references: [Item.id],
+  }),
+}));
 
 export const Move = sqliteTable("Move", {
   id: integer("id").primaryKey(),
@@ -247,6 +435,41 @@ export const Move = sqliteTable("Move", {
   super_contest_effect_id: integer("super_contest_effect_id").references(() => SuperContextEffect.id),
 });
 
+export const MoveRelation = relations(Move, ({ one }) => ({
+  generation: one(Generation, {
+    fields: [Move.generation_id],
+    references: [Generation.id],
+  }),
+  type: one(Type, {
+    fields: [Move.type_id],
+    references: [Type.id],
+  }),
+  target: one(MoveTarget, {
+    fields: [Move.target_id],
+    references: [MoveTarget.id],
+  }),
+  damage_class: one(MoveDamageClass, {
+    fields: [Move.damage_class_id],
+    references: [MoveDamageClass.id],
+  }),
+  effect: one(MoveEffect, {
+    fields: [Move.effect_id],
+    references: [MoveEffect.id],
+  }),
+  contest_type: one(ContestType, {
+    fields: [Move.contest_type_id],
+    references: [ContestType.id],
+  }),
+  contest_effect: one(ContextEffect, {
+    fields: [Move.contest_effect_id],
+    references: [ContextEffect.id],
+  }),
+  super_contest_effect: one(SuperContextEffect, {
+    fields: [Move.super_contest_effect_id],
+    references: [SuperContextEffect.id],
+  }),
+}));
+
 export const PokemonMove = sqliteTable(
   "PokemonMove",
   {
@@ -261,8 +484,29 @@ export const PokemonMove = sqliteTable(
     pk: primaryKey({
       columns: [table.pokemon_id, table.version_group_id, table.move_id, table.pokemon_move_method_id, table.level],
     }),
+    pokemon_id_index: index("pokemon_id_index").on(table.pokemon_id),
+    move_id_index: index("move_id_index").on(table.move_id),
   })
 );
+
+export const PokemonMoveRelation = relations(PokemonMove, ({ one }) => ({
+  pokemon: one(Pokemon, {
+    fields: [PokemonMove.pokemon_id],
+    references: [Pokemon.id],
+  }),
+  version_group: one(VersionGroup, {
+    fields: [PokemonMove.version_group_id],
+    references: [VersionGroup.id],
+  }),
+  move: one(Move, {
+    fields: [PokemonMove.move_id],
+    references: [Move.id],
+  }),
+  pokemon_move_method: one(PokemonMoveMethod, {
+    fields: [PokemonMove.pokemon_move_method_id],
+    references: [PokemonMoveMethod.id],
+  }),
+}));
 
 export const PokemonStat = sqliteTable(
   "PokemonStat",
@@ -276,3 +520,14 @@ export const PokemonStat = sqliteTable(
     pk: primaryKey({ columns: [table.pokemon_id, table.stat_id] }),
   })
 );
+
+export const PokemonStatRelation = relations(PokemonStat, ({ one }) => ({
+  pokemon: one(Pokemon, {
+    fields: [PokemonStat.pokemon_id],
+    references: [Pokemon.id],
+  }),
+  stat: one(Stat, {
+    fields: [PokemonStat.stat_id],
+    references: [Stat.id],
+  }),
+}));

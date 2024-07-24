@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9cfbb729-feab-4d61-a3dc-1022cb97af33",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "c5d78c15-813b-4b37-8a66-609b99bed2d4",
+  "prevId": "9cfbb729-feab-4d61-a3dc-1022cb97af33",
   "tables": {
     "Ability": {
       "name": "Ability",
@@ -322,7 +322,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "pocket_id_index": {
+          "name": "pocket_id_index",
+          "columns": [
+            "pocket_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "ItemCategory_pocket_id_ItemPocket_id_fk": {
           "name": "ItemCategory_pocket_id_ItemPocket_id_fk",
@@ -1169,7 +1177,22 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "pokemon_id_index": {
+          "name": "pokemon_id_index",
+          "columns": [
+            "pokemon_id"
+          ],
+          "isUnique": false
+        },
+        "move_id_index": {
+          "name": "move_id_index",
+          "columns": [
+            "move_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "PokemonMove_pokemon_id_Pokemon_id_fk": {
           "name": "PokemonMove_pokemon_id_Pokemon_id_fk",
@@ -1717,7 +1740,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "damage_class_id_index": {
+          "name": "damage_class_id_index",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "Stat_id_MoveDamageClass_id_fk": {
           "name": "Stat_id_MoveDamageClass_id_fk",

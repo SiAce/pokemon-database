@@ -1,60 +1,147 @@
 ---
 import { Card } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import pokemons from "@data/json/pokemons.json";
 import statColorJson from "../../../utils/stat-color.json";
 import { capitalizeFirstLetter, capitalizeSnakeCase } from "../../../utils/string";
 import typeColorJson from "../../../utils/type-color.json";
-import { Picture } from "astro:assets";
 
-export function getStaticPaths() {
-  return Object.keys(pokemons).map((id) => ({
-    params: { id },
+import { db } from "src/db/db-client";
+import { eq } from "drizzle-orm";
+import { Pokemon } from "db/schema";
+
+export async function getStaticPaths() {
+  const pokemons = await db.query.Pokemon.findMany({
+    columns: {
+      id: true,
+    },
+  });
+  return pokemons.map((pokemon) => ({
+    params: { id: pokemon.id },
   }));
 }
 
-const { id } = Astro.params;
+const { id: stringId } = Astro.params;
+const id = Number(stringId);
 
-const pokemon = pokemons[id];
+const pokemon = (await db.query.Pokemon.findFirst({
+  columns: {
+    identifier: true,
+    height: true,
+    weight: true,
+    base_experience: true,
+    is_default: true,
+  },
+  where: eq(Pokemon.id, id),
+  with: {
+    species: {
+      columns: {
+        identifier: true,
+      },
+    },
+    types: {
+      columns: {},
+      with: {
+        type: {
+          columns: {
+            identifier: true,
+          },
+        },
+      },
+    },
+    abilities: {
+      columns: {
+        is_hidden: true,
+      },
+      with: {
+        ability: {
+          columns: {
+            identifier: true,
+          },
+        },
+      },
+    },
+    stats: {
+      columns: {
+        base_stat: true,
+        effort: true,
+      },
+      with: {
+        stat: {
+          columns: {
+            identifier: true,
+          },
+        },
+      },
+    },
+    forms: {
+      columns: {
+        identifier: true,
+        is_default: true,
+        is_battle_only: true,
+        is_mega: true,
+      },
+    },
+    game_indices: {
+      columns: {
+        game_index: true,
+      },
+      with: {
+        version: {
+          columns: {
+            identifier: true,
+          },
+        },
+      },
+    },
+    items: {
+      columns: {
+        rarity: true,
+      },
+      with: {
+        version: {
+          columns: {
+            identifier: true,
+          },
+        },
+        item: {
+          columns: {
+            identifier: true,
+          },
+        },
+      },
+    },
+    moves: {
+      columns: {},
+      with: {
+        move: {
+          columns: {
+            identifier: true,
+          },
+        },
+      },
+    },
+  },
+}))!;
 
-const {
-  height,
-  weight,
-  base_experience,
-  species_id,
-  gender_rate,
-  capture_rate,
-  base_happiness,
-  is_baby,
-  hatch_counter,
-  has_gender_differences,
-  forms_switchable,
-  is_legendary,
-  is_mythical,
-  types,
-  abilities,
-  stats,
-  forms,
-  game_indices,
-  items,
-  moves,
-} = pokemon;
-const [name, species, color, generation] = [pokemon.name, pokemon.species, pokemon.color, pokemon.generation].map(
-  capitalizeSnakeCase
-);
+const { height, weight, base_experience, species, types, abilities, stats, forms, game_indices, items, moves } =
+  pokemon;
+const [name] = [pokemon.identifier].map(capitalizeSnakeCase);
 
 const headings = [
   { depth: 2, slug: "basic-info", text: "Basic Info" },
   { depth: 2, slug: "sprites", text: "Sprites" },
   { depth: 2, slug: "moves", text: "Moves" },
 ];
+
+const uniqueMoveNames = [...new Set(moves.map((move) => move.move?.identifier))];
 ---
 
 <StarlightPage frontmatter={{ title: name }} headings={headings}>
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
   <Card title={name}>
     <div class="flex flex-col divide-y-2 gap-4">
-      <img class="mx-auto"
+      <img
+        class="mx-auto"
         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
         width={300}
         height={300}
@@ -69,10 +156,10 @@ const headings = [
                 <span
                   class={`px-4 py-2 mr-4 text-gray-50`}
                   style={{
-                    backgroundColor: (typeColorJson as any)[type.name],
+                    backgroundColor: (typeColorJson as any)[type.type?.identifier!],
                   }}
                 >
-                  {capitalizeFirstLetter(type.name)}
+                  {capitalizeFirstLetter(type.type?.identifier!)}
                 </span>
               </a>
             ))
@@ -86,7 +173,7 @@ const headings = [
             abilities.map((ability) => (
               <a class="no-underline" href="#">
                 <span class="rounded-md bg-gray-400 px-4 py-2 mr-4 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
-                  {capitalizeFirstLetter(ability.name)}
+                  {capitalizeFirstLetter(ability.ability?.identifier)}
                 </span>
               </a>
             ))
@@ -101,12 +188,12 @@ const headings = [
               <a
                 class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                 style={{
-                  backgroundColor: (statColorJson as any)[stat.name],
+                  backgroundColor: (statColorJson as any)[stat.stat?.identifier!],
                 }}
                 href="#"
               >
                 <div class="flex flex-col justify-between text-gray-700 py-2 text-sm">
-                  <div>{capitalizeSnakeCase(stat.name)}</div>
+                  <div>{capitalizeSnakeCase(stat.stat?.identifier)}</div>
                   <div>{stat.base_stat}</div>
                 </div>
               </a>
@@ -122,12 +209,12 @@ const headings = [
               <a
                 class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                 style={{
-                  backgroundColor: (statColorJson as any)[stat.name],
+                  backgroundColor: (statColorJson as any)[stat.stat?.identifier!],
                 }}
                 href="#"
               >
                 <div class="flex flex-col justify-between text-gray-700 py-2 text-sm">
-                  <div>{capitalizeSnakeCase(stat.name)}</div>
+                  <div>{capitalizeSnakeCase(stat.stat?.identifier)}</div>
                   <div>{stat.effort}</div>
                 </div>
               </a>
@@ -142,11 +229,11 @@ const headings = [
       <div class="flex justify-stretch divide-x-2">
         <div class="flex-auto mt-4 pl-2">
           <h4>Height</h4>
-          <p>{height / 10} m</p>
+          <p>{height! / 10} m</p>
         </div>
         <div class="flex-auto !mt-4 pl-2">
           <h4>Weight</h4>
-          <p>{weight / 10} kg</p>
+          <p>{weight! / 10} kg</p>
         </div>
       </div>
     </div>
@@ -155,34 +242,13 @@ const headings = [
   <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
   <div class="flex flex-col gap-2">
     {
-      moves.map((move) => (
-        <Card title={capitalizeSnakeCase(move.name)}>
+      uniqueMoveNames.map((moveName) => (
+        <Card title={capitalizeSnakeCase(moveName)}>
           <hr class="!my-2" />
-          <div class="flex flex-col divide-y-2">
-            {/* <div>
-              <h4 class="!text-xl">Learnset</h4>
-              <table class=" border-2 px-2 !table !w-full">
-                <thead>
-                  <tr>
-                    <th>Generation</th>
-                    <th>Learn Method</th>
-                    <th>Level Learned At</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {move.map((version_group: any) => (
-                    <tr class="border-2 !m-2 p-2">
-                      <td>{capitalizeSnakeCase(version_group.version_group.name)}</td>
-                      <td>{capitalizeSnakeCase(version_group.move_learn_method.name)}</td>
-                      <td>{version_group.level_learned_at}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div> */}
-          </div>
+          <div class="flex flex-col divide-y-2" />
         </Card>
       ))
     }
   </div>
 </StarlightPage>
+---

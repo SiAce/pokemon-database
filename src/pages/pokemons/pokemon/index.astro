@@ -1,10 +1,17 @@
 ---
 import { Card } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import pokemons from "@data/json/pokemons.json";
 import { Picture } from "astro:assets";
 import { capitalizeSnakeCase } from "../../../utils/string";
+import { db } from "src/db/db-client";
 
+const pokemons = await db.query.Pokemon.findMany({
+  columns: {
+    id: true,
+    identifier: true,
+  },
+  limit: 20,
+});
 const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons" }];
 ---
 
@@ -16,7 +23,7 @@ const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons"
         .slice(0, 20)
         .map((pokemon) => {
           const id = pokemon.id;
-          const pokemonName = capitalizeSnakeCase(pokemon.name);
+          const pokemonName = capitalizeSnakeCase(pokemon.identifier!);
           return (
             <a href={`/pokemons/pokemon/${id}`}>
               <Card title={pokemonName}>
