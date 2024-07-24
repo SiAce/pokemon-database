@@ -2,12 +2,8 @@ import starlight from "@astrojs/starlight";
 import tailwind from "@astrojs/tailwind";
 import { defineConfig } from "astro/config";
 
-
 // https://astro.build/config
 export default defineConfig({
-  image: {
-    domains: ["raw.githubusercontent.com"],
-  },
   integrations: [
     starlight({
       title: "Pokémon Database",
@@ -25,6 +21,9 @@ export default defineConfig({
           ],
         },
       ],
+      logo: {
+        src: "./src/assets/pokemon-logo.svg",
+      },
       customCss: [
         // Path to your Tailwind base styles:
         "./src/tailwind.css",
