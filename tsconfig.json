@@ -1,0 +1,10 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "allowArbitraryExtensions": true,
+    "baseUrl": ".",
+    "paths": {
+      "@data/*": ["data/*"],
+    }
+  }
+}

@@ -1,0 +1,41 @@
+---
+import { Card } from "@astrojs/starlight/components";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import pokemons from "@data/json/pokemons.json";
+import { Picture } from "astro:assets";
+import { capitalizeSnakeCase } from "../../../utils/string";
+
+const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons" }];
+---
+
+<StarlightPage frontmatter={{ title: "Pokemons" }} headings={headings}>
+  <h2 id={headings[0].slug}>{headings[0].text}</h2>
+  <div class="pokemon-grid">
+    {
+      Object.values(pokemons)
+        .slice(0, 20)
+        .map((pokemon) => {
+          const id = pokemon.id;
+          const pokemonName = capitalizeSnakeCase(pokemon.name);
+          return (
+            <a href={`/pokemons/pokemon/${id}`}>
+              <Card title={pokemonName}>
+                <img
+                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
+                  alt={pokemonName}
+                />
+              </Card>
+            </a>
+          );
+        })
+    }
+    <Card title="..."> Explore more pokemons using the search bar. </Card>
+  </div>
+</StarlightPage>
+<style>
+  .pokemon-grid {
+    --n: 4; /* The maximum number of columns */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(max(200px, 100% / var(--n)), 1fr));
+  }
+</style>
