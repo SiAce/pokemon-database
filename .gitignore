@@ -22,11 +22,3 @@ pnpm-debug.log*
 
 # test files
 .test/
-
-# SQLite files
-*db*
-*sqlite*
-*db-shm
-*db-wal
-*sqlite-shm
-*sqlite-wal
