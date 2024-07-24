@@ -24,6 +24,7 @@ export default defineConfig({
       logo: {
         src: "./src/assets/pokemon-logo.svg",
       },
+      favicon: "/images/favicon.ico",
       customCss: [
         // Path to your Tailwind base styles:
         "./src/tailwind.css",
