@@ -1,0 +1,154 @@
+---
+import { Card } from "@astrojs/starlight/components";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import {
+  Pokemon,
+  PokemonById,
+  PokemonMoveByPokemonId,
+  MoveById,
+  PokemonTypeByPokemonId,
+  TypeById,
+  AbilityById,
+  PokemonAbilityByPokemonId,
+  StatById,
+  PokemonStatByPokemonId,
+} from "src/utils/data-read";
+import statColorJson from "src/utils/stat-color.json";
+import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
+import typeColorJson from "src/utils/type-color.json";
+
+export async function getStaticPaths() {
+  return Pokemon.map((pokemon) => ({
+    params: { id: pokemon.id },
+  }));
+}
+
+const { id } = Astro.params;
+const pokemon = PokemonById[id];
+const { identifier, species_id, height, weight, base_experience, order, is_default } = pokemon;
+const [name] = [identifier].map(capitalizeSnakeCase);
+const pokemonMoves = PokemonMoveByPokemonId[id];
+
+const headings = [
+  { depth: 2, slug: "basic-info", text: "Basic Info" },
+  { depth: 2, slug: "sprites", text: "Sprites" },
+  { depth: 2, slug: "moves", text: "Moves" },
+];
+---
+
+<StarlightPage frontmatter={{ title: name }} headings={headings}>
+  <h2 id={headings[0].slug}>{headings[0].text}</h2>
+  <Card title={name}>
+    <div class="flex flex-col divide-y-2 gap-4">
+      <img
+        class="mx-auto"
+        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+        width={300}
+        height={300}
+        alt={name}
+      />
+      <div>
+        <h4 class="my-2">Type</h4>
+        <div>
+          {
+            PokemonTypeByPokemonId[id].map((pokemonType) => (
+              <a class="no-underline" href="#">
+                <span
+                  class={`px-4 py-2 mr-4 text-gray-50`}
+                  style={{
+                    backgroundColor: (typeColorJson)[TypeById[pokemonType.type_id].identifier],
+                  }}
+                >
+                  {capitalizeFirstLetter(TypeById[pokemonType.type_id].identifier)}
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+      <div>
+        <h4 class="my-2">Abilities</h4>
+        <div>
+          {
+            PokemonAbilityByPokemonId[id].map((pokemonAbility) => (
+              <a class="no-underline" href="#">
+                <span class="rounded-md bg-gray-400 px-4 py-2 mr-4 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
+                  {capitalizeFirstLetter(AbilityById[pokemonAbility.ability_id].identifier)}
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+      <div>
+        <h4 class="my-2">Base Stats</h4>
+        <div class="flex justify-between flex-wrap gap-1">
+          {
+            PokemonStatByPokemonId[id].map((pokemonStat) => (
+              <a
+                class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
+                style={{
+                  backgroundColor: (statColorJson)[StatById[pokemonStat.stat_id].identifier],
+                }}
+                href="#"
+              >
+                <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
+                  <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
+                  <div>{pokemonStat.base_stat}</div>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+      <div>
+        <h4 class="my-2">Effort Value Yield</h4>
+        <div class="flex justify-between flex-wrap gap-1">
+          {
+            PokemonStatByPokemonId[id].map((pokemonStat) => (
+              <a
+                class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
+                style={{
+                  backgroundColor: (statColorJson)[StatById[pokemonStat.stat_id].identifier],
+                }}
+                href="#"
+              >
+                <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
+                  <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
+                  <div>{pokemonStat.effort}</div>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+      <div class="py-2">
+        <h4>Base Experience</h4>
+        <div class="pl-2">{base_experience}</div>
+      </div>
+      <div class="flex justify-stretch divide-x-2">
+        <div class="flex-auto mt-4 pl-2">
+          <h4>Height</h4>
+          <p>{height! / 10} m</p>
+        </div>
+        <div class="flex-auto !mt-4 pl-2">
+          <h4>Weight</h4>
+          <p>{weight! / 10} kg</p>
+        </div>
+      </div>
+    </div>
+  </Card>
+  <hr class="!my-4 border-gray-800" />
+  <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
+  <div class="flex flex-col gap-2">
+    { pokemonMoves &&
+      [...new Set(pokemonMoves.map((move) => move.move_id))].map((move_id: any) => (
+        <Card title={MoveById[move_id].identifier}>
+          <hr class="!my-2" />
+          <div class="flex flex-col divide-y-2" />
+        </Card>
+      ))
+    }
+  </div>
+</StarlightPage>
+---
