@@ -6,5 +6,5 @@ const sqlite = new Database('./data/sqlite/pokemon.db');
 sqlite.exec('PRAGMA journal_mode = WAL;')
 sqlite.exec('PRAGMA synchronous = normal;')
 sqlite.exec('PRAGMA temp_store = memory;')
-sqlite.exec('PRAGMA mmap_size = 300000000;')
+sqlite.exec('PRAGMA mmap_size = 1000000000;')
 export const db = drizzle(sqlite, {schema});

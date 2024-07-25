@@ -26,6 +26,13 @@ Parse the data from source CSV and write data into tables.
 bun run seed
 ```
 
+# Issues
+
+While profiling the SQLite, I found a drizzle-kit bug that composite primary key order is not respected: https://github.com/drizzle-team/drizzle-kit-mirror/issues/342#issuecomment-2243385795.
+
+Modified the drizzle-kit package's code to prevent sorting alphabetically.
+
+
 # Starlight Starter Kit: Basics
 
 [![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)

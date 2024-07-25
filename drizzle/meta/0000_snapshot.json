@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9cfbb729-feab-4d61-a3dc-1022cb97af33",
+  "id": "53214da8-9074-40e8-a1cd-6fd854edd272",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "Ability": {
@@ -36,7 +36,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Ability_index": {
+          "name": "Ability_index",
+          "columns": [
+            "generation_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "Ability_generation_id_Generation_id_fk": {
           "name": "Ability_generation_id_Generation_id_fk",
@@ -126,7 +134,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "EvolutionChain_index": {
+          "name": "EvolutionChain_index",
+          "columns": [
+            "baby_trigger_item_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "EvolutionChain_baby_trigger_item_id_Item_id_fk": {
           "name": "EvolutionChain_baby_trigger_item_id_Item_id_fk",
@@ -170,7 +186,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Generation_index": {
+          "name": "Generation_index",
+          "columns": [
+            "main_region_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "Generation_main_region_id_Region_id_fk": {
           "name": "Generation_main_region_id_Region_id_fk",
@@ -265,7 +289,16 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Item_index": {
+          "name": "Item_index",
+          "columns": [
+            "category_id",
+            "fling_effect_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "Item_category_id_ItemCategory_id_fk": {
           "name": "Item_category_id_ItemCategory_id_fk",
@@ -322,7 +355,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "ItemCategory_index": {
+          "name": "ItemCategory_index",
+          "columns": [
+            "pocket_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "ItemCategory_pocket_id_ItemPocket_id_fk": {
           "name": "ItemCategory_pocket_id_ItemPocket_id_fk",
@@ -496,7 +537,22 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Move_index": {
+          "name": "Move_index",
+          "columns": [
+            "generation_id",
+            "type_id",
+            "target_id",
+            "damage_class_id",
+            "effect_id",
+            "contest_type_id",
+            "contest_effect_id",
+            "super_contest_effect_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "Move_generation_id_Generation_id_fk": {
           "name": "Move_generation_id_Generation_id_fk",
@@ -728,7 +784,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Pokemon_index": {
+          "name": "Pokemon_index",
+          "columns": [
+            "species_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "Pokemon_species_id_PokemonSpecies_id_fk": {
           "name": "Pokemon_species_id_PokemonSpecies_id_fk",
@@ -811,8 +875,8 @@
       "compositePrimaryKeys": {
         "PokemonAbility_pokemon_id_ability_id_slot_pk": {
           "columns": [
-            "ability_id",
             "pokemon_id",
+            "ability_id",
             "slot"
           ],
           "name": "PokemonAbility_pokemon_id_ability_id_slot_pk"
@@ -917,7 +981,16 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "PokemonForm_index": {
+          "name": "PokemonForm_index",
+          "columns": [
+            "pokemon_id",
+            "introduced_in_version_group_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "PokemonForm_pokemon_id_Pokemon_id_fk": {
           "name": "PokemonForm_pokemon_id_Pokemon_id_fk",
@@ -1114,9 +1187,9 @@
       "compositePrimaryKeys": {
         "PokemonItem_pokemon_id_version_id_item_id_pk": {
           "columns": [
-            "item_id",
             "pokemon_id",
-            "version_id"
+            "version_id",
+            "item_id"
           ],
           "name": "PokemonItem_pokemon_id_version_id_item_id_pk"
         }
@@ -1227,11 +1300,11 @@
       "compositePrimaryKeys": {
         "PokemonMove_pokemon_id_version_group_id_move_id_pokemon_move_method_id_level_pk": {
           "columns": [
-            "level",
-            "move_id",
             "pokemon_id",
+            "version_group_id",
+            "move_id",
             "pokemon_move_method_id",
-            "version_group_id"
+            "level"
           ],
           "name": "PokemonMove_pokemon_id_version_group_id_move_id_pokemon_move_method_id_level_pk"
         }
@@ -1428,7 +1501,21 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "PokemonSpecies_index": {
+          "name": "PokemonSpecies_index",
+          "columns": [
+            "generation_id",
+            "evolves_from_species_id",
+            "evolution_chain_id",
+            "color_id",
+            "shape_id",
+            "habitat_id",
+            "growth_rate_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "PokemonSpecies_generation_id_Generation_id_fk": {
           "name": "PokemonSpecies_generation_id_Generation_id_fk",
@@ -1717,7 +1804,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Stat_index": {
+          "name": "Stat_index",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "Stat_id_MoveDamageClass_id_fk": {
           "name": "Stat_id_MoveDamageClass_id_fk",
@@ -1791,7 +1886,16 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Type_index": {
+          "name": "Type_index",
+          "columns": [
+            "generation_id",
+            "damage_class_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "Type_generation_id_Generation_id_fk": {
           "name": "Type_generation_id_Generation_id_fk",
@@ -1840,22 +1944,30 @@
           "notNull": false,
           "autoincrement": false
         },
-        "generation_id": {
-          "name": "generation_id",
+        "version_group_id": {
+          "name": "version_group_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Version_index": {
+          "name": "Version_index",
+          "columns": [
+            "version_group_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
-        "Version_generation_id_VersionGroup_id_fk": {
-          "name": "Version_generation_id_VersionGroup_id_fk",
+        "Version_version_group_id_VersionGroup_id_fk": {
+          "name": "Version_version_group_id_VersionGroup_id_fk",
           "tableFrom": "Version",
           "tableTo": "VersionGroup",
           "columnsFrom": [
-            "generation_id"
+            "version_group_id"
           ],
           "columnsTo": [
             "id"
@@ -1899,7 +2011,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "VersionGroup_index": {
+          "name": "VersionGroup_index",
+          "columns": [
+            "generation_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "VersionGroup_generation_id_Generation_id_fk": {
           "name": "VersionGroup_generation_id_Generation_id_fk",

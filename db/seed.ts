@@ -1,5 +1,5 @@
-import { bunDb } from "./bun-sqlite";
 import { parseCsvFile } from "../src/utils/csv-parse";
+import { bunDb as db } from "./bun-sqlite";
 import {
   GrowthRate,
   PokemonHabitat,
@@ -78,14 +78,14 @@ await Promise.all(
   tableCsvPaths.map(async ([tableConfig, csvFilePath, fastMode]) => {
     const tableData = await parseCsvFile(csvFilePath, fastMode === false ? false : true);
     if (tableData.length <= TABLE_INSERT_CHUNK_SIZE) {
-      return bunDb.insert(tableConfig).values(tableData);
+      return db.insert(tableConfig).values(tableData);
     }
 
     const chunkInsertOperations = [];
 
     for (let offset = 0; offset < tableData.length; offset += TABLE_INSERT_CHUNK_SIZE) {
       const tableDataChunk = tableData.slice(offset, offset + TABLE_INSERT_CHUNK_SIZE);
-      chunkInsertOperations.push(bunDb.insert(tableConfig).values(tableDataChunk));
+      chunkInsertOperations.push(db.insert(tableConfig).values(tableDataChunk));
     }
 
     return Promise.all(chunkInsertOperations);

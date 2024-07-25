@@ -121,7 +121,7 @@ CREATE TABLE `PokemonAbility` (
 	`ability_id` integer,
 	`is_hidden` integer,
 	`slot` integer,
-	PRIMARY KEY(`ability_id`, `pokemon_id`, `slot`),
+	PRIMARY KEY(`pokemon_id`, `ability_id`, `slot`),
 	FOREIGN KEY (`pokemon_id`) REFERENCES `Pokemon`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`ability_id`) REFERENCES `Ability`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -165,7 +165,7 @@ CREATE TABLE `PokemonItem` (
 	`version_id` integer,
 	`item_id` integer,
 	`rarity` integer,
-	PRIMARY KEY(`item_id`, `pokemon_id`, `version_id`),
+	PRIMARY KEY(`pokemon_id`, `version_id`, `item_id`),
 	FOREIGN KEY (`pokemon_id`) REFERENCES `Pokemon`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`version_id`) REFERENCES `Version`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`item_id`) REFERENCES `Item`(`id`) ON UPDATE no action ON DELETE no action
@@ -178,7 +178,7 @@ CREATE TABLE `PokemonMove` (
 	`pokemon_move_method_id` integer,
 	`level` integer,
 	`order` integer,
-	PRIMARY KEY(`level`, `move_id`, `pokemon_id`, `pokemon_move_method_id`, `version_group_id`),
+	PRIMARY KEY(`pokemon_id`, `version_group_id`, `move_id`, `pokemon_move_method_id`, `level`),
 	FOREIGN KEY (`pokemon_id`) REFERENCES `Pokemon`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`version_group_id`) REFERENCES `VersionGroup`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`move_id`) REFERENCES `Move`(`id`) ON UPDATE no action ON DELETE no action,
@@ -274,8 +274,8 @@ CREATE TABLE `Type` (
 CREATE TABLE `Version` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`identifier` text,
-	`generation_id` integer,
-	FOREIGN KEY (`generation_id`) REFERENCES `VersionGroup`(`id`) ON UPDATE no action ON DELETE no action
+	`version_group_id` integer,
+	FOREIGN KEY (`version_group_id`) REFERENCES `VersionGroup`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `VersionGroup` (
@@ -285,3 +285,17 @@ CREATE TABLE `VersionGroup` (
 	`order` integer,
 	FOREIGN KEY (`generation_id`) REFERENCES `Generation`(`id`) ON UPDATE no action ON DELETE no action
 );
+--> statement-breakpoint
+CREATE INDEX `Ability_index` ON `Ability` (`generation_id`);--> statement-breakpoint
+CREATE INDEX `EvolutionChain_index` ON `EvolutionChain` (`baby_trigger_item_id`);--> statement-breakpoint
+CREATE INDEX `Generation_index` ON `Generation` (`main_region_id`);--> statement-breakpoint
+CREATE INDEX `Item_index` ON `Item` (`category_id`,`fling_effect_id`);--> statement-breakpoint
+CREATE INDEX `ItemCategory_index` ON `ItemCategory` (`pocket_id`);--> statement-breakpoint
+CREATE INDEX `Move_index` ON `Move` (`generation_id`,`type_id`,`target_id`,`damage_class_id`,`effect_id`,`contest_type_id`,`contest_effect_id`,`super_contest_effect_id`);--> statement-breakpoint
+CREATE INDEX `Pokemon_index` ON `Pokemon` (`species_id`);--> statement-breakpoint
+CREATE INDEX `PokemonForm_index` ON `PokemonForm` (`pokemon_id`,`introduced_in_version_group_id`);--> statement-breakpoint
+CREATE INDEX `PokemonSpecies_index` ON `PokemonSpecies` (`generation_id`,`evolves_from_species_id`,`evolution_chain_id`,`color_id`,`shape_id`,`habitat_id`,`growth_rate_id`);--> statement-breakpoint
+CREATE INDEX `Stat_index` ON `Stat` (`id`);--> statement-breakpoint
+CREATE INDEX `Type_index` ON `Type` (`generation_id`,`damage_class_id`);--> statement-breakpoint
+CREATE INDEX `Version_index` ON `Version` (`version_group_id`);--> statement-breakpoint
+CREATE INDEX `VersionGroup_index` ON `VersionGroup` (`generation_id`);

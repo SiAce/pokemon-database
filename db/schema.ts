@@ -46,7 +46,7 @@ export const Stat = sqliteTable(
     game_index: integer("game_index"),
   },
   (table) => ({
-    damage_class_id_index: index("damage_class_id_index").on(table.damage_class_id),
+    Stat_index: index("Stat_index").on(table.damage_class_id),
   })
 );
 
@@ -91,7 +91,7 @@ export const ItemCategory = sqliteTable(
     pocket_id: integer("pocket_id").references(() => ItemPocket.id),
   },
   (table) => ({
-    pocket_id_index: index("pocket_id_index").on(table.pocket_id),
+    ItemCategory_index: index("ItemCategory_index").on(table.pocket_id),
   })
 );
 
@@ -107,14 +107,20 @@ export const ItemFlingEffect = sqliteTable("ItemFlingEffect", {
   identifier: text("identifier"),
 });
 
-export const Item = sqliteTable("Item", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  category_id: integer("category_id").references(() => ItemCategory.id),
-  cost: integer("cost"),
-  fling_power: integer("fling_power"),
-  fling_effect_id: integer("fling_effect_id").references(() => ItemFlingEffect.id),
-});
+export const Item = sqliteTable(
+  "Item",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    category_id: integer("category_id").references(() => ItemCategory.id),
+    cost: integer("cost"),
+    fling_power: integer("fling_power"),
+    fling_effect_id: integer("fling_effect_id").references(() => ItemFlingEffect.id),
+  },
+  (table) => ({
+    Item_index: index("Item_index").on(table.category_id, table.fling_effect_id),
+  })
+);
 
 export const ItemRelation = relations(Item, ({ one }) => ({
   category: one(ItemCategory, {
@@ -127,10 +133,16 @@ export const ItemRelation = relations(Item, ({ one }) => ({
   }),
 }));
 
-export const EvolutionChain = sqliteTable("EvolutionChain", {
-  id: integer("id").primaryKey(),
-  baby_trigger_item_id: integer("baby_trigger_item_id").references(() => Item.id),
-});
+export const EvolutionChain = sqliteTable(
+  "EvolutionChain",
+  {
+    id: integer("id").primaryKey(),
+    baby_trigger_item_id: integer("baby_trigger_item_id").references(() => Item.id),
+  },
+  (table) => ({
+    EvolutionChain_index: index("EvolutionChain_index").on(table.baby_trigger_item_id),
+  })
+);
 
 export const EvolutionChainRelation = relations(EvolutionChain, ({ one }) => ({
   baby_trigger_item: one(Item, {
@@ -144,11 +156,17 @@ export const Region = sqliteTable("Region", {
   identifier: text("identifier"),
 });
 
-export const Generation = sqliteTable("Generation", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  main_region_id: integer("main_region_id").references(() => Region.id),
-});
+export const Generation = sqliteTable(
+  "Generation",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    main_region_id: integer("main_region_id").references(() => Region.id),
+  },
+  (table) => ({
+    Generation_index: index("Generation_index").on(table.main_region_id),
+  })
+);
 
 export const GenerationRelation = relations(Generation, ({ one }) => ({
   main_region: one(Region, {
@@ -157,12 +175,18 @@ export const GenerationRelation = relations(Generation, ({ one }) => ({
   }),
 }));
 
-export const VersionGroup = sqliteTable("VersionGroup", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  generation_id: integer("generation_id").references(() => Generation.id),
-  order: integer("order"),
-});
+export const VersionGroup = sqliteTable(
+  "VersionGroup",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    generation_id: integer("generation_id").references(() => Generation.id),
+    order: integer("order"),
+  },
+  (table) => ({
+    VersionGroup_index: index("VersionGroup_index").on(table.generation_id),
+  })
+);
 
 export const VersionGroupRelation = relations(VersionGroup, ({ one }) => ({
   generation: one(Generation, {
@@ -171,11 +195,17 @@ export const VersionGroupRelation = relations(VersionGroup, ({ one }) => ({
   }),
 }));
 
-export const Version = sqliteTable("Version", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  version_group_id: integer("generation_id").references(() => VersionGroup.id),
-});
+export const Version = sqliteTable(
+  "Version",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    version_group_id: integer("version_group_id").references(() => VersionGroup.id),
+  },
+  (table) => ({
+    Version_index: index("Version_index").on(table.version_group_id),
+  })
+);
 
 export const VersionRelation = relations(Version, ({ one }) => ({
   version_group: one(VersionGroup, {
@@ -184,28 +214,42 @@ export const VersionRelation = relations(Version, ({ one }) => ({
   }),
 }));
 
-export const PokemonSpecies = sqliteTable("PokemonSpecies", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  generation_id: integer("generation_id").references(() => Generation.id),
-  evolves_from_species_id: integer("evolves_from_species_id").references((): AnySQLiteColumn => PokemonSpecies.id),
-  evolution_chain_id: integer("evolution_chain_id").references(() => EvolutionChain.id),
-  color_id: integer("color_id").references(() => PokemonColor.id),
-  shape_id: integer("shape_id").references(() => PokemonShape.id),
-  habitat_id: integer("habitat_id").references(() => PokemonHabitat.id),
-  gender_rate: integer("gender_rate"),
-  capture_rate: integer("capture_rate"),
-  base_happiness: integer("base_happiness"),
-  is_baby: integer("is_baby", { mode: "boolean" }),
-  hatch_counter: integer("hatch_counter"),
-  has_gender_differences: integer("has_gender_differences", { mode: "boolean" }),
-  growth_rate_id: integer("growth_rate_id").references(() => GrowthRate.id),
-  forms_switchable: integer("forms_switchable", { mode: "boolean" }),
-  is_legendary: integer("is_legendary", { mode: "boolean" }),
-  is_mythical: integer("is_mythical", { mode: "boolean" }),
-  order: integer("order"),
-  conquest_order: integer("conquest_order"),
-});
+export const PokemonSpecies = sqliteTable(
+  "PokemonSpecies",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    generation_id: integer("generation_id").references(() => Generation.id),
+    evolves_from_species_id: integer("evolves_from_species_id").references((): AnySQLiteColumn => PokemonSpecies.id),
+    evolution_chain_id: integer("evolution_chain_id").references(() => EvolutionChain.id),
+    color_id: integer("color_id").references(() => PokemonColor.id),
+    shape_id: integer("shape_id").references(() => PokemonShape.id),
+    habitat_id: integer("habitat_id").references(() => PokemonHabitat.id),
+    gender_rate: integer("gender_rate"),
+    capture_rate: integer("capture_rate"),
+    base_happiness: integer("base_happiness"),
+    is_baby: integer("is_baby", { mode: "boolean" }),
+    hatch_counter: integer("hatch_counter"),
+    has_gender_differences: integer("has_gender_differences", { mode: "boolean" }),
+    growth_rate_id: integer("growth_rate_id").references(() => GrowthRate.id),
+    forms_switchable: integer("forms_switchable", { mode: "boolean" }),
+    is_legendary: integer("is_legendary", { mode: "boolean" }),
+    is_mythical: integer("is_mythical", { mode: "boolean" }),
+    order: integer("order"),
+    conquest_order: integer("conquest_order"),
+  },
+  (table) => ({
+    PokemonSpecies_index: index("PokemonSpecies_index").on(
+      table.generation_id,
+      table.evolves_from_species_id,
+      table.evolution_chain_id,
+      table.color_id,
+      table.shape_id,
+      table.habitat_id,
+      table.growth_rate_id
+    ),
+  })
+);
 
 export const PokemonSpeciesRelation = relations(PokemonSpecies, ({ one }) => ({
   generation: one(Generation, {
@@ -238,16 +282,22 @@ export const PokemonSpeciesRelation = relations(PokemonSpecies, ({ one }) => ({
   }),
 }));
 
-export const Pokemon = sqliteTable("Pokemon", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  species_id: integer("species_id").references(() => PokemonSpecies.id),
-  height: integer("height"),
-  weight: integer("weight"),
-  base_experience: integer("base_experience"),
-  order: integer("order"),
-  is_default: integer("is_default", { mode: "boolean" }),
-});
+export const Pokemon = sqliteTable(
+  "Pokemon",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    species_id: integer("species_id").references(() => PokemonSpecies.id),
+    height: integer("height"),
+    weight: integer("weight"),
+    base_experience: integer("base_experience"),
+    order: integer("order"),
+    is_default: integer("is_default", { mode: "boolean" }),
+  },
+  (table) => ({
+    Pokemon_index: index("Pokemon_index").on(table.species_id),
+  })
+);
 
 export const PokemonRelation = relations(Pokemon, ({ one, many }) => ({
   species: one(PokemonSpecies, {
@@ -263,12 +313,18 @@ export const PokemonRelation = relations(Pokemon, ({ one, many }) => ({
   stats: many(PokemonStat),
 }));
 
-export const Type = sqliteTable("Type", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  generation_id: integer("generation_id").references(() => Generation.id),
-  damage_class_id: integer("damage_class_id").references(() => MoveDamageClass.id),
-});
+export const Type = sqliteTable(
+  "Type",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    generation_id: integer("generation_id").references(() => Generation.id),
+    damage_class_id: integer("damage_class_id").references(() => MoveDamageClass.id),
+  },
+  (table) => ({
+    Type_index: index("Type_index").on(table.generation_id, table.damage_class_id),
+  })
+);
 
 export const TypeRelation = relations(Type, ({ one }) => ({
   generation: one(Generation, {
@@ -304,12 +360,18 @@ export const PokemonTypeRelation = relations(PokemonType, ({ one }) => ({
   }),
 }));
 
-export const Ability = sqliteTable("Ability", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  generation_id: integer("generation_id").references(() => Generation.id),
-  is_main_series: integer("is_main_series", { mode: "boolean" }),
-});
+export const Ability = sqliteTable(
+  "Ability",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    generation_id: integer("generation_id").references(() => Generation.id),
+    is_main_series: integer("is_main_series", { mode: "boolean" }),
+  },
+  (table) => ({
+    Ability_index: index("Ability_index").on(table.generation_id),
+  })
+);
 
 export const AbilityRelation = relations(Ability, ({ one }) => ({
   generation: one(Generation, {
@@ -342,18 +404,24 @@ export const PokemonAbilityRelation = relations(PokemonAbility, ({ one }) => ({
   }),
 }));
 
-export const PokemonForm = sqliteTable("PokemonForm", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  form_identifier: text("form_identifier"),
-  pokemon_id: integer("pokemon_id").references(() => Pokemon.id),
-  introduced_in_version_group_id: integer("introduced_in_version_group_id").references(() => VersionGroup.id),
-  is_default: integer("is_default", { mode: "boolean" }),
-  is_battle_only: integer("is_battle_only", { mode: "boolean" }),
-  is_mega: integer("is_mega", { mode: "boolean" }),
-  form_order: integer("form_order"),
-  order: integer("order"),
-});
+export const PokemonForm = sqliteTable(
+  "PokemonForm",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    form_identifier: text("form_identifier"),
+    pokemon_id: integer("pokemon_id").references(() => Pokemon.id),
+    introduced_in_version_group_id: integer("introduced_in_version_group_id").references(() => VersionGroup.id),
+    is_default: integer("is_default", { mode: "boolean" }),
+    is_battle_only: integer("is_battle_only", { mode: "boolean" }),
+    is_mega: integer("is_mega", { mode: "boolean" }),
+    form_order: integer("form_order"),
+    order: integer("order"),
+  },
+  (table) => ({
+    PokemonForm_index: index("PokemonForm_index").on(table.pokemon_id, table.introduced_in_version_group_id),
+  })
+);
 
 export const PokemonFormRelation = relations(PokemonForm, ({ one }) => ({
   pokemon: one(Pokemon, {
@@ -417,23 +485,38 @@ export const PokemonItemRelation = relations(PokemonItem, ({ one }) => ({
   }),
 }));
 
-export const Move = sqliteTable("Move", {
-  id: integer("id").primaryKey(),
-  identifier: text("identifier"),
-  generation_id: integer("generation_id").references(() => Generation.id),
-  type_id: integer("type_id").references(() => Type.id),
-  power: integer("power"),
-  pp: integer("pp"),
-  accuracy: integer("accuracy"),
-  priority: integer("priority"),
-  target_id: integer("target_id").references(() => MoveTarget.id),
-  damage_class_id: integer("damage_class_id").references(() => MoveDamageClass.id),
-  effect_id: integer("effect_id").references(() => MoveEffect.id),
-  effect_chance: integer("effect_chance"),
-  contest_type_id: integer("contest_type_id").references(() => ContestType.id),
-  contest_effect_id: integer("contest_effect_id").references(() => ContextEffect.id),
-  super_contest_effect_id: integer("super_contest_effect_id").references(() => SuperContextEffect.id),
-});
+export const Move = sqliteTable(
+  "Move",
+  {
+    id: integer("id").primaryKey(),
+    identifier: text("identifier"),
+    generation_id: integer("generation_id").references(() => Generation.id),
+    type_id: integer("type_id").references(() => Type.id),
+    power: integer("power"),
+    pp: integer("pp"),
+    accuracy: integer("accuracy"),
+    priority: integer("priority"),
+    target_id: integer("target_id").references(() => MoveTarget.id),
+    damage_class_id: integer("damage_class_id").references(() => MoveDamageClass.id),
+    effect_id: integer("effect_id").references(() => MoveEffect.id),
+    effect_chance: integer("effect_chance"),
+    contest_type_id: integer("contest_type_id").references(() => ContestType.id),
+    contest_effect_id: integer("contest_effect_id").references(() => ContextEffect.id),
+    super_contest_effect_id: integer("super_contest_effect_id").references(() => SuperContextEffect.id),
+  },
+  (table) => ({
+    Move_index: index("Move_index").on(
+      table.generation_id,
+      table.type_id,
+      table.target_id,
+      table.damage_class_id,
+      table.effect_id,
+      table.contest_type_id,
+      table.contest_effect_id,
+      table.super_contest_effect_id
+    ),
+  })
+);
 
 export const MoveRelation = relations(Move, ({ one }) => ({
   generation: one(Generation, {
@@ -484,8 +567,6 @@ export const PokemonMove = sqliteTable(
     pk: primaryKey({
       columns: [table.pokemon_id, table.version_group_id, table.move_id, table.pokemon_move_method_id, table.level],
     }),
-    pokemon_id_index: index("pokemon_id_index").on(table.pokemon_id),
-    move_id_index: index("move_id_index").on(table.move_id),
   })
 );
 
