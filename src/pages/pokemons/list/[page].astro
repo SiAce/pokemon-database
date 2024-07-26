@@ -1,19 +1,25 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import { Pokemon } from "src/utils/data-read";
-import { capitalizeSnakeCase } from "src/utils/string";
+import { type GetStaticPaths } from "astro";
+import { range } from "src/utils/array";
+import { Pokemon, PokemonTypeByPokemonId, TypeById } from "src/utils/data-read";
+import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
+import typeColorLightJson from "src/utils/type-color-light.json";
+import typeColorJson from "src/utils/type-color.json";
+import PageNumberLink from "src/components/pagination/PageNumberLink.astro";
+import PageNumberLinkEllipsis from "src/components/pagination/PageNumberLinkEllipsis.astro";
 
-export function getStaticPaths({ paginate }) {
+export const getStaticPaths = (({ paginate }) => {
   // Generate pages from our array of astronauts, with 2 to a page
   return paginate(
     Pokemon.map(({ id, identifier }) => ({
       id,
       identifier,
     })),
-    { pageSize: 72 }
+    { pageSize: 60 }
   );
-}
-// All paginated data is passed on the "page" prop
+}) satisfies GetStaticPaths;
+
 const { page } = Astro.props;
 const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons" }];
 ---
@@ -21,29 +27,61 @@ const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons"
 <!--Display the current page number. Astro.params.page can also be used!-->
 <StarlightPage frontmatter={{ title: "Pokemons" }} headings={headings}>
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
-  <div class="pokemon-grid">
+  <div class="pokemon-grid not-content">
     {
       page.data.map(({ id, identifier }) => {
         const pokemonName = capitalizeSnakeCase(identifier!);
         return (
-          <a href={`/pokemons/pokemon/${id}`}>
-            <h6>{pokemonName}</h6>
-            <img
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
-              alt={pokemonName}
-            />
-          </a>
+          <div class=" m-2 p-2 ring-1 rounded-md flex flex-col items-stretch justify-between ring-slate-200 shadow">
+            <p class="text-center font-semibold">{pokemonName}</p>
+            <a class="flex justify-center" href={`/pokemons/pokemon/${id}`}>
+              <img
+                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
+                alt={pokemonName}
+              />
+            </a>
+            <div class="flex justify-around gap-1">
+              {/* <div class="flex-1 rounded-md break-all text-xs p-1 ring-1 ring-inset font-medium" style={{
+
+              }}>
+                Badgesdfdsf
+              </div> */}
+              {PokemonTypeByPokemonId[id].map((pokemonType) => (
+                <a class="no-underline flex-auto" href="#">
+                  <div
+                    class="text-center rounded-md break-all text-xs p-1 font-medium bg-green-50 bg-purple-50"
+                    style={{
+                      backgroundColor: typeColorLightJson[TypeById[pokemonType.type_id].identifier],
+                      color: typeColorJson[TypeById[pokemonType.type_id].identifier],
+                      "-twRingColor": typeColorJson[TypeById[pokemonType.type_id].identifier] + "1A",
+                    }}
+                  >
+                    {capitalizeFirstLetter(TypeById[pokemonType.type_id].identifier)}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
         );
       })
     }
   </div>
-  {page.url.prev ? <a href={page.url.prev}>Previous</a> : null}
-  {page.url.next ? <a href={page.url.next}>Next</a> : null}
+  <div class="text-center">
+    No.<strong>{page.start + 1}</strong> - <strong>{page.end + 1}</strong> of total <strong>{page.total}</strong> Pokemons
+  </div>
+  <div class="not-content flex justify-center">
+    <nav class="flex flex-wrap rounded-md shadow-sm">
+      <a class="text-center px-2 text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50" href={page.url.prev}>{"<"}</a>
+      <PageNumberLinkEllipsis baseUrl="/pokemons/list/" startPage={1} endPage={page.currentPage - 1} />
+      <PageNumberLink pageNumber={page.currentPage} isHighlighted={true} />
+      <PageNumberLinkEllipsis baseUrl="/pokemons/list/" startPage={page.currentPage + 1} endPage={page.lastPage} />
+      <a class="text-center px-2 text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50" href={page.url.prev}>{">"}</a>
+    </nav>
+  </div>
 </StarlightPage>
 <style>
   .pokemon-grid {
-    --n: 6; /* The maximum number of columns */
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(max(96px, 100% / var(--n)), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(max(128px, 100% / 5), 1fr));
   }
 </style>
