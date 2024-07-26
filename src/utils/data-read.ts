@@ -1,7 +1,7 @@
 import { parseCsvFile } from "./csv-parse";
 
-const tableCsvPaths: [string, boolean?][] = [
-  ["data/csv/growth_rates.csv", false],
+const tableCsvPaths: [string][] = [
+  ["data/csv/growth_rates.csv"],
   ["data/csv/pokemon_habitats.csv"],
   ["data/csv/pokemon_shapes.csv"],
   ["data/csv/pokemon_colors.csv"],
@@ -70,7 +70,7 @@ const [
   Move,
   PokemonMove,
   PokemonStat,
-] = await Promise.all(tableCsvPaths.map(([csvFilePath, fastMode]) => parseCsvFile(csvFilePath, fastMode)));
+] = await Promise.all(tableCsvPaths.map(([csvFilePath]) => parseCsvFile(csvFilePath)));
 
 const PokemonById = {};
 for (let i = 0; i < Pokemon.length; i++) {
@@ -133,6 +133,16 @@ for (let i = 0; i < Stat.length; i++) {
   StatById[Stat[i].id] = Stat[i];
 }
 
+const VersionGroupById = {};
+for (let i = 0; i < VersionGroup.length; i++) {
+  VersionGroupById[VersionGroup[i].id] = VersionGroup[i];
+}
+
+const PokemonMoveMethodById = {};
+for (let i = 0; i < PokemonMoveMethod.length; i++) {
+  PokemonMoveMethodById[PokemonMoveMethod[i].id] = PokemonMoveMethod[i];
+}
+
 export {
   GrowthRate,
   PokemonHabitat,
@@ -147,6 +157,7 @@ export {
   ContextEffect,
   SuperContextEffect,
   PokemonMoveMethod,
+  PokemonMoveMethodById,
   ItemPocket,
   ItemCategory,
   ItemFlingEffect,
@@ -155,6 +166,7 @@ export {
   Region,
   Generation,
   VersionGroup,
+  VersionGroupById,
   Version,
   PokemonSpecies,
   Pokemon,

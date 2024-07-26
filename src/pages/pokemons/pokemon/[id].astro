@@ -1,21 +1,22 @@
 ---
-import { Card } from "@astrojs/starlight/components";
+import { Card, TabItem, Tabs } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
 import {
+  AbilityById,
+  MoveById,
   Pokemon,
+  PokemonAbilityByPokemonId,
   PokemonById,
   PokemonMoveByPokemonId,
-  MoveById,
-  PokemonTypeByPokemonId,
-  TypeById,
-  AbilityById,
-  PokemonAbilityByPokemonId,
-  StatById,
+  PokemonMoveMethodById,
   PokemonStatByPokemonId,
+  PokemonTypeByPokemonId,
+  StatById,
+  VersionGroupById,
 } from "src/utils/data-read";
 import statColorJson from "src/utils/stat-color.json";
-import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
-import typeColorJson from "src/utils/type-color.json";
+import { capitalizeSnakeCase } from "src/utils/string";
 
 export async function getStaticPaths() {
   return Pokemon.map((pokemon) => ({
@@ -25,7 +26,7 @@ export async function getStaticPaths() {
 
 const { id } = Astro.params;
 const pokemon = PokemonById[id];
-const { identifier, species_id, height, weight, base_experience, order, is_default } = pokemon;
+const { identifier, species_id, height, weight, base_experience, is_default } = pokemon;
 const [name] = [identifier].map(capitalizeSnakeCase);
 const pokemonMoves = PokemonMoveByPokemonId[id];
 
@@ -38,7 +39,7 @@ const headings = [
 
 <StarlightPage frontmatter={{ title: name }} headings={headings}>
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
-  <Card title={name}>
+  <Card title={`#${id} ${name}`}>
     <div class="flex flex-col divide-y-2 gap-4">
       <img
         class="mx-auto"
@@ -49,21 +50,8 @@ const headings = [
       />
       <div>
         <h4 class="my-2">Type</h4>
-        <div>
-          {
-            PokemonTypeByPokemonId[id].map((pokemonType) => (
-              <a class="no-underline" href="#">
-                <span
-                  class={`px-4 py-2 mr-4 text-gray-50`}
-                  style={{
-                    backgroundColor: (typeColorJson)[TypeById[pokemonType.type_id].identifier],
-                  }}
-                >
-                  {capitalizeFirstLetter(TypeById[pokemonType.type_id].identifier)}
-                </span>
-              </a>
-            ))
-          }
+        <div class="flex gap-1">
+          {PokemonTypeByPokemonId[id].map((pokemonType) => <TypeIcon type_id={pokemonType.type_id} />)}
         </div>
       </div>
       <div>
@@ -73,7 +61,7 @@ const headings = [
             PokemonAbilityByPokemonId[id].map((pokemonAbility) => (
               <a class="no-underline" href="#">
                 <span class="rounded-md bg-gray-400 px-4 py-2 mr-4 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
-                  {capitalizeFirstLetter(AbilityById[pokemonAbility.ability_id].identifier)}
+                  {capitalizeSnakeCase(AbilityById[pokemonAbility.ability_id].identifier)}
                 </span>
               </a>
             ))
@@ -88,7 +76,7 @@ const headings = [
               <a
                 class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                 style={{
-                  backgroundColor: (statColorJson)[StatById[pokemonStat.stat_id].identifier],
+                  backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
                 }}
                 href="#"
               >
@@ -109,7 +97,7 @@ const headings = [
               <a
                 class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                 style={{
-                  backgroundColor: (statColorJson)[StatById[pokemonStat.stat_id].identifier],
+                  backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
                 }}
                 href="#"
               >
@@ -140,15 +128,48 @@ const headings = [
   </Card>
   <hr class="!my-4 border-gray-800" />
   <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
-  <div class="flex flex-col gap-2">
-    { pokemonMoves &&
-      [...new Set(pokemonMoves.map((move) => move.move_id))].map((move_id: any) => (
-        <Card title={MoveById[move_id].identifier}>
-          <hr class="!my-2" />
-          <div class="flex flex-col divide-y-2" />
-        </Card>
-      ))
+  <div class="whitespace-nowrap">
+    {
+      pokemonMoves && (
+        <Tabs>
+          {[...new Set(pokemonMoves.map((pokemonMove) => pokemonMove.version_group_id))].map(
+            (version_group_id: any) => (
+              <TabItem label={capitalizeSnakeCase(VersionGroupById[version_group_id].identifier)}>
+                <table class="not-content w-full !table table-auto text-center">
+                  <thead>
+                    <tr>
+                      <th>Level</th>
+                      <th>Move</th>
+                      <th>Type</th>
+                      <th>Learn Method</th>
+                      <th>Power</th>
+                      <th>Accuracy</th>
+                      <th>PP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pokemonMoves
+                      .filter((pokemonMove) => pokemonMove.version_group_id === version_group_id)
+                      .map((pokemonMove) => (
+                        <tr>
+                          <td>{pokemonMove.level}</td>
+                          <td>{capitalizeSnakeCase(MoveById[pokemonMove.move_id].identifier)}</td>
+                          <td>{<TypeIcon type_id={MoveById[pokemonMove.move_id].type_id} />}</td>
+                          <td>
+                            {capitalizeSnakeCase(PokemonMoveMethodById[pokemonMove.pokemon_move_method_id].identifier)}
+                          </td>
+                          <td>{MoveById[pokemonMove.move_id].power}</td>
+                          <td>{MoveById[pokemonMove.move_id].accuracy}</td>
+                          <td>{MoveById[pokemonMove.move_id].pp}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </TabItem>
+            )
+          )}
+        </Tabs>
+      )
     }
   </div>
 </StarlightPage>
----

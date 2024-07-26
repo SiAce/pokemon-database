@@ -19,7 +19,7 @@ export default defineConfig({
           items: [
             {
               label: "Pokemons",
-              link: "/pokemons/pokemon",
+              link: "/pokemons/list/1",
             },
           ],
         },

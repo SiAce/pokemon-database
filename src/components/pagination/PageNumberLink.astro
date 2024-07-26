@@ -4,7 +4,7 @@ const { pageUrl, pageNumber, isHighlighted } = Astro.props;
 
 <a
   class={isHighlighted
-    ? "text-center px-2 bg-indigo-600 text-white"
+    ? "text-center px-2 bg-indigo-600 text-white z-10"
     : "text-center px-2 text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"}
   href={pageUrl}
 >
