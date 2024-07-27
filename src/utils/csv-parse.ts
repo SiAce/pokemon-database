@@ -1,9 +1,8 @@
 import { inferSchema, initParser } from 'udsv';
-
+import { readFile } from 'node:fs/promises';
 
 export async function parseCsvFile(csvFilePath: string): Promise<any[]> {
-  const csvFile = Bun.file(csvFilePath);
-  const csvString = await csvFile.text();
+  const csvString = await readFile(csvFilePath, { encoding: 'utf8' })
   const schema = inferSchema(csvString);
   const parser = initParser(schema);
   return parser.typedObjs(csvString)
