@@ -1,0 +1,17 @@
+---
+import { TypeById } from "src/utils/data-read";
+import { capitalizeFirstLetter } from "src/utils/string";
+import typeColorLightJson from "src/utils/type-color-light.json";
+import typeColorJson from "src/utils/type-color.json";
+
+const { type_id } = Astro.props;
+---
+
+<a
+  href="#"
+  style=`background-color: ${typeColorLightJson[TypeById[type_id].identifier]};
+    color: ${typeColorJson[TypeById[type_id].identifier]};
+    --tw-ring-color: ${typeColorJson[TypeById[type_id].identifier]}1A;`
+>
+  {capitalizeFirstLetter(TypeById[type_id].identifier)}
+</a>
