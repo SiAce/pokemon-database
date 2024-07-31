@@ -1,0 +1,82 @@
+---
+const { sideBarItemListData } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<ul>
+  {
+    sideBarItemListData.map((sideBarItem) => (
+      <li>
+        <details>
+          <summary>
+            <a class="side-bar-item" aria-current={currentPath === sideBarItem.link} href={sideBarItem.link}>
+              {sideBarItem.label}
+            </a>
+          </summary>
+          {sideBarItem.items && (
+            <>
+              <Astro.self sideBarItemListData={sideBarItem.items} />
+            </>
+          )}
+        </details>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  ul {
+    --sl-sidebar-item-padding-inline: 0.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    overflow-wrap: anywhere;
+  }
+
+  ul ul li {
+    margin-inline-start: var(--sl-sidebar-item-padding-inline);
+    border-inline-start: 1px solid var(--sl-color-hairline-light);
+    padding-inline-start: var(--sl-sidebar-item-padding-inline);
+  }
+
+  .large {
+    font-size: var(--sl-text-lg);
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+
+  .top-level > li + li {
+    margin-top: 0.75rem;
+  }
+
+  .caret {
+    transition: transform 0.2s ease-in-out;
+    flex-shrink: 0;
+  }
+  :global([dir="rtl"]) .caret {
+    transform: rotateZ(180deg);
+  }
+  [open] > summary .caret {
+    transform: rotateZ(90deg);
+  }
+
+  a:hover,
+  a:focus {
+    color: var(--sl-color-white);
+  }
+
+  [aria-current],
+  [aria-current]:hover,
+  [aria-current]:focus {
+    font-weight: 600;
+    color: var(--sl-color-text-invert);
+    background-color: var(--sl-color-text-accent);
+  }
+
+  a > *:not(:last-child),
+  .group-label > *:not(:last-child) {
+    margin-inline-end: 0.25em;
+  }
+</style>

@@ -1,0 +1,10 @@
+---
+import SideBarItemList from "./SideBarItemList.astro";
+---
+
+<SideBarItemList sideBarItemListData={Astro.props.sideBarItemListData} />
+<style>
+  a.side-bar-item[aria-current] {
+    background-color: blueviolet;
+  }
+</style>
