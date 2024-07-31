@@ -139,7 +139,7 @@ const headings = [
   </Card>
   <hr class="!my-4 border-gray-800" />
   <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
-  <div data-pagefind-ignore class="whitespace-nowrap" >
+  <div data-pagefind-ignore="all" class="whitespace-nowrap">
     {
       pokemonMoves &&
         Object.entries(pokemonMovesByVersionGroupId).map(([versionGroupId, pokemonMoves]) => (

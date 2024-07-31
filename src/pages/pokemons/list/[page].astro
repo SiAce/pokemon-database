@@ -1,13 +1,11 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import { type GetStaticPaths } from "astro";
-import { Pokemon, PokemonTypeByPokemonId, TypeById } from "src/utils/data-read";
-import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
-import typeColorLightJson from "src/utils/type-color-light.json";
-import typeColorJson from "src/utils/type-color.json";
 import PageNumberLink from "src/components/pagination/PageNumberLink.astro";
 import PageNumberLinkEllipsis from "src/components/pagination/PageNumberLinkEllipsis.astro";
 import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
+import { Pokemon, PokemonTypeByPokemonId } from "src/utils/data-read";
+import { capitalizeSnakeCase } from "src/utils/string";
 
 import { Icon } from "@astrojs/starlight/components";
 
@@ -26,7 +24,7 @@ const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons"
 ---
 
 <!--Display the current page number. Astro.params.page can also be used!-->
-<StarlightPage frontmatter={{ title: "Pokemons" }} headings={headings}>
+<StarlightPage frontmatter={{ title: "Pokemons", pagefind: false }} headings={headings}>
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
   <div class="pokemon-grid not-content">
     {
@@ -39,6 +37,7 @@ const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons"
               <img
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
                 alt={pokemonName}
+                loading="lazy"
               />
             </a>
             <div class="flex justify-around gap-1">

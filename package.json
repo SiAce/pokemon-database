@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "check": "astro check",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "generate": "drizzle-kit generate",
@@ -13,11 +14,11 @@
     "seed": "bun db/seed.ts"
   },
   "dependencies": {
-    "astro": "^4.12.2"
+    "astro": "^4.12.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.8.3",
-    "@astrojs/starlight": "^0.25.2",
+    "@astrojs/starlight": "^0.25.3",
     "@astrojs/starlight-tailwind": "^2.0.3",
     "@astrojs/tailwind": "^5.1.0",
     "@types/bun": "^1.1.6",
