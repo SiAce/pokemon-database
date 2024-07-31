@@ -1,5 +1,5 @@
 ---
-import { Card, TabItem, Tabs } from "@astrojs/starlight/components";
+import { Card } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
 import {
@@ -29,6 +29,17 @@ const pokemon = PokemonById[id];
 const { identifier, species_id, height, weight, base_experience, is_default } = pokemon;
 const [name] = [identifier].map(capitalizeSnakeCase);
 const pokemonMoves = PokemonMoveByPokemonId[id];
+
+const pokemonMovesByVersionGroupId = {};
+if (pokemonMoves) {
+  for (let i = 0; i < pokemonMoves.length; i++) {
+    if (pokemonMoves[i].version_group_id in pokemonMovesByVersionGroupId) {
+      pokemonMovesByVersionGroupId[pokemonMoves[i].version_group_id].push(pokemonMoves[i]);
+    } else {
+      pokemonMovesByVersionGroupId[pokemonMoves[i].version_group_id] = [pokemonMoves[i]];
+    }
+  }
+}
 
 const headings = [
   { depth: 2, slug: "basic-info", text: "Basic Info" },
@@ -128,48 +139,40 @@ const headings = [
   </Card>
   <hr class="!my-4 border-gray-800" />
   <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
-  <div class="whitespace-nowrap">
+  <div data-pagefind-ignore class="whitespace-nowrap" >
     {
-      pokemonMoves && (
-        <Tabs>
-          {[...new Set(pokemonMoves.map((pokemonMove) => pokemonMove.version_group_id))].map(
-            (version_group_id: any) => (
-              <TabItem label={capitalizeSnakeCase(VersionGroupById[version_group_id].identifier)}>
-                <table class="not-content w-full !table table-auto text-center">
-                  <thead>
-                    <tr>
-                      <th>Level</th>
-                      <th>Move</th>
-                      <th>Type</th>
-                      <th>Learn Method</th>
-                      <th>Power</th>
-                      <th>Accuracy</th>
-                      <th>PP</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pokemonMoves
-                      .filter((pokemonMove) => pokemonMove.version_group_id === version_group_id)
-                      .map((pokemonMove) => (
-                        <tr>
-                          <td>{pokemonMove.level}</td>
-                          <td>{capitalizeSnakeCase(MoveById[pokemonMove.move_id].identifier)}</td>
-                          <td>{<TypeIcon type_id={MoveById[pokemonMove.move_id].type_id} />}</td>
-                          <td>
-                            {capitalizeSnakeCase(PokemonMoveMethodById[pokemonMove.pokemon_move_method_id].identifier)}
-                          </td>
-                          <td>{MoveById[pokemonMove.move_id].power}</td>
-                          <td>{MoveById[pokemonMove.move_id].accuracy}</td>
-                          <td>{MoveById[pokemonMove.move_id].pp}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </TabItem>
-            )
-          )}
-        </Tabs>
-      )
+      pokemonMoves &&
+        Object.entries(pokemonMovesByVersionGroupId).map(([versionGroupId, pokemonMoves]) => (
+          <details>
+            <summary>{capitalizeSnakeCase(VersionGroupById[versionGroupId].identifier)}</summary>
+            <table class="!table w-full text-center">
+              <thead>
+                <tr>
+                  <th>Level</th>
+                  <th>Move</th>
+                  <th>Type</th>
+                  <th>Learn Method</th>
+                  <th>Power</th>
+                  <th>Accuracy</th>
+                  <th>PP</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(pokemonMoves as any).map((pokemonMove) => (
+                  <tr>
+                    <td>{pokemonMove.level}</td>
+                    <td>{capitalizeSnakeCase(MoveById[pokemonMove.move_id].identifier)}</td>
+                    <td>{<TypeIcon type_id={MoveById[pokemonMove.move_id].type_id} />}</td>
+                    <td>{capitalizeSnakeCase(PokemonMoveMethodById[pokemonMove.pokemon_move_method_id].identifier)}</td>
+                    <td>{MoveById[pokemonMove.move_id].power}</td>
+                    <td>{MoveById[pokemonMove.move_id].accuracy}</td>
+                    <td>{MoveById[pokemonMove.move_id].pp}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </details>
+        ))
     }
   </div>
 </StarlightPage>
