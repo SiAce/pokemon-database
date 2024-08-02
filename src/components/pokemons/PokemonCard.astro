@@ -1,0 +1,22 @@
+---
+import { PokemonById, PokemonTypeByPokemonId } from "src/utils/data-read";
+import { capitalizeSnakeCase } from "src/utils/string";
+import TypeIcon from "./pokemon/TypeIcon.astro";
+
+const { id } = Astro.props;
+const pokemonName = capitalizeSnakeCase(PokemonById[id].identifier);
+---
+
+<div class="m-2 p-2 ring-1 rounded-md flex flex-col items-stretch justify-between ring-slate-200 shadow">
+  <p class="text-center font-semibold">{pokemonName}</p>
+  <a class="flex justify-center" href={`/pokemons/pokemon/${id}`}>
+    <img
+      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
+      alt={pokemonName}
+      loading="lazy"
+    />
+  </a>
+  <div class="flex justify-around gap-1">
+    {PokemonTypeByPokemonId[id].map((pokemonType) => <TypeIcon type_id={pokemonType.type_id} />)}
+  </div>
+</div>

@@ -8,12 +8,12 @@ import { Pokemon, PokemonTypeByPokemonId } from "src/utils/data-read";
 import { capitalizeSnakeCase } from "src/utils/string";
 
 import { Icon } from "@astrojs/starlight/components";
+import PokemonCard from "src/components/pokemons/PokemonCard.astro";
 
 export const getStaticPaths = (({ paginate }) => {
   return paginate(
-    Pokemon.map(({ id, identifier }) => ({
+    Pokemon.map(({ id }) => ({
       id,
-      identifier,
     })),
     { pageSize: 60 }
   );
@@ -28,25 +28,8 @@ const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons"
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
   <div class="pokemon-grid not-content">
     {
-      page.data.map(({ id, identifier }) => {
-        const pokemonName = capitalizeSnakeCase(identifier!);
-        return (
-          <div class=" m-2 p-2 ring-1 rounded-md flex flex-col items-stretch justify-between ring-slate-200 shadow">
-            <p class="text-center font-semibold">{pokemonName}</p>
-            <a class="flex justify-center" href={`/pokemons/pokemon/${id}`}>
-              <img
-                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
-                alt={pokemonName}
-                loading="lazy"
-              />
-            </a>
-            <div class="flex justify-around gap-1">
-              {PokemonTypeByPokemonId[id].map((pokemonType) => (
-                <TypeIcon type_id={pokemonType.type_id} />
-              ))}
-            </div>
-          </div>
-        );
+      page.data.map(({ id }) => {
+        return <PokemonCard id={id} />;
       })
     }
   </div>

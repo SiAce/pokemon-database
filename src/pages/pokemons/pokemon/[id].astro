@@ -1,6 +1,7 @@
 ---
 import { Card } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import EvolutionChain from "src/components/pokemons/pokemon/EvolutionChain.astro";
 import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
 import {
   AbilityById,
@@ -10,6 +11,7 @@ import {
   PokemonById,
   PokemonMoveByPokemonId,
   PokemonMoveMethodById,
+  PokemonSpeciesById,
   PokemonStatByPokemonId,
   PokemonTypeByPokemonId,
   StatById,
@@ -41,9 +43,12 @@ if (pokemonMoves) {
   }
 }
 
+const evolutionChainId = PokemonSpeciesById[species_id].evolution_chain_id;
+
 const headings = [
   { depth: 2, slug: "basic-info", text: "Basic Info" },
   { depth: 2, slug: "sprites", text: "Sprites" },
+  { depth: 2, slug: "evolution-chain", text: "Evolution Chain" },
   { depth: 2, slug: "moves", text: "Moves" },
 ];
 ---
@@ -139,6 +144,10 @@ const headings = [
   </Card>
   <hr class="!my-4 border-gray-800" />
   <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
+  <div data-pagefind-ignore="all" class="not-content flex justify-center">
+    <EvolutionChain evolutionChainId={evolutionChainId} />
+  </div>
+  <h2 class="!my-4" id={headings[3].slug}>{headings[3].text}</h2>
   <div data-pagefind-ignore="all" class="whitespace-nowrap">
     {
       pokemonMoves &&

@@ -77,6 +77,20 @@ for (let i = 0; i < Pokemon.length; i++) {
   PokemonById[Pokemon[i].id] = Pokemon[i];
 }
 
+const PokemonSpeciesById = {};
+for (let i = 0; i < PokemonSpecies.length; i++) {
+  PokemonSpeciesById[PokemonSpecies[i].id] = PokemonSpecies[i];
+}
+
+const PokemonSpeciesByEvolutionChain = {};
+for (let i = 0; i < PokemonSpecies.length; i++) {
+  if (PokemonSpecies[i].evolution_chain_id in PokemonSpeciesByEvolutionChain) {
+    PokemonSpeciesByEvolutionChain[PokemonSpecies[i].evolution_chain_id].push(PokemonSpecies[i]);
+  } else {
+    PokemonSpeciesByEvolutionChain[PokemonSpecies[i].evolution_chain_id] = [PokemonSpecies[i]];
+  }
+}
+
 const PokemonMoveByPokemonId = {};
 for (let i = 0; i < PokemonMove.length; i++) {
   if (PokemonMove[i].pokemon_id in PokemonMoveByPokemonId) {
@@ -169,6 +183,8 @@ export {
   VersionGroupById,
   Version,
   PokemonSpecies,
+  PokemonSpeciesById,
+  PokemonSpeciesByEvolutionChain,
   Pokemon,
   PokemonById,
   Type,

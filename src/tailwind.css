@@ -5,3 +5,7 @@
 a {
   text-decoration: none
 }
+
+:root {
+  --sl-content-width: 57rem;
+}

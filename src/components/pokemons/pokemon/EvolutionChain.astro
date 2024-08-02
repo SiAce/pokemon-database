@@ -1,0 +1,24 @@
+---
+import { PokemonSpeciesByEvolutionChain } from "src/utils/data-read";
+import EvolutionNode from "./EvolutionNode.astro";
+
+const { evolutionChainId } = Astro.props;
+const pokemonsInEvolutionChain = PokemonSpeciesByEvolutionChain[evolutionChainId];
+const evolvesTo = {};
+let rootPokemonId = pokemonsInEvolutionChain[0].id;
+
+for (let i = 0; i < pokemonsInEvolutionChain.length; i++) {
+  const { id, evolves_from_species_id } = pokemonsInEvolutionChain[i];
+  if (evolves_from_species_id) {
+    if (evolves_from_species_id in evolvesTo) {
+      evolvesTo[evolves_from_species_id].push(id);
+    } else {
+      evolvesTo[evolves_from_species_id] = [id];
+    }
+  } else {
+    rootPokemonId = id;
+  }
+}
+---
+
+<EvolutionNode id={rootPokemonId} evolvesTo={evolvesTo} isRoot={true} />

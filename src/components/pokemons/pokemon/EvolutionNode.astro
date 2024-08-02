@@ -1,0 +1,20 @@
+---
+import { Icon } from "@astrojs/starlight/components";
+import PokemonCard from "../PokemonCard.astro";
+
+const { id, evolvesTo, isRoot } = Astro.props;
+---
+
+<div class="flex items-center">
+  {!isRoot && <Icon name="right-arrow" size="2em" />}
+  <div><PokemonCard id={id} /></div>
+  {
+    evolvesTo[id] && (
+      <div class="flex flex-col">
+        {evolvesTo[id].map((evolvesToId) => (
+          <Astro.self id={evolvesToId} evolvesTo={evolvesTo} />
+        ))}
+      </div>
+    )
+  }
+</div>
