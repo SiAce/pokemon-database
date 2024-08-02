@@ -1,5 +1,5 @@
 ---
-import { Card } from "@astrojs/starlight/components";
+import { Card, Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import EvolutionChain from "src/components/pokemons/pokemon/EvolutionChain.astro";
 import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
@@ -20,7 +20,7 @@ import {
 import statColorJson from "src/utils/stat-color.json";
 import { capitalizeSnakeCase } from "src/utils/string";
 
-export async function getStaticPaths() {
+export function getStaticPaths() {
   return Pokemon.map((pokemon) => ({
     params: { id: pokemon.id },
   }));
@@ -54,6 +54,24 @@ const headings = [
 ---
 
 <StarlightPage frontmatter={{ title: name }} headings={headings}>
+  <div class="flex justify-between">
+    {
+      pokemon.prev && (
+        <a href={`/pokemons/pokemon/${pokemon.prev}`}>
+          <Icon name="left-arrow" />
+          <span>Previous #{pokemon.prev}</span>
+        </a>
+      )
+    }
+    {
+      pokemon.next && (
+        <a href={`/pokemons/pokemon/${pokemon.next}`} class="ml-auto flex flex-col items-end">
+          <Icon name="right-arrow" />
+          <span>Next #{pokemon.next}</span>
+        </a>
+      )
+    }
+  </div>
   <h2 id={headings[0].slug}>{headings[0].text}</h2>
   <Card title={`#${id} ${name}`}>
     <div class="flex flex-col divide-y-2 gap-4">

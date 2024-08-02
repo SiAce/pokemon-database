@@ -74,6 +74,8 @@ const [
 
 const PokemonById = {};
 for (let i = 0; i < Pokemon.length; i++) {
+  Pokemon[i].prev = Pokemon[i - 1]?.id
+  Pokemon[i].next = Pokemon[i + 1]?.id
   PokemonById[Pokemon[i].id] = Pokemon[i];
 }
 
