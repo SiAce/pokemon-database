@@ -54,7 +54,7 @@ const headings = [
 ---
 
 <StarlightPage frontmatter={{ title: name }} headings={headings}>
-  <div class="flex justify-between">
+  <div data-pagefind-ignore="all" class="flex justify-between">
     {
       pokemon.prev && (
         <a href={`/pokemons/pokemon/${pokemon.prev}`}>
@@ -162,7 +162,7 @@ const headings = [
   </Card>
   <hr class="!my-4 border-gray-800" />
   <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
-  <div data-pagefind-ignore="all" class="not-content flex justify-center">
+  <div data-pagefind-ignore="all" class="not-content overflow-auto">
     <EvolutionChain evolutionChainId={evolutionChainId} />
   </div>
   <h2 class="!my-4" id={headings[3].slug}>{headings[3].text}</h2>
