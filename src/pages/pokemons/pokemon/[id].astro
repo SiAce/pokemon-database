@@ -84,8 +84,8 @@ const headings = [
       />
       <div>
         <h4 class="my-2">Type</h4>
-        <div class="flex gap-1">
-          {PokemonTypeByPokemonId[id].map((pokemonType) => <TypeIcon type_id={pokemonType.type_id} />)}
+        <div class="flex gap-4">
+          {PokemonTypeByPokemonId[id].map((pokemonType) => <TypeIcon type_id={pokemonType.type_id} class="text-2xl p-2" />)}
         </div>
       </div>
       <div>
@@ -172,32 +172,36 @@ const headings = [
         Object.entries(pokemonMovesByVersionGroupId).map(([versionGroupId, pokemonMoves]) => (
           <details>
             <summary>{capitalizeSnakeCase(VersionGroupById[versionGroupId].identifier)}</summary>
-            <table class="!table w-full text-center">
-              <thead>
-                <tr>
-                  <th>Level</th>
-                  <th>Move</th>
-                  <th>Type</th>
-                  <th>Learn Method</th>
-                  <th>Power</th>
-                  <th>Accuracy</th>
-                  <th>PP</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(pokemonMoves as any).map((pokemonMove) => (
+            <div class="overflow-auto">
+              <table class="!table min-w-full text-center">
+                <thead>
                   <tr>
-                    <td>{pokemonMove.level}</td>
-                    <td>{capitalizeSnakeCase(MoveById[pokemonMove.move_id].identifier)}</td>
-                    <td>{<TypeIcon type_id={MoveById[pokemonMove.move_id].type_id} />}</td>
-                    <td>{capitalizeSnakeCase(PokemonMoveMethodById[pokemonMove.pokemon_move_method_id].identifier)}</td>
-                    <td>{MoveById[pokemonMove.move_id].power}</td>
-                    <td>{MoveById[pokemonMove.move_id].accuracy}</td>
-                    <td>{MoveById[pokemonMove.move_id].pp}</td>
+                    <th>Level</th>
+                    <th>Move</th>
+                    <th>Type</th>
+                    <th>Learn Method</th>
+                    <th>Power</th>
+                    <th>Accuracy</th>
+                    <th>PP</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {(pokemonMoves as any).map((pokemonMove) => (
+                    <tr>
+                      <td>{pokemonMove.level}</td>
+                      <td>{capitalizeSnakeCase(MoveById[pokemonMove.move_id].identifier)}</td>
+                      <td>{<TypeIcon type_id={MoveById[pokemonMove.move_id].type_id} />}</td>
+                      <td>
+                        {capitalizeSnakeCase(PokemonMoveMethodById[pokemonMove.pokemon_move_method_id].identifier)}
+                      </td>
+                      <td>{MoveById[pokemonMove.move_id].power}</td>
+                      <td>{MoveById[pokemonMove.move_id].accuracy}</td>
+                      <td>{MoveById[pokemonMove.move_id].pp}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </details>
         ))
     }

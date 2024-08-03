@@ -6,7 +6,7 @@ const tableCsvPaths: [string][] = [
   ["data/csv/pokemon_shapes.csv"],
   ["data/csv/pokemon_colors.csv"],
   ["data/csv/move_targets.csv"],
-  ["data/csv/move_damage_classes.csv"],
+  ["data/csv/move_damage_class_prose.csv"],
   ["data/csv/move_effects.csv"],
   ["data/csv/stats.csv"],
   ["data/csv/contest_types.csv"],
@@ -20,6 +20,7 @@ const tableCsvPaths: [string][] = [
   ["data/csv/evolution_chains.csv"],
   ["data/csv/regions.csv"],
   ["data/csv/generations.csv"],
+  ["data/csv/generation_names.csv"],
   ["data/csv/version_groups.csv"],
   ["data/csv/versions.csv"],
   ["data/csv/pokemon_species.csv"],
@@ -42,7 +43,7 @@ const [
   PokemonShape,
   PokemonColor,
   MoveTarget,
-  MoveDamageClass,
+  MoveDamageClassProse,
   MoveEffect,
   Stat,
   ContestType,
@@ -56,6 +57,7 @@ const [
   EvolutionChain,
   Region,
   Generation,
+  GenerationName,
   VersionGroup,
   Version,
   PokemonSpecies,
@@ -74,8 +76,8 @@ const [
 
 const PokemonById = {};
 for (let i = 0; i < Pokemon.length; i++) {
-  Pokemon[i].prev = Pokemon[i - 1]?.id
-  Pokemon[i].next = Pokemon[i + 1]?.id
+  Pokemon[i].prev = Pokemon[i - 1]?.id;
+  Pokemon[i].next = Pokemon[i + 1]?.id;
   PokemonById[Pokemon[i].id] = Pokemon[i];
 }
 
@@ -149,6 +151,26 @@ for (let i = 0; i < Stat.length; i++) {
   StatById[Stat[i].id] = Stat[i];
 }
 
+const GenerationNameById = {};
+for (let i = 0; i < GenerationName.length; i++) {
+  const { generation_id, local_language_id, name } = GenerationName[i];
+  if (generation_id in GenerationNameById) {
+    GenerationNameById[generation_id][local_language_id] = name;
+  } else {
+    GenerationNameById[generation_id] = { [local_language_id]: name };
+  }
+}
+
+const MoveDamageClassProseById = {};
+for (let i = 0; i < MoveDamageClassProse.length; i++) {
+  const { move_damage_class_id, local_language_id, name, description } = MoveDamageClassProse[i];
+  if (move_damage_class_id in MoveDamageClassProseById) {
+    MoveDamageClassProseById[move_damage_class_id][local_language_id] = { name, description };
+  } else {
+    MoveDamageClassProseById[move_damage_class_id] = { [local_language_id]: { name, description } };
+  }
+}
+
 const VersionGroupById = {};
 for (let i = 0; i < VersionGroup.length; i++) {
   VersionGroupById[VersionGroup[i].id] = VersionGroup[i];
@@ -165,7 +187,7 @@ export {
   PokemonShape,
   PokemonColor,
   MoveTarget,
-  MoveDamageClass,
+  MoveDamageClassProseById,
   MoveEffect,
   Stat,
   StatById,
@@ -181,6 +203,7 @@ export {
   EvolutionChain,
   Region,
   Generation,
+  GenerationNameById,
   VersionGroup,
   VersionGroupById,
   Version,

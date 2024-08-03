@@ -4,15 +4,18 @@ import { capitalizeFirstLetter } from "src/utils/string";
 import typeColorLightJson from "src/utils/type-color-light.json";
 import typeColorJson from "src/utils/type-color.json";
 
-const { type_id } = Astro.props;
+const { class: className, type_id } = Astro.props;
 ---
 
 <a
-  class="block max-w-20 flex-auto text-center  no-underline  rounded-md text-xs p-1 font-medium ring-1 ring-inset ring-blue-500/50"
-  href="#"
-  style=`background-color: ${typeColorLightJson[TypeById[type_id].identifier]};
-    color: ${typeColorJson[TypeById[type_id].identifier]};
-    --tw-ring-color: ${typeColorJson[TypeById[type_id].identifier]}1A;`
+  class:list={[
+    "flex items-center justify-center text-center no-underline rounded-md font-medium ring-1 ring-inset",
+    className,
+  ]}
+  href=`/types/type/${type_id}`
+  style=`background-color: ${typeColorLightJson[type_id]};
+    color: ${typeColorJson[type_id]};
+    --tw-ring-color: ${typeColorJson[type_id]}1A;`
 >
   {capitalizeFirstLetter(TypeById[type_id].identifier)}
 </a>

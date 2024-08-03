@@ -1,0 +1,43 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import Heading from "src/components/Heading.astro";
+import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
+import { GenerationNameById, MoveDamageClassProseById, Type, TypeById } from "src/utils/data-read";
+import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
+
+export function getStaticPaths() {
+  return Type.map((type) => ({
+    params: { id: type.id },
+  }));
+}
+
+const LANGUAGE_ID = 9;
+const { id } = Astro.params;
+const type = TypeById[id];
+const { identifier, generation_id, damage_class_id } = type;
+const typeName = capitalizeSnakeCase(identifier);
+
+const headings = [
+  { depth: 2, slug: "basic-info", text: "Basic Info" },
+  { depth: 3, slug: "introduction", text: "Introduction" },
+  { depth: 3, slug: "damage-class", text: "Damage Class" },
+];
+---
+
+<StarlightPage frontmatter={{ title: `${typeName} (Type)` }} headings={headings}>
+  <Heading heading={headings[0]} />
+  <TypeIcon type_id={id} class="max-w-max p-2 mx-auto text-4xl" />
+  <Heading heading={headings[1]} />
+  <p class="text-2xl">Introduced in {GenerationNameById[generation_id][LANGUAGE_ID]}.</p>
+  <Heading heading={headings[2]} />
+  {
+    damage_class_id ? (
+      <dl>
+        <dt class="text-2xl">{capitalizeFirstLetter(MoveDamageClassProseById[damage_class_id][LANGUAGE_ID].name)}</dt>
+        <dd>{MoveDamageClassProseById[damage_class_id][LANGUAGE_ID].description}.</dd>
+      </dl>
+    ) : (
+      "??"
+    )
+  }
+</StarlightPage>

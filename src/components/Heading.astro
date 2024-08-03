@@ -1,0 +1,7 @@
+---
+type Heading = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+const { heading } = Astro.props;
+const HeadingTag = `h${heading.depth}` as Heading;
+---
+
+<HeadingTag id={heading.slug}>{heading.text}</HeadingTag>

@@ -17,6 +17,6 @@ const pokemonName = capitalizeSnakeCase(PokemonById[id].identifier);
     />
   </a>
   <div class="flex justify-around gap-1">
-    {PokemonTypeByPokemonId[id].map((pokemonType) => <TypeIcon type_id={pokemonType.type_id} />)}
+    {PokemonTypeByPokemonId[id].map((pokemonType) => <TypeIcon type_id={pokemonType.type_id} class="max-w-20 flex-auto text-xs p-1" />)}
   </div>
 </div>
