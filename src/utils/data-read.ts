@@ -26,6 +26,7 @@ const tableCsvPaths: [string][] = [
   ["data/csv/pokemon_species.csv"],
   ["data/csv/pokemon.csv"],
   ["data/csv/types.csv"],
+  ["data/csv/type_efficacy.csv"],
   ["data/csv/pokemon_types.csv"],
   ["data/csv/abilities.csv"],
   ["data/csv/pokemon_abilities.csv"],
@@ -63,6 +64,7 @@ const [
   PokemonSpecies,
   Pokemon,
   Type,
+  TypeEfficacy,
   PokemonType,
   Ability,
   PokemonAbility,
@@ -181,6 +183,22 @@ for (let i = 0; i < PokemonMoveMethod.length; i++) {
   PokemonMoveMethodById[PokemonMoveMethod[i].id] = PokemonMoveMethod[i];
 }
 
+const TypeEfficacyByAttack = {};
+const TypeEfficacyByDefense = {};
+for (let i = 0; i < TypeEfficacy.length; i++) {
+  const { damage_type_id, target_type_id } = TypeEfficacy[i];
+  if (damage_type_id in TypeEfficacyByAttack) {
+    TypeEfficacyByAttack[damage_type_id].push(TypeEfficacy[i]);
+  } else {
+    TypeEfficacyByAttack[damage_type_id] = [TypeEfficacy[i]];
+  }
+  if (target_type_id in TypeEfficacyByDefense) {
+    TypeEfficacyByDefense[target_type_id].push(TypeEfficacy[i]);
+  } else {
+    TypeEfficacyByDefense[target_type_id] = [TypeEfficacy[i]];
+  }
+}
+
 export {
   GrowthRate,
   PokemonHabitat,
@@ -214,6 +232,9 @@ export {
   PokemonById,
   Type,
   TypeById,
+  TypeEfficacy,
+  TypeEfficacyByAttack,
+  TypeEfficacyByDefense,
   PokemonType,
   PokemonTypeByPokemonId,
   Ability,

@@ -3,12 +3,11 @@ import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import { type GetStaticPaths } from "astro";
 import PageNumberLink from "src/components/pagination/PageNumberLink.astro";
 import PageNumberLinkEllipsis from "src/components/pagination/PageNumberLinkEllipsis.astro";
-import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
-import { Pokemon, PokemonTypeByPokemonId } from "src/utils/data-read";
-import { capitalizeSnakeCase } from "src/utils/string";
+import { Pokemon } from "src/utils/data-read";
 
 import { Icon } from "@astrojs/starlight/components";
 import PokemonCard from "src/components/pokemons/PokemonCard.astro";
+import Heading from "src/components/Heading.astro";
 
 export const getStaticPaths = (({ paginate }) => {
   return paginate(
@@ -25,7 +24,7 @@ const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons"
 
 <!--Display the current page number. Astro.params.page can also be used!-->
 <StarlightPage frontmatter={{ title: "Pokemons", pagefind: false }} headings={headings}>
-  <h2 id={headings[0].slug}>{headings[0].text}</h2>
+  <Heading heading={headings[0]} />
   <div class="pokemon-grid not-content">
     {
       page.data.map(({ id }) => {

@@ -1,6 +1,7 @@
 ---
 import { Card, Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import Heading from "src/components/Heading.astro";
 import EvolutionChain from "src/components/pokemons/pokemon/EvolutionChain.astro";
 import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
 import {
@@ -72,7 +73,7 @@ const headings = [
       )
     }
   </div>
-  <h2 id={headings[0].slug}>{headings[0].text}</h2>
+  <Heading heading={headings[0]} />
   <Card title={`#${id} ${name}`}>
     <div class="flex flex-col divide-y-2 gap-4">
       <img
@@ -85,7 +86,11 @@ const headings = [
       <div>
         <h4 class="my-2">Type</h4>
         <div class="flex gap-4">
-          {PokemonTypeByPokemonId[id].map((pokemonType) => <TypeIcon type_id={pokemonType.type_id} class="text-2xl p-2" />)}
+          {
+            PokemonTypeByPokemonId[id].map((pokemonType) => (
+              <TypeIcon type_id={pokemonType.type_id} class="text-2xl px-3 py-1" />
+            ))
+          }
         </div>
       </div>
       <div>
@@ -161,11 +166,11 @@ const headings = [
     </div>
   </Card>
   <hr class="!my-4 border-gray-800" />
-  <h2 class="!my-4" id={headings[2].slug}>{headings[2].text}</h2>
+  <Heading heading={headings[2]} />
   <div data-pagefind-ignore="all" class="not-content overflow-auto">
     <EvolutionChain evolutionChainId={evolutionChainId} />
   </div>
-  <h2 class="!my-4" id={headings[3].slug}>{headings[3].text}</h2>
+  <Heading heading={headings[3]} />
   <div data-pagefind-ignore="all" class="whitespace-nowrap">
     {
       pokemonMoves &&

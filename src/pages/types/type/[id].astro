@@ -2,8 +2,16 @@
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
 import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
-import { GenerationNameById, MoveDamageClassProseById, Type, TypeById } from "src/utils/data-read";
+import {
+  GenerationNameById,
+  MoveDamageClassProseById,
+  Type,
+  TypeById,
+  TypeEfficacyByAttack,
+  TypeEfficacyByDefense,
+} from "src/utils/data-read";
 import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
+import efficacyColorJson from "src/utils/efficacy-color.json";
 
 export function getStaticPaths() {
   return Type.map((type) => ({
@@ -21,12 +29,15 @@ const headings = [
   { depth: 2, slug: "basic-info", text: "Basic Info" },
   { depth: 3, slug: "introduction", text: "Introduction" },
   { depth: 3, slug: "damage-class", text: "Damage Class" },
+  { depth: 2, slug: "type-efficacy", text: "Type Efficacy" },
+  { depth: 3, slug: "type-efficacy-attack", text: "Attack" },
+  { depth: 3, slug: "type-efficacy-defense", text: "Defense" },
 ];
 ---
 
 <StarlightPage frontmatter={{ title: `${typeName} (Type)` }} headings={headings}>
   <Heading heading={headings[0]} />
-  <TypeIcon type_id={id} class="max-w-max p-2 mx-auto text-4xl" />
+  <TypeIcon type_id={id} class="max-w-max px-4 py-2 mx-auto text-4xl" />
   <Heading heading={headings[1]} />
   <p class="text-2xl">Introduced in {GenerationNameById[generation_id][LANGUAGE_ID]}.</p>
   <Heading heading={headings[2]} />
@@ -40,4 +51,71 @@ const headings = [
       "??"
     )
   }
+  <Heading heading={headings[3]} />
+  <Heading heading={headings[4]} />
+  <dd>
+    <TypeIcon type_id={id} class="inline-flex px-2" /> as damage type.
+  </dd>
+  <table class="!table w-full">
+    <thead>
+      <tr>
+        <th>Target Type</th>
+        <th>Damage Factor</th>
+        <th class="w-2/3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        TypeEfficacyByAttack[id].map((typeEfficacy) => (
+          <tr>
+            <td>
+              <TypeIcon type_id={typeEfficacy.target_type_id} class="max-w-20" />
+            </td>
+            <td>{typeEfficacy.damage_factor}%</td>
+            <td>
+              <div class="bg-slate-100 h-3 rounded">
+                <div
+                  class="h-full rounded"
+                  style={`background-color: ${efficacyColorJson[typeEfficacy.damage_factor]}; width: ${typeEfficacy.damage_factor ? typeEfficacy.damage_factor / 2 : 1}%`}
+                />
+              </div>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <Heading heading={headings[5]} />
+  <dd>
+    <TypeIcon type_id={id} class="inline-flex px-2" /> as target type.
+  </dd>
+  <table class="!table w-full">
+    <thead>
+      <tr>
+        <th>Damage Type</th>
+        <th>Damage Factor</th>
+        <th class="w-2/3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        TypeEfficacyByDefense[id].map((typeEfficacy) => (
+          <tr>
+            <td>
+              <TypeIcon type_id={typeEfficacy.damage_type_id} class="max-w-20" />
+            </td>
+            <td>{typeEfficacy.damage_factor}%</td>
+            <td>
+              <div class="bg-slate-100 h-3 rounded">
+                <div
+                  class="h-full rounded"
+                  style={`background-color: ${efficacyColorJson[typeEfficacy.damage_factor]}; width: ${typeEfficacy.damage_factor ? typeEfficacy.damage_factor / 2 : 1}%`}
+                />
+              </div>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
 </StarlightPage>
