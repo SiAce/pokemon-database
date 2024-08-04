@@ -4,7 +4,7 @@ import { capitalizeFirstLetter } from "src/utils/string";
 import typeColorLightJson from "src/utils/type-color-light.json";
 import typeColorJson from "src/utils/type-color.json";
 
-const { class: className, type_id } = Astro.props;
+const { class: className, type_id, formatter = capitalizeFirstLetter } = Astro.props;
 ---
 
 <a
@@ -17,5 +17,5 @@ const { class: className, type_id } = Astro.props;
     color: ${typeColorJson[type_id]};
     --tw-ring-color: ${typeColorJson[type_id]}1A;`
 >
-  {capitalizeFirstLetter(TypeById[type_id].identifier)}
+  {formatter(TypeById[type_id].identifier)}
 </a>

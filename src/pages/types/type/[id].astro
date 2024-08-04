@@ -56,66 +56,71 @@ const headings = [
   <dd>
     <TypeIcon type_id={id} class="inline-flex px-2" /> as damage type.
   </dd>
-  <table class="!table w-full">
-    <thead>
-      <tr>
-        <th>Target Type</th>
-        <th>Damage Factor</th>
-        <th class="w-2/3"></th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        TypeEfficacyByAttack[id].map((typeEfficacy) => (
+  {
+    TypeEfficacyByAttack[id] && (
+      <table data-pagefind-ignore="all" class="!table w-full">
+        <thead>
           <tr>
-            <td>
-              <TypeIcon type_id={typeEfficacy.target_type_id} class="max-w-20" />
-            </td>
-            <td>{typeEfficacy.damage_factor}%</td>
-            <td>
-              <div class="bg-slate-100 h-3 rounded">
-                <div
-                  class="h-full rounded"
-                  style={`background-color: ${efficacyColorJson[typeEfficacy.damage_factor]}; width: ${typeEfficacy.damage_factor ? typeEfficacy.damage_factor / 2 : 1}%`}
-                />
-              </div>
-            </td>
+            <th>Target Type</th>
+            <th>Damage Factor</th>
+            <th class="w-2/3" />
           </tr>
-        ))
-      }
-    </tbody>
-  </table>
+        </thead>
+        <tbody>
+          {TypeEfficacyByAttack[id].map((typeEfficacy) => (
+            <tr>
+              <td>
+                <TypeIcon type_id={typeEfficacy.target_type_id} class="max-w-20" />
+              </td>
+              <td>{typeEfficacy.damage_factor}%</td>
+              <td>
+                <div class="bg-slate-100 h-3 rounded">
+                  <div
+                    class="h-full rounded"
+                    style={`background-color: ${efficacyColorJson[typeEfficacy.damage_factor]}; width: ${typeEfficacy.damage_factor ? typeEfficacy.damage_factor / 2 : 1}%`}
+                  />
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
   <Heading heading={headings[5]} />
   <dd>
     <TypeIcon type_id={id} class="inline-flex px-2" /> as target type.
   </dd>
-  <table class="!table w-full">
-    <thead>
-      <tr>
-        <th>Damage Type</th>
-        <th>Damage Factor</th>
-        <th class="w-2/3"></th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        TypeEfficacyByDefense[id].map((typeEfficacy) => (
+  {
+    TypeEfficacyByDefense[id] && (
+      <table data-pagefind-ignore="all" class="!table w-full">
+        <thead>
           <tr>
-            <td>
-              <TypeIcon type_id={typeEfficacy.damage_type_id} class="max-w-20" />
-            </td>
-            <td>{typeEfficacy.damage_factor}%</td>
-            <td>
-              <div class="bg-slate-100 h-3 rounded">
-                <div
-                  class="h-full rounded"
-                  style={`background-color: ${efficacyColorJson[typeEfficacy.damage_factor]}; width: ${typeEfficacy.damage_factor ? typeEfficacy.damage_factor / 2 : 1}%`}
-                />
-              </div>
-            </td>
+            <th>Damage Type</th>
+            <th>Damage Factor</th>
+            <th class="w-2/3" />
           </tr>
-        ))
-      }
-    </tbody>
-  </table>
+        </thead>
+        <tbody>
+          {TypeEfficacyByDefense[id].map((typeEfficacy) => (
+            <tr>
+              <td>
+                <TypeIcon type_id={typeEfficacy.damage_type_id} class="max-w-20" />
+              </td>
+              <td>{typeEfficacy.damage_factor}%</td>
+              <td>
+                <div class="bg-slate-100 h-3 rounded">
+                  <div
+                    class="h-full rounded"
+                    style={`background-color: ${efficacyColorJson[typeEfficacy.damage_factor]}; width: ${typeEfficacy.damage_factor ? typeEfficacy.damage_factor / 2 : 1}%`}
+                  />
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
+  <p>For more information about eype efficacy see <a href="/types/chart">Type Chart</a>.</p>
 </StarlightPage>

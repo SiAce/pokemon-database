@@ -1,0 +1,64 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import Heading from "src/components/Heading.astro";
+import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
+import { TypeEfficacyByAttack } from "src/utils/data-read";
+import { abbreviation } from "src/utils/string";
+import efficacyColorJson from "src/utils/efficacy-color.json";
+import efficacyTextJson from "src/utils/efficacy-text.json";
+
+const headings = [{ depth: 2, slug: "type-chart", text: "Type Chart" }];
+---
+
+<StarlightPage frontmatter={{ title: "Type Chart" }} headings={headings}>
+  <Heading heading={headings[0]} />
+  <table data-pagefind-ignore="all" class="not-content !table text-center border-collapse">
+    <thead>
+      <tr>
+        <th class="text-sm"
+          >Defense →
+          <br />
+          Attack ↴
+        </th>
+        {
+          Object.keys(TypeEfficacyByAttack).map((type_id) => (
+            <th>
+              <div class="w-8">
+                <TypeIcon type_id={type_id} class="aspect-square text-sm" formatter={abbreviation} />
+              </div>
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        Object.keys(TypeEfficacyByAttack).map((type_id) => (
+          <tr>
+            <td>
+              <TypeIcon type_id={type_id} class="w-full h-8 text-sm" />
+            </td>
+            {TypeEfficacyByAttack[type_id].map(({ damage_factor }) => (
+              <td>
+                {damage_factor !== 100 && (
+                  <div
+                    class="flex items-center justify-center w-full rounded h-8  text-yellow-200 "
+                    style={`background-color: ${efficacyColorJson[damage_factor]};`}
+                  >
+                    {efficacyTextJson[damage_factor]}
+                  </div>
+                )}
+              </td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</StarlightPage>
+<style>
+  th,
+  td {
+    border: 1px solid #f1f5f9;
+  }
+</style>

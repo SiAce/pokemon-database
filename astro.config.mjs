@@ -23,6 +23,15 @@ export default defineConfig({
             },
           ],
         },
+        {
+          label: "Type",
+          items: [
+            {
+              label: "Type Chart",
+              link: "/types/chart",
+            },
+          ],
+        },
       ],
       logo: {
         src: "./src/assets/pokemon-logo.svg",

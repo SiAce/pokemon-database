@@ -10,3 +10,7 @@ export function capitalizeSnakeCase(snakeCase?: String | null) {
         .join(" ")
     : "";
 }
+
+export function abbreviation(s: string) {
+  return s.slice(0, 3).toUpperCase();
+}

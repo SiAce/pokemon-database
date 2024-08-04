@@ -98,7 +98,7 @@ const headings = [
         <div>
           {
             PokemonAbilityByPokemonId[id].map((pokemonAbility) => (
-              <a class="no-underline" href="#">
+              <a class="no-underline">
                 <span class="rounded-md bg-gray-400 px-4 py-2 mr-4 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
                   {capitalizeSnakeCase(AbilityById[pokemonAbility.ability_id].identifier)}
                 </span>
@@ -117,7 +117,6 @@ const headings = [
                 style={{
                   backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
                 }}
-                href="#"
               >
                 <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
                   <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
@@ -138,7 +137,6 @@ const headings = [
                 style={{
                   backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
                 }}
-                href="#"
               >
                 <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
                   <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
