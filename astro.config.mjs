@@ -21,6 +21,10 @@ export default defineConfig({
               label: "Pokemons",
               link: "/pokemons/list/1",
             },
+            {
+              label: "Pokemon By Generation",
+              link: "/pokemons/by-generation",
+            },
           ],
         },
         {

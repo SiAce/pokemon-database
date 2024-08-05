@@ -1,4 +1,5 @@
 import { parseCsvFile } from "./csv-parse";
+import { LANGUAGE_ID } from "./language";
 
 const tableCsvPaths: [string][] = [
   ["data/csv/growth_rates.csv"],
@@ -23,6 +24,7 @@ const tableCsvPaths: [string][] = [
   ["data/csv/generation_names.csv"],
   ["data/csv/version_groups.csv"],
   ["data/csv/versions.csv"],
+  ["data/csv/version_names.csv"],
   ["data/csv/pokemon_species.csv"],
   ["data/csv/pokemon.csv"],
   ["data/csv/types.csv"],
@@ -61,6 +63,7 @@ const [
   GenerationName,
   VersionGroup,
   Version,
+  VersionName,
   PokemonSpecies,
   Pokemon,
   Type,
@@ -84,16 +87,19 @@ for (let i = 0; i < Pokemon.length; i++) {
 }
 
 const PokemonSpeciesById = {};
+const PokemonSpeciesByEvolutionChain = {};
+const PokemonSpeciesByGenerationId = {};
 for (let i = 0; i < PokemonSpecies.length; i++) {
   PokemonSpeciesById[PokemonSpecies[i].id] = PokemonSpecies[i];
-}
-
-const PokemonSpeciesByEvolutionChain = {};
-for (let i = 0; i < PokemonSpecies.length; i++) {
   if (PokemonSpecies[i].evolution_chain_id in PokemonSpeciesByEvolutionChain) {
     PokemonSpeciesByEvolutionChain[PokemonSpecies[i].evolution_chain_id].push(PokemonSpecies[i]);
   } else {
     PokemonSpeciesByEvolutionChain[PokemonSpecies[i].evolution_chain_id] = [PokemonSpecies[i]];
+  }
+  if (PokemonSpecies[i].generation_id in PokemonSpeciesByGenerationId) {
+    PokemonSpeciesByGenerationId[PokemonSpecies[i].generation_id].push(PokemonSpecies[i]);
+  } else {
+    PokemonSpeciesByGenerationId[PokemonSpecies[i].generation_id] = [PokemonSpecies[i]];
   }
 }
 
@@ -174,8 +180,30 @@ for (let i = 0; i < MoveDamageClassProse.length; i++) {
 }
 
 const VersionGroupById = {};
+const VersionGroupByGenerationId = {};
 for (let i = 0; i < VersionGroup.length; i++) {
   VersionGroupById[VersionGroup[i].id] = VersionGroup[i];
+  if (VersionGroup[i].generation_id in VersionGroupByGenerationId) {
+    VersionGroupByGenerationId[VersionGroup[i].generation_id].push(VersionGroup[i]);
+  } else {
+    VersionGroupByGenerationId[VersionGroup[i].generation_id] = [VersionGroup[i]];
+  }
+}
+
+const VersionByVersionGroup = {};
+for (let i = 0; i < Version.length; i++) {
+  if (Version[i].version_group_id in VersionByVersionGroup) {
+    VersionByVersionGroup[Version[i].version_group_id].push(Version[i]);
+  } else {
+    VersionByVersionGroup[Version[i].version_group_id] = [Version[i]];
+  }
+}
+
+const VersionNameById = {};
+for (let i = 0; i < VersionName.length; i++) {
+  if (VersionName[i].local_language_id === LANGUAGE_ID) {
+    VersionNameById[VersionName[i].version_id] = VersionName[i];
+  }
 }
 
 const PokemonMoveMethodById = {};
@@ -224,10 +252,14 @@ export {
   GenerationNameById,
   VersionGroup,
   VersionGroupById,
+  VersionGroupByGenerationId,
   Version,
+  VersionByVersionGroup,
+  VersionNameById,
   PokemonSpecies,
   PokemonSpeciesById,
   PokemonSpeciesByEvolutionChain,
+  PokemonSpeciesByGenerationId,
   Pokemon,
   PokemonById,
   Type,

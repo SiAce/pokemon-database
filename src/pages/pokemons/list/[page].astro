@@ -19,11 +19,11 @@ export const getStaticPaths = (({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
-const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons" }];
+const headings = [{ depth: 2, slug: "list-of-pokemon", text: "List of Pokemon" }];
 ---
 
 <!--Display the current page number. Astro.params.page can also be used!-->
-<StarlightPage frontmatter={{ title: "Pokemons", pagefind: false }} headings={headings}>
+<StarlightPage frontmatter={{ title: "Pokemon", pagefind: false }} headings={headings}>
   <Heading heading={headings[0]} />
   <div class="pokemon-grid not-content">
     {
@@ -33,7 +33,7 @@ const headings = [{ depth: 2, slug: "list-of-pokemons", text: "List of Pokemons"
     }
   </div>
   <div class="text-center">
-    No.<strong>{page.start + 1}</strong> - <strong>{page.end + 1}</strong> of total <strong>{page.total}</strong> Pokemons
+    No.<strong>{page.start + 1}</strong> - <strong>{page.end + 1}</strong> of total <strong>{page.total}</strong> Pokemon
   </div>
   <div class="not-content flex justify-center">
     <nav class="flex flex-wrap rounded-md shadow-sm -space-x-px">

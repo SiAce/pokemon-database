@@ -12,6 +12,7 @@ import {
 } from "src/utils/data-read";
 import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
 import efficacyColorJson from "src/utils/efficacy-color.json";
+import { LANGUAGE_ID } from "src/utils/language";
 
 export function getStaticPaths() {
   return Type.map((type) => ({
@@ -19,7 +20,7 @@ export function getStaticPaths() {
   }));
 }
 
-const LANGUAGE_ID = 9;
+
 const { id } = Astro.params;
 const type = TypeById[id];
 const { identifier, generation_id, damage_class_id } = type;

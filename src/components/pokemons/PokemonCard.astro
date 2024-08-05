@@ -3,11 +3,16 @@ import { PokemonById, PokemonTypeByPokemonId } from "src/utils/data-read";
 import { capitalizeSnakeCase } from "src/utils/string";
 import TypeIcon from "./pokemon/TypeIcon.astro";
 
-const { id } = Astro.props;
+const { class: className, id } = Astro.props;
 const pokemonName = capitalizeSnakeCase(PokemonById[id].identifier);
 ---
 
-<div class="m-2 p-2 ring-1 rounded-md flex flex-col items-stretch justify-between ring-slate-200 shadow">
+<div
+  class:list={[
+    "m-2 p-2 ring-1 rounded-md flex flex-col items-stretch justify-between ring-slate-200 shadow",
+    className,
+  ]}
+>
   <p class="text-center font-semibold">{pokemonName}</p>
   <a class="flex justify-center" href={`/pokemons/pokemon/${id}`}>
     <img
@@ -17,6 +22,10 @@ const pokemonName = capitalizeSnakeCase(PokemonById[id].identifier);
     />
   </a>
   <div class="flex justify-around gap-1">
-    {PokemonTypeByPokemonId[id].map((pokemonType) => <TypeIcon type_id={pokemonType.type_id} class="max-w-20 flex-auto text-xs p-1" />)}
+    {
+      PokemonTypeByPokemonId[id].map((pokemonType) => (
+        <TypeIcon type_id={pokemonType.type_id} class="max-w-20 flex-auto text-xs p-1" />
+      ))
+    }
   </div>
 </div>

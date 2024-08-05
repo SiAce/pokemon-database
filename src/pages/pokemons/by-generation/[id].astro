@@ -1,0 +1,66 @@
+---
+import { Icon } from "@astrojs/starlight/components";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import Heading from "src/components/Heading.astro";
+import PokemonCard from "src/components/pokemons/PokemonCard.astro";
+import {
+  Generation,
+  GenerationNameById,
+  PokemonSpeciesByGenerationId,
+  VersionByVersionGroup,
+  VersionGroupByGenerationId,
+  VersionNameById,
+} from "src/utils/data-read";
+import { LANGUAGE_ID } from "src/utils/language";
+import versionColorJson from "src/utils/version-color.json";
+
+export function getStaticPaths() {
+  return Generation.map(({ id }) => ({
+    params: { id: id },
+  }));
+}
+
+const { id: stringId } = Astro.params;
+const id = Number(stringId);
+const generationName = GenerationNameById[id][LANGUAGE_ID];
+const headings = [{ depth: 2, slug: "generation-number", text: `${generationName} Pokemon` }];
+---
+
+<StarlightPage frontmatter={{ title: `${generationName} Pokemon` }} headings={headings}>
+  <div data-pagefind-ignore="all" class="flex">
+    {
+      id > 1 && (
+        <a href={`/pokemons/by-generation/${id - 1}`} rel="prev">
+          <Icon name="left-arrow" size="1.5rem" />
+          <span>{`${GenerationNameById[id - 1][LANGUAGE_ID]} Pokemon`}</span>
+        </a>
+      )
+    }
+    {
+      id < Generation.length && (
+        <a href={`/pokemons/by-generation/${id + 1}`} rel="next" class="ml-auto flex flex-col items-end">
+          <Icon name="right-arrow" size="1.5rem" />
+          <span>{`${GenerationNameById[id + 1][LANGUAGE_ID]} Pokemon`}</span>
+        </a>
+      )
+    }
+  </div>
+  <Heading heading={headings[0]} />
+  <dd>
+    <a>{generationName}</a> includes
+    <ul>
+      {
+        VersionGroupByGenerationId[id].map((versionGroup) =>
+          VersionByVersionGroup[versionGroup.id].map((version) => (
+            <li>
+              <a style={{ color: versionColorJson[version.id] }}>{VersionNameById[version.id].name}</a>
+            </li>
+          ))
+        )
+      }
+    </ul>
+  </dd>
+  <div data-pagefind-ignore="all" class="not-content flex flex-wrap">
+    {PokemonSpeciesByGenerationId[id].map(({ id }) => <PokemonCard id={id} class="w-32" />)}
+  </div>
+</StarlightPage>
