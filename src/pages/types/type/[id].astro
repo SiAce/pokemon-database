@@ -129,7 +129,10 @@ const headings = [
   <div class="flex flex-col no-underline">
     <a class="border rounded-xl p-4" href={`/pokemons/by-type/${id}`}>
       <div class="flex">
-        <div class="text-2xl">{`${typeName} Type Pokemon`}</div>
+        <div class="text-2xl flex gap-4">
+          {`${typeName} Type Pokemon`}
+          <TypeIcon id={id} Tag="div" class="text-lg" />
+        </div>
         <Icon class="ml-auto" name="right-arrow" />
       </div>
       <p>{`Learn more about ${typeName} Type Pokemons`}</p>

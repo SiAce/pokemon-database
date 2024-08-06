@@ -4,10 +4,10 @@ import typeColorJson from "src/utils/color/type-color.json";
 import { TypeById } from "src/utils/data-read";
 import { capitalizeFirstLetter } from "src/utils/string";
 
-const { class: className, id, link=`/types/type/${id}`, formatter = capitalizeFirstLetter } = Astro.props;
+const { class: className, id, Tag = "a", link = `/types/type/${id}`, formatter = capitalizeFirstLetter } = Astro.props;
 ---
 
-<a
+<Tag
   class:list={["ring-[0.1em] not-content", className]}
   href={link}
   style={`display: flex; align-items: stretch; height: 1.5em; width: 6.5em;
@@ -22,4 +22,4 @@ background-color: ${typeColorJson[id]}; --tw-ring-color: ${typeColorJson[id]};`}
   >
     {formatter(TypeById[id].identifier)}
   </span>
-</a>
+</Tag>
