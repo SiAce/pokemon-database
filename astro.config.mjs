@@ -25,11 +25,19 @@ export default defineConfig({
               label: "Pokemon By Generation",
               link: "/pokemons/by-generation",
             },
+            {
+              label: "Pokemon By Type",
+              link: "/pokemons/by-type",
+            },
           ],
         },
         {
           label: "Type",
           items: [
+            {
+              label: "Types",
+              link: "/types/type",
+            },
             {
               label: "Type Chart",
               link: "/types/chart",

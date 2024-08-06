@@ -1,0 +1,47 @@
+---
+import { Icon } from "@astrojs/starlight/components";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import Heading from "src/components/Heading.astro";
+import PokemonCard from "src/components/pokemons/PokemonCard.astro";
+import TypeIcon from "src/components/type/TypeIcon.astro";
+import { PokemonTypeByType, Type, TypeById } from "src/utils/data-read";
+import { capitalizeFirstLetter } from "src/utils/string";
+
+export function getStaticPaths() {
+  return Type.map(({ id }) => ({
+    params: { id: id },
+  }));
+}
+
+const { id: stringId } = Astro.params;
+const id = Number(stringId);
+const type = TypeById[id];
+const typeName = capitalizeFirstLetter(type.identifier);
+const headings = [{ depth: 2, slug: "type-number", text: `${typeName} Pokemon` }];
+---
+
+<StarlightPage frontmatter={{ title: `${typeName} (Type) Pokemon` }} headings={headings}>
+  <div data-pagefind-ignore="all" class="flex">
+    {
+      type.prev && (
+        <a href={`/pokemons/by-type/${type.prev}`} rel="prev">
+          <Icon name="left-arrow" size="1.5rem" />
+          <span>{`${capitalizeFirstLetter(TypeById[type.prev].identifier)} Pokemon`}</span>
+        </a>
+      )
+    }
+    {
+      type.next && (
+        <a href={`/pokemons/by-type/${type.next}`} rel="next" class="ml-auto flex flex-col items-end">
+          <Icon name="right-arrow" size="1.5rem" />
+          <span>{`${capitalizeFirstLetter(TypeById[type.next].identifier)} Pokemon`}</span>
+        </a>
+      )
+    }
+  </div>
+  <TypeIcon id={id} class="mx-auto text-4xl" />
+  <Heading heading={headings[0]} />
+  <div data-pagefind-ignore="all" class="not-content flex flex-wrap">
+    {PokemonTypeByType[id]?.map(({ pokemon_id }) => <PokemonCard id={pokemon_id} class="w-32" />)}
+  </div>
+</StarlightPage>

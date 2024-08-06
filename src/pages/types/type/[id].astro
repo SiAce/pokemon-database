@@ -1,7 +1,10 @@
 ---
+import { Icon, LinkCard } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
-import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
+import TypeBadge from "src/components/pokemons/pokemon/TypeBadge.astro";
+import TypeIcon from "src/components/type/TypeIcon.astro";
+import efficacyColorJson from "src/utils/color/efficacy-color.json";
 import {
   GenerationNameById,
   MoveDamageClassProseById,
@@ -11,15 +14,12 @@ import {
   TypeEfficacyByDefense,
 } from "src/utils/data-read";
 import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
-import efficacyColorJson from "src/utils/efficacy-color.json";
-import { LANGUAGE_ID } from "src/utils/language";
 
 export function getStaticPaths() {
   return Type.map((type) => ({
     params: { id: type.id },
   }));
 }
-
 
 const { id } = Astro.params;
 const type = TypeById[id];
@@ -33,20 +33,21 @@ const headings = [
   { depth: 2, slug: "type-efficacy", text: "Type Efficacy" },
   { depth: 3, slug: "type-efficacy-attack", text: "Attack" },
   { depth: 3, slug: "type-efficacy-defense", text: "Defense" },
+  { depth: 2, slug: "pokemon-by-type", text: `${typeName} Type Pokemon` },
 ];
 ---
 
 <StarlightPage frontmatter={{ title: `${typeName} (Type)` }} headings={headings}>
   <Heading heading={headings[0]} />
-  <TypeIcon type_id={id} class="max-w-max px-4 py-2 mx-auto text-4xl" />
+  <TypeIcon id={id} class="mx-auto text-4xl" />
   <Heading heading={headings[1]} />
-  <p class="text-2xl">Introduced in {GenerationNameById[generation_id][LANGUAGE_ID]}.</p>
+  <p class="text-2xl">Introduced in {GenerationNameById[generation_id]}.</p>
   <Heading heading={headings[2]} />
   {
     damage_class_id ? (
       <dl>
-        <dt class="text-2xl">{capitalizeFirstLetter(MoveDamageClassProseById[damage_class_id][LANGUAGE_ID].name)}</dt>
-        <dd>{MoveDamageClassProseById[damage_class_id][LANGUAGE_ID].description}.</dd>
+        <dt class="text-2xl">{capitalizeFirstLetter(MoveDamageClassProseById[damage_class_id].name)}</dt>
+        <dd>{MoveDamageClassProseById[damage_class_id].description}.</dd>
       </dl>
     ) : (
       "??"
@@ -55,7 +56,7 @@ const headings = [
   <Heading heading={headings[3]} />
   <Heading heading={headings[4]} />
   <dd>
-    <TypeIcon type_id={id} class="inline-flex px-2" /> as damage type.
+    <TypeBadge type_id={id} class="inline-flex px-2" /> as damage type.
   </dd>
   {
     TypeEfficacyByAttack[id] && (
@@ -71,7 +72,7 @@ const headings = [
           {TypeEfficacyByAttack[id].map((typeEfficacy) => (
             <tr>
               <td>
-                <TypeIcon type_id={typeEfficacy.target_type_id} class="max-w-20" />
+                <TypeBadge type_id={typeEfficacy.target_type_id} class="max-w-20" />
               </td>
               <td>{typeEfficacy.damage_factor}%</td>
               <td>
@@ -90,7 +91,7 @@ const headings = [
   }
   <Heading heading={headings[5]} />
   <dd>
-    <TypeIcon type_id={id} class="inline-flex px-2" /> as target type.
+    <TypeBadge type_id={id} class="inline-flex px-2" /> as target type.
   </dd>
   {
     TypeEfficacyByDefense[id] && (
@@ -106,7 +107,7 @@ const headings = [
           {TypeEfficacyByDefense[id].map((typeEfficacy) => (
             <tr>
               <td>
-                <TypeIcon type_id={typeEfficacy.damage_type_id} class="max-w-20" />
+                <TypeBadge type_id={typeEfficacy.damage_type_id} class="max-w-20" />
               </td>
               <td>{typeEfficacy.damage_factor}%</td>
               <td>
@@ -124,4 +125,14 @@ const headings = [
     )
   }
   <p>For more information about eype efficacy see <a href="/types/chart">Type Chart</a>.</p>
+  <Heading heading={headings[6]} />
+  <div class="flex flex-col no-underline">
+    <a class="border rounded-xl p-4" href={`/pokemons/by-type/${id}`}>
+      <div class="flex">
+        <div class="text-2xl">{`${typeName} Type Pokemon`}</div>
+        <Icon class="ml-auto" name="right-arrow" />
+      </div>
+      <p>{`Learn more about ${typeName} Type Pokemons`}</p>
+    </a>
+  </div>
 </StarlightPage>

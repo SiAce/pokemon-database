@@ -1,10 +1,10 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
-import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
+import TypeBadge from "src/components/pokemons/pokemon/TypeBadge.astro";
 import { TypeEfficacyByAttack } from "src/utils/data-read";
 import { abbreviation } from "src/utils/string";
-import efficacyColorJson from "src/utils/efficacy-color.json";
+import efficacyColorJson from "src/utils/color/efficacy-color.json";
 import efficacyTextJson from "src/utils/efficacy-text.json";
 
 const headings = [{ depth: 2, slug: "type-chart", text: "Type Chart" }];
@@ -24,7 +24,7 @@ const headings = [{ depth: 2, slug: "type-chart", text: "Type Chart" }];
           Object.keys(TypeEfficacyByAttack).map((type_id) => (
             <th>
               <div class="w-8">
-                <TypeIcon type_id={type_id} class="aspect-square text-sm" formatter={abbreviation} />
+                <TypeBadge type_id={type_id} class="aspect-square text-sm" formatter={abbreviation} />
               </div>
             </th>
           ))
@@ -36,7 +36,7 @@ const headings = [{ depth: 2, slug: "type-chart", text: "Type Chart" }];
         Object.keys(TypeEfficacyByAttack).map((type_id) => (
           <tr>
             <td>
-              <TypeIcon type_id={type_id} class="w-full h-8 text-sm" />
+              <TypeBadge type_id={type_id} class="w-full h-8 text-sm" />
             </td>
             {TypeEfficacyByAttack[type_id].map(({ damage_factor }) => (
               <td>

@@ -1,6 +1,7 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
+import versionColorJson from "src/utils/color/version-color.json";
 import {
   Generation,
   GenerationNameById,
@@ -8,8 +9,6 @@ import {
   VersionGroupByGenerationId,
   VersionNameById,
 } from "src/utils/data-read";
-import { LANGUAGE_ID } from "src/utils/language";
-import versionColorJson from "src/utils/version-color.json";
 
 const headings = [{ depth: 2, slug: "pokemon-by-generation", text: "Pokemon by Generation" }];
 ---
@@ -20,7 +19,7 @@ const headings = [{ depth: 2, slug: "pokemon-by-generation", text: "Pokemon by G
     {
       Generation.map(({ id }) => (
         <a class=" border rounded-xl p-4" href={`/pokemons/by-generation/${id}`}>
-          <span class="text-2xl">{`${GenerationNameById[id][LANGUAGE_ID]} Pokemon`}</span>
+          <span class="text-2xl">{`${GenerationNameById[id]} Pokemon`}</span>
           <ul>
             {VersionGroupByGenerationId[id].map((versionGroup) =>
               VersionByVersionGroup[versionGroup.id].map((version) => (

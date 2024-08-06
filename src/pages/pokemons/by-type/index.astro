@@ -1,0 +1,18 @@
+---
+import { CardGrid } from "@astrojs/starlight/components";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import Heading from "src/components/Heading.astro";
+import TypeIcon from "src/components/type/TypeIcon.astro";
+import { Type } from "src/utils/data-read";
+
+const headings = [{ depth: 2, slug: "pokemon-by-type", text: "Pokemon by Type" }];
+---
+
+<StarlightPage frontmatter={{ title: "Pokemon by Type" }} headings={headings}>
+  <Heading heading={headings[0]} />
+  <div data-pagefind-ignore="all">
+    <CardGrid>
+      {Type.map(({ id }) => <TypeIcon id={id} class="text-2xl" link={`/pokemons/by-type/${id}`} />)}
+    </CardGrid>
+  </div>
+</StarlightPage>

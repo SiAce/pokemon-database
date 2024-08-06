@@ -3,6 +3,7 @@ import { Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
 import PokemonCard from "src/components/pokemons/PokemonCard.astro";
+import versionColorJson from "src/utils/color/version-color.json";
 import {
   Generation,
   GenerationNameById,
@@ -11,8 +12,6 @@ import {
   VersionGroupByGenerationId,
   VersionNameById,
 } from "src/utils/data-read";
-import { LANGUAGE_ID } from "src/utils/language";
-import versionColorJson from "src/utils/version-color.json";
 
 export function getStaticPaths() {
   return Generation.map(({ id }) => ({
@@ -22,7 +21,7 @@ export function getStaticPaths() {
 
 const { id: stringId } = Astro.params;
 const id = Number(stringId);
-const generationName = GenerationNameById[id][LANGUAGE_ID];
+const generationName = GenerationNameById[id];
 const headings = [{ depth: 2, slug: "generation-number", text: `${generationName} Pokemon` }];
 ---
 
@@ -32,7 +31,7 @@ const headings = [{ depth: 2, slug: "generation-number", text: `${generationName
       id > 1 && (
         <a href={`/pokemons/by-generation/${id - 1}`} rel="prev">
           <Icon name="left-arrow" size="1.5rem" />
-          <span>{`${GenerationNameById[id - 1][LANGUAGE_ID]} Pokemon`}</span>
+          <span>{`${GenerationNameById[id - 1]} Pokemon`}</span>
         </a>
       )
     }
@@ -40,7 +39,7 @@ const headings = [{ depth: 2, slug: "generation-number", text: `${generationName
       id < Generation.length && (
         <a href={`/pokemons/by-generation/${id + 1}`} rel="next" class="ml-auto flex flex-col items-end">
           <Icon name="right-arrow" size="1.5rem" />
-          <span>{`${GenerationNameById[id + 1][LANGUAGE_ID]} Pokemon`}</span>
+          <span>{`${GenerationNameById[id + 1]} Pokemon`}</span>
         </a>
       )
     }

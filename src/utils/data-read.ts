@@ -113,11 +113,19 @@ for (let i = 0; i < PokemonMove.length; i++) {
 }
 
 const PokemonTypeByPokemonId = {};
+const PokemonTypeByType = {};
 for (let i = 0; i < PokemonType.length; i++) {
-  if (PokemonType[i].pokemon_id in PokemonTypeByPokemonId) {
-    PokemonTypeByPokemonId[PokemonType[i].pokemon_id].push(PokemonType[i]);
+  const pokemonType = PokemonType[i];
+  if (pokemonType.pokemon_id in PokemonTypeByPokemonId) {
+    PokemonTypeByPokemonId[pokemonType.pokemon_id].push(pokemonType);
   } else {
-    PokemonTypeByPokemonId[PokemonType[i].pokemon_id] = [PokemonType[i]];
+    PokemonTypeByPokemonId[pokemonType.pokemon_id] = [pokemonType];
+  }
+
+  if (pokemonType.type_id in PokemonTypeByType) {
+    PokemonTypeByType[pokemonType.type_id].push(pokemonType);
+  } else {
+    PokemonTypeByType[pokemonType.type_id] = [pokemonType];
   }
 }
 
@@ -146,6 +154,8 @@ for (let i = 0; i < Move.length; i++) {
 
 const TypeById = {};
 for (let i = 0; i < Type.length; i++) {
+  Type[i].prev = Type[i - 1]?.id;
+  Type[i].next = Type[i + 1]?.id;
   TypeById[Type[i].id] = Type[i];
 }
 
@@ -162,20 +172,16 @@ for (let i = 0; i < Stat.length; i++) {
 const GenerationNameById = {};
 for (let i = 0; i < GenerationName.length; i++) {
   const { generation_id, local_language_id, name } = GenerationName[i];
-  if (generation_id in GenerationNameById) {
-    GenerationNameById[generation_id][local_language_id] = name;
-  } else {
-    GenerationNameById[generation_id] = { [local_language_id]: name };
+  if (local_language_id === LANGUAGE_ID) {
+    GenerationNameById[generation_id] = name;
   }
 }
 
 const MoveDamageClassProseById = {};
 for (let i = 0; i < MoveDamageClassProse.length; i++) {
   const { move_damage_class_id, local_language_id, name, description } = MoveDamageClassProse[i];
-  if (move_damage_class_id in MoveDamageClassProseById) {
-    MoveDamageClassProseById[move_damage_class_id][local_language_id] = { name, description };
-  } else {
-    MoveDamageClassProseById[move_damage_class_id] = { [local_language_id]: { name, description } };
+  if (local_language_id === LANGUAGE_ID) {
+    MoveDamageClassProseById[move_damage_class_id] = { name, description };
   }
 }
 
@@ -269,6 +275,7 @@ export {
   TypeEfficacyByDefense,
   PokemonType,
   PokemonTypeByPokemonId,
+  PokemonTypeByType,
   Ability,
   AbilityById,
   PokemonAbility,

@@ -3,7 +3,7 @@ import { Card, Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
 import EvolutionChain from "src/components/pokemons/pokemon/EvolutionChain.astro";
-import TypeIcon from "src/components/pokemons/pokemon/TypeIcon.astro";
+import TypeBadge from "src/components/pokemons/pokemon/TypeBadge.astro";
 import {
   AbilityById,
   MoveById,
@@ -18,7 +18,7 @@ import {
   StatById,
   VersionGroupById,
 } from "src/utils/data-read";
-import statColorJson from "src/utils/stat-color.json";
+import statColorJson from "src/utils/color/stat-color.json";
 import { capitalizeSnakeCase } from "src/utils/string";
 
 export function getStaticPaths() {
@@ -88,7 +88,7 @@ const headings = [
         <div class="flex gap-4">
           {
             PokemonTypeByPokemonId[id].map((pokemonType) => (
-              <TypeIcon type_id={pokemonType.type_id} class="text-2xl px-3 py-1" />
+              <TypeBadge type_id={pokemonType.type_id} class="text-2xl px-3 py-1" />
             ))
           }
         </div>
@@ -193,7 +193,7 @@ const headings = [
                     <tr>
                       <td>{pokemonMove.level}</td>
                       <td>{capitalizeSnakeCase(MoveById[pokemonMove.move_id].identifier)}</td>
-                      <td>{<TypeIcon type_id={MoveById[pokemonMove.move_id].type_id} />}</td>
+                      <td>{<TypeBadge type_id={MoveById[pokemonMove.move_id].type_id} />}</td>
                       <td>
                         {capitalizeSnakeCase(PokemonMoveMethodById[pokemonMove.pokemon_move_method_id].identifier)}
                       </td>

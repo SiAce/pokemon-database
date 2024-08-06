@@ -1,0 +1,25 @@
+---
+import typeColorLightJson from "src/utils/color/type-color-light.json";
+import typeColorJson from "src/utils/color/type-color.json";
+import { TypeById } from "src/utils/data-read";
+import { capitalizeFirstLetter } from "src/utils/string";
+
+const { class: className, id, link=`/types/type/${id}`, formatter = capitalizeFirstLetter } = Astro.props;
+---
+
+<a
+  class:list={["ring-[0.1em] not-content", className]}
+  href={link}
+  style={`display: flex; align-items: stretch; height: 1.5em; width: 6.5em;
+border-radius: 0.3em;
+background-color: ${typeColorJson[id]}; --tw-ring-color: ${typeColorJson[id]};`}
+>
+  <img class="!inline p-[0.1em] w-[1.5em] h-[1.5em]" src={`/images/type/${id}.png`} />
+  <span
+    style={`flex: 1 1 auto; border-radius: 0 0.3em 0.3em 0; background: linear-gradient(110deg, transparent 11%, ${typeColorLightJson[id]} 0%);
+    color: ${typeColorJson[id]};
+  display:inline-flex; justify-content: center; align-items: center; `}
+  >
+    {formatter(TypeById[id].identifier)}
+  </span>
+</a>

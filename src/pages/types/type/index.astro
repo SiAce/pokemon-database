@@ -1,0 +1,17 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import Heading from "src/components/Heading.astro";
+import TypeIcon from "src/components/type/TypeIcon.astro";
+import { Type } from "src/utils/data-read";
+
+const headings = [{ depth: 2, slug: "list-of-type", text: "List of Type" }];
+---
+
+<StarlightPage frontmatter={{ title: "Type" }} headings={headings}>
+  <Heading heading={headings[0]} />
+  <div data-pagefind-ignore="all" class="flex justify-center">
+    <div class="flex-initial flex justify-between flex-wrap gap-4">
+      {Type.map(({ id }) => <TypeIcon id={id} class="text-2xl" />)}
+    </div>
+  </div>
+</StarlightPage>

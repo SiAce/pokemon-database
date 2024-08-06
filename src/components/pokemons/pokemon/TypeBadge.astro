@@ -1,15 +1,15 @@
 ---
 import { TypeById } from "src/utils/data-read";
 import { capitalizeFirstLetter } from "src/utils/string";
-import typeColorLightJson from "src/utils/type-color-light.json";
-import typeColorJson from "src/utils/type-color.json";
+import typeColorLightJson from "src/utils/color/type-color-light.json";
+import typeColorJson from "src/utils/color/type-color.json";
 
 const { class: className, type_id, formatter = capitalizeFirstLetter } = Astro.props;
 ---
 
 <a
   class:list={[
-    "flex items-center justify-center text-center no-underline rounded-md font-medium ring-1 ring-inset",
+    "flex items-center justify-center text-center no-underline rounded-md font-medium ring-[0.1em] ring-inset",
     className,
   ]}
   href=`/types/type/${type_id}`

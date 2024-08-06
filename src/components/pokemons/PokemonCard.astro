@@ -1,7 +1,7 @@
 ---
 import { PokemonById, PokemonTypeByPokemonId } from "src/utils/data-read";
 import { capitalizeSnakeCase } from "src/utils/string";
-import TypeIcon from "./pokemon/TypeIcon.astro";
+import TypeBadge from "./pokemon/TypeBadge.astro";
 
 const { class: className, id } = Astro.props;
 const pokemonName = capitalizeSnakeCase(PokemonById[id].identifier);
@@ -18,13 +18,15 @@ const pokemonName = capitalizeSnakeCase(PokemonById[id].identifier);
     <img
       src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
       alt={pokemonName}
+      width="96"
+      height="96"
       loading="lazy"
     />
   </a>
   <div class="flex justify-around gap-1">
     {
       PokemonTypeByPokemonId[id].map((pokemonType) => (
-        <TypeIcon type_id={pokemonType.type_id} class="max-w-20 flex-auto text-xs p-1" />
+        <TypeBadge type_id={pokemonType.type_id} class="max-w-20 flex-auto text-xs p-1" />
       ))
     }
   </div>
