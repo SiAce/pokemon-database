@@ -1,7 +1,8 @@
 ---
-import { VersionGroupById, versionGroupIds } from "src/utils/data-read";
-import { capitalizeSnakeCase } from "src/utils/string";
+import versionColorJson from "src/utils/color/version-color.json";
+import { VersionByVersionGroup, versionGroupIds, VersionNameById } from "src/utils/data-read";
 import MoveMethodSection from "./MoveMethodSection.astro";
+import { versionAbbreviation } from "src/utils/string";
 
 const { pokemonMoveByMethod } = Astro.props;
 ---
@@ -17,7 +18,7 @@ const { pokemonMoveByMethod } = Astro.props;
       {
         versionGroupIds.map((id) => (
           <th>
-            <button class=" mx-auto aspect-square w-[2em] cursor-pointer" type="button" id={id} aria-expanded={true}>
+            <button class="h-[1.5em] aspect-square m-1 cursor-pointer" type="button" id={id} aria-expanded={true}>
               -
             </button>
           </th>
@@ -25,16 +26,33 @@ const { pokemonMoveByMethod } = Astro.props;
       }
     </tr>
     <tr>
-      <th colspan="5"></th>
-      {versionGroupIds.map((id) => <th>{capitalizeSnakeCase(VersionGroupById[id].identifier)}</th>)}
+      <th class="font-black" colspan="5">Version Group:</th>
+      {
+        versionGroupIds.map((versionGroupId) => (
+          <th class="p-0">
+            <div class="inline-flex justify-center items-center">
+              <div class="flex">
+                {VersionByVersionGroup[versionGroupId].map((version) => (
+                  <a
+                    title={VersionNameById[version.id].name}
+                    style={` background-color: ${versionColorJson[version.id]}; color: white; padding: 0 0.2em;`}
+                  >
+                    {versionAbbreviation(VersionNameById[version.id].name)}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </th>
+        ))
+      }
     </tr>
     <tr>
       <th>Move</th>
       <th>Type</th>
       <th>Power</th>
-      <th>Accuracy</th>
+      <th title="Accuracy">Acc</th>
       <th>PP</th>
-      <th colspan="100%">Level</th>
+      <th colspan="100%">LVL</th>
     </tr>
   </thead>
   {
