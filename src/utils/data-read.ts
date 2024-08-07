@@ -13,7 +13,7 @@ const tableCsvPaths: [string][] = [
   ["data/csv/contest_types.csv"],
   ["data/csv/contest_effects.csv"],
   ["data/csv/super_contest_effects.csv"],
-  ["data/csv/pokemon_move_methods.csv"],
+  ["data/csv/pokemon_move_method_prose.csv"],
   ["data/csv/item_pockets.csv"],
   ["data/csv/item_categories.csv"],
   ["data/csv/item_fling_effects.csv"],
@@ -52,7 +52,7 @@ const [
   ContestType,
   ContextEffect,
   SuperContextEffect,
-  PokemonMoveMethod,
+  PokemonMoveMethodProse,
   ItemPocket,
   ItemCategory,
   ItemFlingEffect,
@@ -103,12 +103,27 @@ for (let i = 0; i < PokemonSpecies.length; i++) {
   }
 }
 
-const PokemonMoveByPokemonId = {};
+const PokemonMoveGrouped = {};
 for (let i = 0; i < PokemonMove.length; i++) {
-  if (PokemonMove[i].pokemon_id in PokemonMoveByPokemonId) {
-    PokemonMoveByPokemonId[PokemonMove[i].pokemon_id].push(PokemonMove[i]);
+  const { pokemon_id, version_group_id, move_id, pokemon_move_method_id } = PokemonMove[i];
+  if (pokemon_id in PokemonMoveGrouped) {
+    if (pokemon_move_method_id in PokemonMoveGrouped[pokemon_id]) {
+      if (move_id in PokemonMoveGrouped[pokemon_id][pokemon_move_method_id]) {
+        if (version_group_id in PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id]) {
+          PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id][version_group_id].push(PokemonMove[i]);
+        } else {
+          PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id][version_group_id] = [PokemonMove[i]];
+        }
+      } else {
+        PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id] = { [version_group_id]: [PokemonMove[i]] };
+      }
+    } else {
+      PokemonMoveGrouped[pokemon_id][pokemon_move_method_id] = { [move_id]: { [version_group_id]: [PokemonMove[i]] } };
+    }
   } else {
-    PokemonMoveByPokemonId[PokemonMove[i].pokemon_id] = [PokemonMove[i]];
+    PokemonMoveGrouped[pokemon_id] = {
+      [pokemon_move_method_id]: { [move_id]: { [version_group_id]: [PokemonMove[i]] } },
+    };
   }
 }
 
@@ -212,9 +227,11 @@ for (let i = 0; i < VersionName.length; i++) {
   }
 }
 
-const PokemonMoveMethodById = {};
-for (let i = 0; i < PokemonMoveMethod.length; i++) {
-  PokemonMoveMethodById[PokemonMoveMethod[i].id] = PokemonMoveMethod[i];
+const PokemonMoveMethodProseById = {};
+for (let i = 0; i < PokemonMoveMethodProse.length; i++) {
+  if (PokemonMoveMethodProse[i].local_language_id === LANGUAGE_ID) {
+    PokemonMoveMethodProseById[PokemonMoveMethodProse[i].pokemon_move_method_id] = PokemonMoveMethodProse[i];
+  }
 }
 
 const TypeEfficacyByAttack = {};
@@ -246,8 +263,8 @@ export {
   ContestType,
   ContextEffect,
   SuperContextEffect,
-  PokemonMoveMethod,
-  PokemonMoveMethodById,
+  PokemonMoveMethodProse,
+  PokemonMoveMethodProseById,
   ItemPocket,
   ItemCategory,
   ItemFlingEffect,
@@ -286,7 +303,7 @@ export {
   Move,
   MoveById,
   PokemonMove,
-  PokemonMoveByPokemonId,
+  PokemonMoveGrouped,
   PokemonStat,
   PokemonStatByPokemonId,
 };

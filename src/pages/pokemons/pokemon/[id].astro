@@ -3,22 +3,21 @@ import { Card, Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
 import EvolutionChain from "src/components/pokemons/pokemon/EvolutionChain.astro";
+import PokemonMoveTable from "src/components/pokemons/pokemon/move-table/PokemonMoveTable.astro";
 import TypeBadge from "src/components/pokemons/pokemon/TypeBadge.astro";
+import statColorJson from "src/utils/color/stat-color.json";
 import {
   AbilityById,
-  MoveById,
   Pokemon,
   PokemonAbilityByPokemonId,
   PokemonById,
-  PokemonMoveByPokemonId,
-  PokemonMoveMethodById,
+  PokemonMoveGrouped,
   PokemonSpeciesById,
   PokemonStatByPokemonId,
   PokemonTypeByPokemonId,
   StatById,
-  VersionGroupById,
+  VersionGroup,
 } from "src/utils/data-read";
-import statColorJson from "src/utils/color/stat-color.json";
 import { capitalizeSnakeCase } from "src/utils/string";
 
 export function getStaticPaths() {
@@ -27,22 +26,12 @@ export function getStaticPaths() {
   }));
 }
 
+const versionGroupIds = VersionGroup.map((versionGroup) => versionGroup.id);
 const { id } = Astro.params;
 const pokemon = PokemonById[id];
 const { identifier, species_id, height, weight, base_experience, is_default } = pokemon;
 const [name] = [identifier].map(capitalizeSnakeCase);
-const pokemonMoves = PokemonMoveByPokemonId[id];
-
-const pokemonMovesByVersionGroupId = {};
-if (pokemonMoves) {
-  for (let i = 0; i < pokemonMoves.length; i++) {
-    if (pokemonMoves[i].version_group_id in pokemonMovesByVersionGroupId) {
-      pokemonMovesByVersionGroupId[pokemonMoves[i].version_group_id].push(pokemonMoves[i]);
-    } else {
-      pokemonMovesByVersionGroupId[pokemonMoves[i].version_group_id] = [pokemonMoves[i]];
-    }
-  }
-}
+const pokemonMoveByMethod = PokemonMoveGrouped[id];
 
 const evolutionChainId = PokemonSpeciesById[species_id].evolution_chain_id;
 
@@ -169,44 +158,7 @@ const headings = [
     <EvolutionChain evolutionChainId={evolutionChainId} />
   </div>
   <Heading heading={headings[3]} />
-  <div data-pagefind-ignore="all" class="whitespace-nowrap">
-    {
-      pokemonMoves &&
-        Object.entries(pokemonMovesByVersionGroupId).map(([versionGroupId, pokemonMoves]) => (
-          <details>
-            <summary>{capitalizeSnakeCase(VersionGroupById[versionGroupId].identifier)}</summary>
-            <div class="overflow-auto">
-              <table class="!table min-w-full text-center">
-                <thead>
-                  <tr>
-                    <th>Level</th>
-                    <th>Move</th>
-                    <th>Type</th>
-                    <th>Learn Method</th>
-                    <th>Power</th>
-                    <th>Accuracy</th>
-                    <th>PP</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(pokemonMoves as any).map((pokemonMove) => (
-                    <tr>
-                      <td>{pokemonMove.level}</td>
-                      <td>{capitalizeSnakeCase(MoveById[pokemonMove.move_id].identifier)}</td>
-                      <td>{<TypeBadge type_id={MoveById[pokemonMove.move_id].type_id} />}</td>
-                      <td>
-                        {capitalizeSnakeCase(PokemonMoveMethodById[pokemonMove.pokemon_move_method_id].identifier)}
-                      </td>
-                      <td>{MoveById[pokemonMove.move_id].power}</td>
-                      <td>{MoveById[pokemonMove.move_id].accuracy}</td>
-                      <td>{MoveById[pokemonMove.move_id].pp}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </details>
-        ))
-    }
+  <div data-pagefind-ignore="all" class="overflow-auto not-content whitespace-nowrap text-center">
+    {pokemonMoveByMethod && <PokemonMoveTable pokemonMoveByMethod={pokemonMoveByMethod} />}
   </div>
 </StarlightPage>

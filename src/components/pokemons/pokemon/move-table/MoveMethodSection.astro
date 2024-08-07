@@ -1,0 +1,65 @@
+---
+import { MoveById, PokemonMoveMethodProseById, VersionGroup } from "src/utils/data-read";
+import { capitalizeSnakeCase } from "src/utils/string";
+import TypeBadge from "../TypeBadge.astro";
+
+const versionGroupIds = VersionGroup.map((versionGroup) => versionGroup.id);
+const { pokemon_move_method_id, pokemonMoveByMove } = Astro.props;
+---
+
+<thead>
+  <tr>
+    <th class="text-start text-[1.5em]" colspan="100%">{PokemonMoveMethodProseById[pokemon_move_method_id].name}</th>
+  </tr>
+</thead>
+<tbody>
+  {
+    Object.entries(pokemonMoveByMove).map(([move_id, pokemonMoveByVersionGroup]) => (
+      <tr>
+        {versionGroupIds.map((versionGroupId) => {
+          const moves = (pokemonMoveByVersionGroup as any)[versionGroupId];
+          return (
+            <td>
+              {moves &&
+                (moves.length > 1 ? (
+                  <ul class="p-0">
+                    {moves?.map((pokemonMove) => (
+                      <li class="!inline">
+                        {pokemonMove.level ? (
+                          pokemonMove.level
+                        ) : (
+                          <img class="aspect-square w-[1.5em]" src={`/images/item/${pokemon_move_method_id}.png`} />
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : moves[0].level ? (
+                  moves[0].level
+                ) : (
+                  <img class="aspect-square w-[1.5em]" src={`/images/item/${pokemon_move_method_id}.png`} />
+                ))}
+            </td>
+          );
+        })}
+        <td>{capitalizeSnakeCase(MoveById[move_id].identifier)}</td>
+        <td>{<TypeBadge type_id={MoveById[move_id].type_id} />}</td>
+        <td>{MoveById[move_id].power}</td>
+        <td>{MoveById[move_id].accuracy}</td>
+        <td>{MoveById[move_id].pp}</td>
+      </tr>
+    ))
+  }
+</tbody>
+<style>
+  tr {
+    border-bottom: 1px solid var(--sl-color-gray-6);
+  }
+  td {
+    padding: 0.25em;
+  }
+  ul li:not(:last-child) {
+    &::after {
+      content: ", ";
+    }
+  }
+</style>
