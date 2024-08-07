@@ -26,7 +26,7 @@ export function getStaticPaths() {
   }));
 }
 
-const versionGroupIds = VersionGroup.map((versionGroup) => versionGroup.id);
+
 const { id } = Astro.params;
 const pokemon = PokemonById[id];
 const { identifier, species_id, height, weight, base_experience, is_default } = pokemon;

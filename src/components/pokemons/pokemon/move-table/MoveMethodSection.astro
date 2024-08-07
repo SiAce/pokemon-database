@@ -1,9 +1,8 @@
 ---
-import { MoveById, PokemonMoveMethodProseById, VersionGroup } from "src/utils/data-read";
+import { MoveById, PokemonMoveMethodProseById, versionGroupIds } from "src/utils/data-read";
 import { capitalizeSnakeCase } from "src/utils/string";
 import TypeBadge from "../TypeBadge.astro";
 
-const versionGroupIds = VersionGroup.map((versionGroup) => versionGroup.id);
 const { pokemon_move_method_id, pokemonMoveByMove } = Astro.props;
 ---
 
@@ -15,7 +14,12 @@ const { pokemon_move_method_id, pokemonMoveByMove } = Astro.props;
 <tbody>
   {
     Object.entries(pokemonMoveByMove).map(([move_id, pokemonMoveByVersionGroup]) => (
-      <tr>
+      <tr id={`${pokemon_move_method_id}|${move_id}`}>
+        <td>{capitalizeSnakeCase(MoveById[move_id].identifier)}</td>
+        <td>{<TypeBadge type_id={MoveById[move_id].type_id} />}</td>
+        <td>{MoveById[move_id].power}</td>
+        <td>{MoveById[move_id].accuracy}</td>
+        <td>{MoveById[move_id].pp}</td>
         {versionGroupIds.map((versionGroupId) => {
           const moves = (pokemonMoveByVersionGroup as any)[versionGroupId];
           return (
@@ -24,28 +28,15 @@ const { pokemon_move_method_id, pokemonMoveByMove } = Astro.props;
                 (moves.length > 1 ? (
                   <ul class="p-0">
                     {moves?.map((pokemonMove) => (
-                      <li class="!inline">
-                        {pokemonMove.level ? (
-                          pokemonMove.level
-                        ) : (
-                          <img class="aspect-square w-[1.5em]" src={`/images/item/${pokemon_move_method_id}.png`} />
-                        )}
-                      </li>
+                      <li class="!inline">{pokemonMove.level}</li>
                     ))}
                   </ul>
-                ) : moves[0].level ? (
-                  moves[0].level
                 ) : (
-                  <img class="aspect-square w-[1.5em]" src={`/images/item/${pokemon_move_method_id}.png`} />
+                  moves[0].level
                 ))}
             </td>
           );
         })}
-        <td>{capitalizeSnakeCase(MoveById[move_id].identifier)}</td>
-        <td>{<TypeBadge type_id={MoveById[move_id].type_id} />}</td>
-        <td>{MoveById[move_id].power}</td>
-        <td>{MoveById[move_id].accuracy}</td>
-        <td>{MoveById[move_id].pp}</td>
       </tr>
     ))
   }

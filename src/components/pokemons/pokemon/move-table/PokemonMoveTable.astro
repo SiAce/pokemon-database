@@ -1,19 +1,19 @@
 ---
-import { VersionGroup, VersionGroupById } from "src/utils/data-read";
+import { VersionGroupById, versionGroupIds } from "src/utils/data-read";
 import { capitalizeSnakeCase } from "src/utils/string";
 import MoveMethodSection from "./MoveMethodSection.astro";
-
-const versionGroupIds = VersionGroup.map((versionGroup) => versionGroup.id);
 
 const { pokemonMoveByMethod } = Astro.props;
 ---
 
 <table class="!table w-full table-auto border-collapse">
   <colgroup>
+    <col span="5" />
     {versionGroupIds.map((id) => <col id={`col-${id}`} />)}
   </colgroup>
   <thead>
     <tr>
+      <th colspan="5"></th>
       {
         versionGroupIds.map((id) => (
           <th>
@@ -25,12 +25,16 @@ const { pokemonMoveByMethod } = Astro.props;
       }
     </tr>
     <tr>
+      <th colspan="5"></th>
       {versionGroupIds.map((id) => <th>{capitalizeSnakeCase(VersionGroupById[id].identifier)}</th>)}
+    </tr>
+    <tr>
       <th>Move</th>
       <th>Type</th>
       <th>Power</th>
       <th>Accuracy</th>
       <th>PP</th>
+      <th colspan="100%">Level</th>
     </tr>
   </thead>
   {
@@ -47,12 +51,19 @@ const { pokemonMoveByMethod } = Astro.props;
     border-bottom: 1px solid var(--sl-color-gray-6);
   }
 </style>
-<script define:vars={{ versionGroupIds }}>
-  versionGroupIds.forEach((buttonId) => {
-    const button = document.getElementById(String(buttonId));
-    const otherIds = versionGroupIds.filter((id) => id !== buttonId);
+<script define:vars={{ versionGroupIds, pokemonMoveByMethod }}>
+  versionGroupIds.forEach((versionGroupId) => {
+    const button = document.getElementById(versionGroupId);
+    const otherIds = versionGroupIds.filter((id) => id !== versionGroupId);
+    const emptyRows = [];
+    Object.entries(pokemonMoveByMethod).forEach(([pokemon_move_method_id, pokemonMoveByMove]) => {
+      Object.entries(pokemonMoveByMove).forEach(([move_id, pokemonMoveByVersionGroup]) => {
+        if (!pokemonMoveByVersionGroup[versionGroupId]) {
+          emptyRows.push(document.getElementById(`${pokemon_move_method_id}|${move_id}`));
+        }
+      });
+    });
     button.addEventListener("click", () => {
-      console.log(button.innerHTML);
       if (button.ariaExpanded === "true") {
         otherIds.forEach((id) => {
           const col = document.getElementById(`col-${id}`);
@@ -60,6 +71,8 @@ const { pokemonMoveByMethod } = Astro.props;
           const otherButton = document.getElementById(id);
           otherButton.disabled = true;
         });
+        emptyRows.forEach((emptyRow) => (emptyRow.style.visibility = "collapse"));
+
         button.ariaExpanded = false;
         button.innerHTML = "+";
       } else {
@@ -69,6 +82,7 @@ const { pokemonMoveByMethod } = Astro.props;
           const anyButton = document.getElementById(id);
           anyButton.disabled = false;
         });
+        emptyRows.forEach((emptyRow) => (emptyRow.style.visibility = "visible"));
         button.ariaExpanded = true;
         button.innerHTML = "-";
       }
