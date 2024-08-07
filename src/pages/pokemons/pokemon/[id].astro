@@ -152,11 +152,11 @@ const headings = [
   </Card>
   <hr class="!my-4 border-gray-800" />
   <Heading heading={headings[2]} />
-  <div data-pagefind-ignore="all" class="not-content overflow-auto">
+  <div data-pagefind-ignore="all" class="not-content overflow-x-auto">
     <EvolutionChain evolutionChainId={evolutionChainId} />
   </div>
   <Heading heading={headings[3]} />
-  <div data-pagefind-ignore="all" class="overflow-auto not-content whitespace-nowrap text-center">
+  <div data-pagefind-ignore="all" class="overflow-x-auto not-content whitespace-nowrap text-center">
     {pokemonMoveByMethod && <PokemonMoveTable pokemonMoveByMethod={pokemonMoveByMethod} />}
   </div>
 </StarlightPage>
