@@ -16,7 +16,6 @@ import {
   PokemonStatByPokemonId,
   PokemonTypeByPokemonId,
   StatById,
-  VersionGroup,
 } from "src/utils/data-read";
 import { capitalizeSnakeCase } from "src/utils/string";
 
@@ -25,7 +24,6 @@ export function getStaticPaths() {
     params: { id: pokemon.id },
   }));
 }
-
 
 const { id } = Astro.params;
 const pokemon = PokemonById[id];

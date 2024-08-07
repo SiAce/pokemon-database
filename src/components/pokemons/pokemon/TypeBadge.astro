@@ -1,8 +1,8 @@
 ---
-import { TypeById } from "src/utils/data-read";
-import { capitalizeFirstLetter } from "src/utils/string";
 import typeColorLightJson from "src/utils/color/type-color-light.json";
 import typeColorJson from "src/utils/color/type-color.json";
+import { TypeById } from "src/utils/data-read";
+import { capitalizeFirstLetter } from "src/utils/string";
 
 const { class: className, type_id, formatter = capitalizeFirstLetter } = Astro.props;
 ---

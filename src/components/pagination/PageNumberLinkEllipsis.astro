@@ -1,6 +1,6 @@
 ---
-import { range } from "src/utils/array";
 import PageNumberLink from "src/components/pagination/PageNumberLink.astro";
+import { range } from "src/utils/array";
 
 const { baseUrl, startPage, endPage } = Astro.props;
 const numberOfPages = endPage - startPage + 1;

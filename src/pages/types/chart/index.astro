@@ -2,10 +2,10 @@
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
 import TypeBadge from "src/components/pokemons/pokemon/TypeBadge.astro";
-import { TypeEfficacyByAttack } from "src/utils/data-read";
-import { abbreviation } from "src/utils/string";
 import efficacyColorJson from "src/utils/color/efficacy-color.json";
+import { TypeEfficacyByAttack } from "src/utils/data-read";
 import efficacyTextJson from "src/utils/efficacy-text.json";
+import { abbreviation } from "src/utils/string";
 
 const headings = [{ depth: 2, slug: "type-chart", text: "Type Chart" }];
 ---
