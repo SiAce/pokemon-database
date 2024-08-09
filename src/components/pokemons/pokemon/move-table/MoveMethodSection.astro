@@ -11,9 +11,9 @@ const { pokemon_move_method_id, pokemonMoveByMove, versionGroupIds } = Astro.pro
     <th class="text-start text-[1.5em]" colspan="100%">{PokemonMoveMethodProseById[pokemon_move_method_id].name}</th>
   </tr>
 </thead>
-<tbody>
+<tbody id=`tbody|${pokemon_move_method_id}`>
   {
-    Object.entries(pokemonMoveByMove).map(([move_id, pokemonMoveByVersionGroup]) => (
+    Object.keys(pokemonMoveByMove).map((move_id) => (
       <tr id={`${pokemon_move_method_id}|${move_id}`}>
         <td>{capitalizeSnakeCase(MoveById[move_id].identifier)}</td>
         <td>{<TypeBadge type_id={MoveById[move_id].type_id} />}</td>
@@ -21,7 +21,7 @@ const { pokemon_move_method_id, pokemonMoveByMove, versionGroupIds } = Astro.pro
         <td>{MoveById[move_id].accuracy}</td>
         <td>{MoveById[move_id].pp}</td>
         {versionGroupIds.map((versionGroupId) => {
-          const moves = (pokemonMoveByVersionGroup as any)[versionGroupId];
+          const moves = pokemonMoveByMove[move_id][versionGroupId];
           return <td>{moves?.map((pokemonMove) => pokemonMove.level).join(", ")}</td>;
         })}
       </tr>
