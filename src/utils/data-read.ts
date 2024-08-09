@@ -104,8 +104,15 @@ for (let i = 0; i < PokemonSpecies.length; i++) {
 }
 
 const PokemonMoveGrouped = {};
+const VersionGroupIdByPokemon = {};
 for (let i = 0; i < PokemonMove.length; i++) {
   const { pokemon_id, version_group_id, move_id, pokemon_move_method_id } = PokemonMove[i];
+  if (pokemon_id in VersionGroupIdByPokemon) {
+    VersionGroupIdByPokemon[pokemon_id].add(version_group_id);
+  } else {
+    VersionGroupIdByPokemon[pokemon_id] = new Set([version_group_id]);
+  }
+
   if (pokemon_id in PokemonMoveGrouped) {
     if (pokemon_move_method_id in PokemonMoveGrouped[pokemon_id]) {
       if (move_id in PokemonMoveGrouped[pokemon_id][pokemon_move_method_id]) {
@@ -200,11 +207,9 @@ for (let i = 0; i < MoveDamageClassProse.length; i++) {
   }
 }
 
-const versionGroupIds: any = [];
 const VersionGroupById = {};
 const VersionGroupByGenerationId = {};
 for (let i = 0; i < VersionGroup.length; i++) {
-  versionGroupIds.push(VersionGroup[i].id);
   VersionGroupById[VersionGroup[i].id] = VersionGroup[i];
   if (VersionGroup[i].generation_id in VersionGroupByGenerationId) {
     VersionGroupByGenerationId[VersionGroup[i].generation_id].push(VersionGroup[i]);
@@ -307,6 +312,6 @@ export {
   VersionGroup,
   VersionGroupByGenerationId,
   VersionGroupById,
-  versionGroupIds,
+  VersionGroupIdByPokemon,
   VersionNameById,
 };

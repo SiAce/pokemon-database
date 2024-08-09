@@ -1,10 +1,10 @@
 ---
 import versionColorJson from "src/utils/color/version-color.json";
-import { VersionByVersionGroup, versionGroupIds, VersionNameById } from "src/utils/data-read";
+import { VersionByVersionGroup, VersionNameById } from "src/utils/data-read";
 import MoveMethodSection from "./MoveMethodSection.astro";
 import { versionAbbreviation } from "src/utils/string";
 
-const { pokemonMoveByMethod } = Astro.props;
+const { pokemonMoveByMethod, versionGroupIds } = Astro.props;
 ---
 
 <table class="!table w-full table-auto border-collapse">
@@ -57,7 +57,11 @@ const { pokemonMoveByMethod } = Astro.props;
   </thead>
   {
     Object.entries(pokemonMoveByMethod).map(([pokemon_move_method_id, pokemonMoveByMove]) => (
-      <MoveMethodSection pokemon_move_method_id={pokemon_move_method_id} pokemonMoveByMove={pokemonMoveByMove} />
+      <MoveMethodSection
+        pokemon_move_method_id={pokemon_move_method_id}
+        pokemonMoveByMove={pokemonMoveByMove}
+        versionGroupIds={versionGroupIds}
+      />
     ))
   }
 </table>

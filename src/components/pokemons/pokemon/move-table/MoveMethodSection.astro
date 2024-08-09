@@ -1,9 +1,9 @@
 ---
-import { MoveById, PokemonMoveMethodProseById, versionGroupIds } from "src/utils/data-read";
+import { MoveById, PokemonMoveMethodProseById } from "src/utils/data-read";
 import { capitalizeSnakeCase } from "src/utils/string";
 import TypeBadge from "../TypeBadge.astro";
 
-const { pokemon_move_method_id, pokemonMoveByMove } = Astro.props;
+const { pokemon_move_method_id, pokemonMoveByMove, versionGroupIds } = Astro.props;
 ---
 
 <thead>
@@ -22,20 +22,7 @@ const { pokemon_move_method_id, pokemonMoveByMove } = Astro.props;
         <td>{MoveById[move_id].pp}</td>
         {versionGroupIds.map((versionGroupId) => {
           const moves = (pokemonMoveByVersionGroup as any)[versionGroupId];
-          return (
-            <td>
-              {moves &&
-                (moves.length > 1 ? (
-                  <ul class="p-0">
-                    {moves?.map((pokemonMove) => (
-                      <li class="!inline">{pokemonMove.level}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  moves[0].level
-                ))}
-            </td>
-          );
+          return <td>{moves?.map((pokemonMove) => pokemonMove.level).join(", ")}</td>;
         })}
       </tr>
     ))
@@ -45,12 +32,8 @@ const { pokemon_move_method_id, pokemonMoveByMove } = Astro.props;
   tr {
     border-bottom: 1px solid var(--sl-color-gray-6);
   }
-  td, th {
+  td,
+  th {
     padding: 0.25em;
-  }
-  ul li:not(:last-child) {
-    &::after {
-      content: ", ";
-    }
   }
 </style>

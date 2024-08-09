@@ -16,6 +16,7 @@ import {
   PokemonStatByPokemonId,
   PokemonTypeByPokemonId,
   StatById,
+  VersionGroupIdByPokemon,
 } from "src/utils/data-read";
 import { capitalizeSnakeCase } from "src/utils/string";
 
@@ -157,6 +158,13 @@ const headings = [
   </div>
   <Heading heading={headings[3]} />
   <div data-pagefind-ignore="all" class="overflow-x-auto not-content text-sm whitespace-nowrap text-center">
-    {pokemonMoveByMethod && <PokemonMoveTable pokemonMoveByMethod={pokemonMoveByMethod} />}
+    {
+      pokemonMoveByMethod && (
+        <PokemonMoveTable
+          pokemonMoveByMethod={pokemonMoveByMethod}
+          versionGroupIds={[...VersionGroupIdByPokemon[id]].sort((a, b) => a - b)}
+        />
+      )
+    }
   </div>
 </StarlightPage>
