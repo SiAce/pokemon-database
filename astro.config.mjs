@@ -11,7 +11,7 @@ export default defineConfig({
     starlight({
       title: "Pokémon Database",
       social: {
-        github: "https://github.com/withastro/starlight",
+        github: "https://github.com/SiAce/pokemon-database",
       },
       sidebar: [
         {
