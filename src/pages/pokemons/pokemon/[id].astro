@@ -81,15 +81,13 @@ const headings = [
           }
         </div>
       </div>
-      <div>
+      <div class="not-content">
         <h4 class="my-2">Abilities</h4>
         <div>
           {
             PokemonAbilityByPokemonId[id].map((pokemonAbility) => (
-              <a class="no-underline">
-                <span class="rounded-md bg-gray-400 px-4 py-2 mr-4 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
-                  {capitalizeSnakeCase(AbilityById[pokemonAbility.ability_id].identifier)}
-                </span>
+              <a class="inline-block rounded px-2 py-1 mr-2 mb-2 bg-gray-400 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
+                {capitalizeSnakeCase(AbilityById[pokemonAbility.ability_id].identifier)}
               </a>
             ))
           }
@@ -101,7 +99,7 @@ const headings = [
           {
             PokemonStatByPokemonId[id].map((pokemonStat) => (
               <a
-                class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
+                class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                 style={{
                   backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
                 }}
@@ -121,7 +119,7 @@ const headings = [
           {
             PokemonStatByPokemonId[id].map((pokemonStat) => (
               <a
-                class="no-underline flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
+                class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                 style={{
                   backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
                 }}
