@@ -94,10 +94,14 @@ for (let i = 0; i < Ability.length; i++) {
   AbilityById[Ability[i].id] = Ability[i];
 }
 
-const encounter_condition_value_map_by_encounter_id = Object.groupBy(
-  encounter_condition_value_map,
-  (encounter_condition_value_map) => encounter_condition_value_map.encounter_id
-);
+const encounter_condition_value_map_by_encounter_id = {};
+for (let i = 0; i < encounter_condition_value_map.length; i++) {
+  if (encounter_condition_value_map[i].encounter_id in encounter_condition_value_map_by_encounter_id) {
+    encounter_condition_value_map_by_encounter_id[encounter_condition_value_map[i].encounter_id].push(encounter_condition_value_map[i]);
+  } else {
+    encounter_condition_value_map_by_encounter_id[encounter_condition_value_map[i].encounter_id] = [encounter_condition_value_map[i]];
+  }
+}
 
 const encounter_condition_values_by_id = {};
 for (let i = 0; i < encounter_condition_values.length; i++) {
