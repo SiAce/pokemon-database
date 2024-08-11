@@ -7,5 +7,9 @@ a {
 }
 
 :root {
-  --sl-content-width: 57rem;
+  --sl-content-width: 90rem;
+}
+
+.right-sidebar-container {
+  width: 10rem;
 }

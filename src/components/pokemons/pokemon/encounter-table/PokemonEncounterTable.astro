@@ -1,0 +1,152 @@
+---
+import versionColorJson from "src/utils/color/version-color.json";
+import {
+  encounter_condition_value_map_by_encounter_id,
+  encounter_condition_values_by_id,
+  encounter_methods_by_id,
+  encounter_slots_by_id,
+  location_areas_by_id,
+  location_by_id,
+  VersionNameById,
+} from "src/utils/data-read";
+import { capitalizeSnakeCase, versionAbbreviation } from "src/utils/string";
+
+const { encounters_by_location_area_id, encounter_version_ids } = Astro.props;
+const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sort((a, b) => Number(a) - Number(b));
+---
+
+<table class="mx-auto !table w-full table-auto border-collapse">
+  <colgroup>
+    <col />
+    {encounter_version_ids.map((id) => <col id={`encounter|col|${id}`} />)}
+  </colgroup>
+  <thead>
+    <tr>
+      <th></th>
+      {
+        encounter_version_ids.map((id) => (
+          <th>
+            <button
+              class="h-[1.5em] aspect-square m-1 cursor-pointer"
+              type="button"
+              id={`encounter|button|${id}`}
+              aria-expanded={true}
+            >
+              -
+            </button>
+          </th>
+        ))
+      }
+    </tr>
+    <tr>
+      <th class="font-black">Version:</th>
+      {
+        encounter_version_ids.map((version_id) => (
+          <th class="p-0">
+            <div class="inline-flex justify-center items-center">
+              <div class="flex">
+                <a
+                  title={VersionNameById[version_id].name}
+                  style={` background-color: ${versionColorJson[version_id]}; color: white; padding: 0 0.2em;`}
+                >
+                  {versionAbbreviation(VersionNameById[version_id].name)}
+                </a>
+              </div>
+            </div>
+          </th>
+        ))
+      }
+    </tr>
+    <tr>
+      <th>Location</th>
+      <th colspan="100%">Detail</th>
+    </tr>
+  </thead>
+  <tbody id=`encounter|tbody`>
+    {
+      location_area_ids_sorted.map((location_area_id) => (
+        <tr id={`encounter|tr|${location_area_id}`}>
+          <td>{`${capitalizeSnakeCase(location_by_id[location_areas_by_id[location_area_id].location_id].identifier)} ${capitalizeSnakeCase(location_areas_by_id[location_area_id].identifier)}`}</td>
+          {encounter_version_ids.map((version_id) => (
+            <td>
+              <ul>
+                {encounters_by_location_area_id[location_area_id][version_id]?.map((encounter) => (
+                  <li>
+                    {`${
+                      encounter_methods_by_id[encounter_slots_by_id[encounter.encounter_slot_id].encounter_method_id]
+                        .identifier
+                    } [${
+                      encounter_condition_value_map_by_encounter_id[encounter.id]?.map(
+                        (encounter_condition_value_map) =>
+                          encounter_condition_values_by_id[encounter_condition_value_map.encounter_condition_value_id]
+                            .identifier
+                      ) ?? ""
+                    }]`}
+                  </li>
+                ))}
+              </ul>
+            </td>
+          ))}
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+<style>
+  th {
+    padding: 0 0.5em;
+  }
+  tr {
+    border-bottom: 1px solid var(--sl-color-gray-6);
+  }
+</style>
+<script define:vars={{ encounter_version_ids, encounters_by_location_area_id, location_area_ids_sorted }}>
+  const tbody = document.getElementById("encounter|tbody");
+  const original_trs = location_area_ids_sorted.map((location_area_id) =>
+    document.getElementById(`encounter|tr|${location_area_id}`)
+  );
+  const sorted_trs = {};
+  encounter_version_ids.forEach((encounter_version_id) => {
+    sorted_trs[encounter_version_id] = original_trs
+      .filter((original_tr) => encounter_version_id in encounters_by_location_area_id[original_tr.id.split("|").at(-1)])
+      .toSorted((a, b) => Number(a.id.split("|").at(-1)) - Number(b.id.split("|").at(-1)));
+  });
+
+  encounter_version_ids.forEach((encounter_version_id) => {
+    const button = document.getElementById(`encounter|button|${encounter_version_id}`);
+    button.addEventListener("click", () => {
+      if (button.ariaExpanded === "true") {
+        encounter_version_ids.forEach((id) => {
+          if (id === encounter_version_id) {
+            return;
+          }
+          const col = document.getElementById(`encounter|col|${id}`);
+          col.style.visibility = "collapse";
+          const otherButton = document.getElementById(`encounter|button|${id}`);
+          otherButton.disabled = true;
+        });
+
+        tbody.textContent = "";
+        sorted_trs[encounter_version_id].forEach((encounter_tr) => tbody.appendChild(encounter_tr));
+
+        button.ariaExpanded = false;
+        button.innerHTML = "+";
+      } else {
+        encounter_version_ids.forEach((id) => {
+          if (id === encounter_version_id) {
+            return;
+          }
+          const col = document.getElementById(`encounter|col|${id}`);
+          col.style.visibility = "visible";
+          const otherButton = document.getElementById(`encounter|button|${id}`);
+          otherButton.disabled = false;
+        });
+        tbody.textContent = "";
+        original_trs.forEach((encounter_tr) => tbody.appendChild(encounter_tr));
+
+        button.ariaExpanded = true;
+        button.innerHTML = "-";
+      }
+    });
+  });
+</script>

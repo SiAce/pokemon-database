@@ -14,7 +14,7 @@ export const getStaticPaths = (({ paginate }) => {
     Pokemon.map(({ id }) => ({
       id,
     })),
-    { pageSize: 60 }
+    { pageSize: 90 }
   );
 }) satisfies GetStaticPaths;
 
@@ -58,6 +58,6 @@ const headings = [{ depth: 2, slug: "list-of-pokemon", text: "List of Pokemon" }
 <style>
   .pokemon-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(max(144px, 100% / 6), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(max(144px, 100% / 9), 1fr));
   }
 </style>

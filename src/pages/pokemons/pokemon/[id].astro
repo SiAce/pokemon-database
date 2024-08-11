@@ -2,12 +2,15 @@
 import { Card, Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
+import PokemonEncounterTable from "src/components/pokemons/pokemon/encounter-table/PokemonEncounterTable.astro";
 import EvolutionChain from "src/components/pokemons/pokemon/EvolutionChain.astro";
 import PokemonMoveTable from "src/components/pokemons/pokemon/move-table/PokemonMoveTable.astro";
 import TypeBadge from "src/components/pokemons/pokemon/TypeBadge.astro";
 import statColorJson from "src/utils/color/stat-color.json";
 import {
   AbilityById,
+  encounter_version_ids_by_pokemon_id,
+  encounters_grouped,
   Pokemon,
   PokemonAbilityByPokemonId,
   PokemonById,
@@ -31,138 +34,154 @@ const pokemon = PokemonById[id];
 const { identifier, species_id, height, weight, base_experience, is_default } = pokemon;
 const [name] = [identifier].map(capitalizeSnakeCase);
 const pokemonMoveByMethod = PokemonMoveGrouped[id];
+const encounters_by_location_area_id = encounters_grouped[id];
 
 const evolutionChainId = PokemonSpeciesById[species_id].evolution_chain_id;
 
 const headings = [
   { depth: 2, slug: "basic-info", text: "Basic Info" },
-  { depth: 2, slug: "sprites", text: "Sprites" },
   { depth: 2, slug: "evolution-chain", text: "Evolution Chain" },
   { depth: 2, slug: "moves", text: "Moves" },
+  { depth: 2, slug: "encounters", text: "Encounters" },
 ];
 ---
 
 <StarlightPage frontmatter={{ title: name }} headings={headings}>
-  <div data-pagefind-ignore="all" class="flex">
-    {
-      pokemon.prev && (
-        <a href={`/pokemons/pokemon/${pokemon.prev}`}>
-          <Icon name="left-arrow" />
-          <span>Previous #{pokemon.prev}</span>
-        </a>
-      )
-    }
-    {
-      pokemon.next && (
-        <a href={`/pokemons/pokemon/${pokemon.next}`} class="ml-auto flex flex-col items-end">
-          <Icon name="right-arrow" />
-          <span>Next #{pokemon.next}</span>
-        </a>
-      )
-    }
-  </div>
-  <Heading heading={headings[0]} />
-  <Card title={`#${id} ${name}`}>
-    <div class="flex flex-col divide-y-2 gap-4">
-      <img
-        class="mx-auto"
-        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
-        width={300}
-        height={300}
-        alt={name}
-      />
-      <div>
-        <h4 class="my-2">Type</h4>
-        <div class="flex gap-4">
-          {
-            PokemonTypeByPokemonId[id].map((pokemonType) => (
-              <TypeBadge type_id={pokemonType.type_id} class="text-2xl px-3 py-1" />
-            ))
-          }
-        </div>
-      </div>
-      <div class="not-content">
-        <h4 class="my-2">Abilities</h4>
-        <div>
-          {
-            PokemonAbilityByPokemonId[id].map((pokemonAbility) => (
-              <a class="inline-block rounded px-2 py-1 mr-2 mb-2 bg-gray-400 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
-                {capitalizeSnakeCase(AbilityById[pokemonAbility.ability_id].identifier)}
-              </a>
-            ))
-          }
-        </div>
-      </div>
-      <div>
-        <h4 class="my-2">Base Stats</h4>
-        <div class="flex justify-between flex-wrap gap-1">
-          {
-            PokemonStatByPokemonId[id].map((pokemonStat) => (
-              <a
-                class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
-                style={{
-                  backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
-                }}
-              >
-                <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
-                  <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
-                  <div>{pokemonStat.base_stat}</div>
-                </div>
-              </a>
-            ))
-          }
-        </div>
-      </div>
-      <div>
-        <h4 class="my-2">Effort Value Yield</h4>
-        <div class="flex justify-between flex-wrap gap-1">
-          {
-            PokemonStatByPokemonId[id].map((pokemonStat) => (
-              <a
-                class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
-                style={{
-                  backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
-                }}
-              >
-                <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
-                  <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
-                  <div>{pokemonStat.effort}</div>
-                </div>
-              </a>
-            ))
-          }
-        </div>
-      </div>
-      <div class="py-2">
-        <h4>Base Experience</h4>
-        <div class="pl-2">{base_experience}</div>
-      </div>
-      <div class="flex justify-stretch divide-x-2">
-        <div class="flex-auto mt-4 pl-2">
-          <h4>Height</h4>
-          <p>{height! / 10} m</p>
-        </div>
-        <div class="flex-auto !mt-4 pl-2">
-          <h4>Weight</h4>
-          <p>{weight! / 10} kg</p>
-        </div>
-      </div>
+  <div data-pagefind-ignore="all">
+    <div class="flex">
+      {
+        pokemon.prev && (
+          <a href={`/pokemons/pokemon/${pokemon.prev}`}>
+            <Icon name="left-arrow" />
+            <span>Previous #{pokemon.prev}</span>
+          </a>
+        )
+      }
+      {
+        pokemon.next && (
+          <a href={`/pokemons/pokemon/${pokemon.next}`} class="ml-auto flex flex-col items-end">
+            <Icon name="right-arrow" />
+            <span>Next #{pokemon.next}</span>
+          </a>
+        )
+      }
     </div>
-  </Card>
-  <hr class="!my-4 border-gray-800" />
-  <Heading heading={headings[2]} />
-  <div data-pagefind-ignore="all" class="not-content overflow-x-auto">
-    <EvolutionChain evolutionChainId={evolutionChainId} />
-  </div>
-  <Heading heading={headings[3]} />
-  <div data-pagefind-ignore="all" class="overflow-x-auto not-content text-sm whitespace-nowrap text-center">
-    {
-      pokemonMoveByMethod && (
-        <PokemonMoveTable
-          pokemonMoveByMethod={pokemonMoveByMethod}
-          versionGroupIds={[...VersionGroupIdByPokemon[id]].sort((a, b) => a - b)}
+    <Heading heading={headings[0]} />
+    <Card title={`#${id} ${name}`}>
+      <div class="flex flex-col divide-y-2 gap-4">
+        <img
+          class="mx-auto"
+          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+          width={300}
+          height={300}
+          alt={name}
         />
-      )
-    }
+        <div>
+          <h4 class="my-2">Type</h4>
+          <div class="flex gap-4">
+            {
+              PokemonTypeByPokemonId[id].map((pokemonType) => (
+                <TypeBadge type_id={pokemonType.type_id} class="text-2xl px-3 py-1" />
+              ))
+            }
+          </div>
+        </div>
+        <div class="not-content">
+          <h4 class="my-2">Abilities</h4>
+          <div>
+            {
+              PokemonAbilityByPokemonId[id].map((pokemonAbility) => (
+                <a class="inline-block rounded px-2 py-1 mr-2 mb-2 bg-gray-400 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
+                  {capitalizeSnakeCase(AbilityById[pokemonAbility.ability_id].identifier)}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+        <div>
+          <h4 class="my-2">Base Stats</h4>
+          <div class="flex justify-between flex-wrap gap-1">
+            {
+              PokemonStatByPokemonId[id].map((pokemonStat) => (
+                <a
+                  class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
+                  style={{
+                    backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
+                  }}
+                >
+                  <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
+                    <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
+                    <div>{pokemonStat.base_stat}</div>
+                  </div>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+        <div>
+          <h4 class="my-2">Effort Value Yield</h4>
+          <div class="flex justify-between flex-wrap gap-1">
+            {
+              PokemonStatByPokemonId[id].map((pokemonStat) => (
+                <a
+                  class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
+                  style={{
+                    backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
+                  }}
+                >
+                  <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
+                    <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
+                    <div>{pokemonStat.effort}</div>
+                  </div>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+        <div class="py-2">
+          <h4>Base Experience</h4>
+          <div class="pl-2">{base_experience}</div>
+        </div>
+        <div class="flex justify-stretch divide-x-2">
+          <div class="flex-auto mt-4 pl-2">
+            <h4>Height</h4>
+            <p>{height! / 10} m</p>
+          </div>
+          <div class="flex-auto !mt-4 pl-2">
+            <h4>Weight</h4>
+            <p>{weight! / 10} kg</p>
+          </div>
+        </div>
+      </div>
+    </Card>
+    <hr class="!my-4 border-gray-800" />
+    <Heading heading={headings[1]} />
+    <div class="not-content overflow-x-auto">
+      <EvolutionChain evolutionChainId={evolutionChainId} />
+    </div>
+    <Heading heading={headings[2]} />
+
+    <div class="overflow-x-auto not-content text-sm whitespace-nowrap text-center">
+      {
+        pokemonMoveByMethod && (
+          <PokemonMoveTable
+            pokemonMoveByMethod={pokemonMoveByMethod}
+            versionGroupIds={[...VersionGroupIdByPokemon[id]].sort((a, b) => a - b)}
+          />
+        )
+      }
+    </div>
+    <Heading heading={headings[3]} />
+
+    <div class="overflow-x-auto not-content text-sm whitespace-nowrap text-center">
+      {
+        encounters_by_location_area_id && (
+          <PokemonEncounterTable
+            encounters_by_location_area_id={encounters_by_location_area_id}
+            encounter_version_ids={[...encounter_version_ids_by_pokemon_id[id]].sort((a, b) => a - b)}
+          />
+        )
+      }
+    </div>
   </div>
 </StarlightPage>

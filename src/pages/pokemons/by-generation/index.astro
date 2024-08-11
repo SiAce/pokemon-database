@@ -1,4 +1,5 @@
 ---
+import { CardGrid } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
 import versionColorJson from "src/utils/color/version-color.json";
@@ -16,21 +17,23 @@ const headings = [{ depth: 2, slug: "pokemon-by-generation", text: "Pokemon by G
 <StarlightPage frontmatter={{ title: "Pokemon by Generation" }} headings={headings}>
   <Heading heading={headings[0]} />
   <div data-pagefind-ignore="all" class="flex flex-col gap-2">
-    {
-      Generation.map(({ id }) => (
-        <a class=" border rounded-xl p-4" href={`/pokemons/by-generation/${id}`}>
-          <span class="text-2xl">{`${GenerationNameById[id]} Pokemon`}</span>
-          <ul>
-            {VersionGroupByGenerationId[id].map((versionGroup) =>
-              VersionByVersionGroup[versionGroup.id].map((version) => (
-                <li>
-                  <span style={{ color: versionColorJson[version.id] }}>{VersionNameById[version.id].name}</span>
-                </li>
-              ))
-            )}
-          </ul>
-        </a>
-      ))
-    }
+    <CardGrid>
+      {
+        Generation.map(({ id }) => (
+          <a class=" border rounded-xl p-4" href={`/pokemons/by-generation/${id}`}>
+            <span class="text-2xl">{`${GenerationNameById[id]} Pokemon`}</span>
+            <ul>
+              {VersionGroupByGenerationId[id].map((versionGroup) =>
+                VersionByVersionGroup[versionGroup.id].map((version) => (
+                  <li>
+                    <span style={{ color: versionColorJson[version.id] }}>{VersionNameById[version.id].name}</span>
+                  </li>
+                ))
+              )}
+            </ul>
+          </a>
+        ))
+      }
+    </CardGrid>
   </div>
 </StarlightPage>

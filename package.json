@@ -14,7 +14,7 @@
     "seed": "bun db/seed.ts"
   },
   "dependencies": {
-    "astro": "^4.13.2"
+    "astro": "^4.13.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.8.3",
