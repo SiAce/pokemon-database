@@ -8,15 +8,15 @@ const { pokemon_move_method_id, pokemonMoveByMove, versionGroupIds } = Astro.pro
 
 <thead>
   <tr>
-    <th class="text-start text-[1.5em]" colspan="100%">{PokemonMoveMethodProseById[pokemon_move_method_id].name}</th>
+    <th style="font-size: 1.5em;" colspan="100%">{PokemonMoveMethodProseById[pokemon_move_method_id].name}</th>
   </tr>
 </thead>
-<tbody id=`move|tbody|${pokemon_move_method_id}`>
+<tbody id=`move|tbody|${pokemon_move_method_id}` >
   {
     Object.keys(pokemonMoveByMove).map((move_id) => (
       <tr id={`move|tr|${pokemon_move_method_id}|${move_id}`}>
         <td>{capitalizeSnakeCase(MoveById[move_id].identifier)}</td>
-        <td>{<TypeBadge type_id={MoveById[move_id].type_id} />}</td>
+        <td>{<TypeBadge class="px-1" type_id={MoveById[move_id].type_id} />}</td>
         <td>{MoveById[move_id].power}</td>
         <td>{MoveById[move_id].accuracy}</td>
         <td>{MoveById[move_id].pp}</td>

@@ -15,7 +15,7 @@ const { encounters_by_location_area_id, encounter_version_ids } = Astro.props;
 const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sort((a, b) => Number(a) - Number(b));
 ---
 
-<table class="mx-auto !table w-full table-auto border-collapse">
+<table class="mx-auto !table w-full border-collapse">
   <colgroup>
     <col />
     {encounter_version_ids.map((id) => <col id={`encounter|col|${id}`} />)}
@@ -39,7 +39,7 @@ const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sor
       }
     </tr>
     <tr>
-      <th class="font-black">Version:</th>
+      <th>Version:</th>
       {
         encounter_version_ids.map((version_id) => (
           <th class="p-0">
@@ -62,29 +62,33 @@ const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sor
       <th colspan="100%">Detail</th>
     </tr>
   </thead>
-  <tbody id=`encounter|tbody`>
+  <tbody id=`encounter|tbody` style="text-align: left;" >
     {
       location_area_ids_sorted.map((location_area_id) => (
         <tr id={`encounter|tr|${location_area_id}`}>
-          <td>{`${capitalizeSnakeCase(location_by_id[location_areas_by_id[location_area_id].location_id].identifier)} ${capitalizeSnakeCase(location_areas_by_id[location_area_id].identifier)}`}</td>
+          <th>{`${capitalizeSnakeCase(location_by_id[location_areas_by_id[location_area_id].location_id].identifier)} ${capitalizeSnakeCase(location_areas_by_id[location_area_id].identifier)}`}</th>
           {encounter_version_ids.map((version_id) => (
             <td>
-              <ul>
+
                 {[...(encounters_by_location_area_id[location_area_id][version_id] ?? [])].map(([,encounter]: any) => (
-                  <li>
-                    {`${
-                      encounter_methods_by_id[encounter_slots_by_id[encounter.encounter_slot_id].encounter_method_id]
-                        .identifier
-                    } [${
-                      encounter_condition_value_map_by_encounter_id[encounter.id]?.map(
-                        (encounter_condition_value_map) =>
-                          encounter_condition_values_by_id[encounter_condition_value_map.encounter_condition_value_id]
-                            .identifier
-                      ) ?? ""
-                    }]`}
-                  </li>
+                  <p>
+                    {
+                      `${capitalizeSnakeCase(
+                        encounter_methods_by_id[encounter_slots_by_id[encounter.encounter_slot_id].encounter_method_id]
+                          .identifier
+                      ) + (
+                          encounter_condition_value_map_by_encounter_id[encounter.id]
+                            ? " [" + encounter_condition_value_map_by_encounter_id[encounter.id]?.map((encounter_condition_value_map) =>
+                              capitalizeSnakeCase(encounter_condition_values_by_id[encounter_condition_value_map.encounter_condition_value_id]
+                                .identifier)
+                            ).join() + "]"
+                            : ""
+                        )
+                        }`
+                    }
+                  </p>
                 ))}
-              </ul>
+
             </td>
           ))}
         </tr>
@@ -95,6 +99,15 @@ const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sor
 <style>
   th {
     padding: 0 0.5em;
+  }
+  thead>tr>th {
+    font-weight: 900;
+  }
+  tbody>tr>th {
+    font-weight: 500;
+  }
+  tbody>tr>td {
+    padding: 0.25em;
   }
   tr {
     border-bottom: 1px solid var(--sl-color-gray-6);

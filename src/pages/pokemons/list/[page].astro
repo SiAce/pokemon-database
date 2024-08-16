@@ -14,7 +14,7 @@ export const getStaticPaths = (({ paginate }) => {
     Pokemon.map(({ id }) => ({
       id,
     })),
-    { pageSize: 90 }
+    { pageSize: 80 }
   );
 }) satisfies GetStaticPaths;
 
