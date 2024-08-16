@@ -70,7 +70,7 @@ const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sor
           {encounter_version_ids.map((version_id) => (
             <td>
               <ul>
-                {encounters_by_location_area_id[location_area_id][version_id]?.map((encounter) => (
+                {[...(encounters_by_location_area_id[location_area_id][version_id] ?? [])].map(([,encounter]: any) => (
                   <li>
                     {`${
                       encounter_methods_by_id[encounter_slots_by_id[encounter.encounter_slot_id].encounter_method_id]

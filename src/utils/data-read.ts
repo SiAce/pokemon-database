@@ -97,9 +97,13 @@ for (let i = 0; i < Ability.length; i++) {
 const encounter_condition_value_map_by_encounter_id = {};
 for (let i = 0; i < encounter_condition_value_map.length; i++) {
   if (encounter_condition_value_map[i].encounter_id in encounter_condition_value_map_by_encounter_id) {
-    encounter_condition_value_map_by_encounter_id[encounter_condition_value_map[i].encounter_id].push(encounter_condition_value_map[i]);
+    encounter_condition_value_map_by_encounter_id[encounter_condition_value_map[i].encounter_id].push(
+      encounter_condition_value_map[i]
+    );
   } else {
-    encounter_condition_value_map_by_encounter_id[encounter_condition_value_map[i].encounter_id] = [encounter_condition_value_map[i]];
+    encounter_condition_value_map_by_encounter_id[encounter_condition_value_map[i].encounter_id] = [
+      encounter_condition_value_map[i],
+    ];
   }
 }
 
@@ -123,6 +127,10 @@ const encounters_grouped = {};
 for (let i = 0; i < encounters.length; i++) {
   const encounter = encounters[i];
   const { pokemon_id, version_id, location_area_id } = encounter;
+  const encounter_hash =
+    encounter_slots_by_id[encounter.encounter_slot_id].encounter_method_id +
+    "|" +
+    encounter_condition_value_map_by_encounter_id[encounter.id]?.join();
 
   if (pokemon_id in encounter_version_ids_by_pokemon_id) {
     encounter_version_ids_by_pokemon_id[pokemon_id].add(version_id);
@@ -133,15 +141,17 @@ for (let i = 0; i < encounters.length; i++) {
   if (pokemon_id in encounters_grouped) {
     if (location_area_id in encounters_grouped[pokemon_id]) {
       if (version_id in encounters_grouped[pokemon_id][location_area_id]) {
-        encounters_grouped[pokemon_id][location_area_id][version_id].push(encounter);
+        if (!encounters_grouped[pokemon_id][location_area_id][version_id].has(encounter_hash)) {
+          encounters_grouped[pokemon_id][location_area_id][version_id].set(encounter_hash, encounter);
+        }
       } else {
-        encounters_grouped[pokemon_id][location_area_id][version_id] = [encounter];
+        encounters_grouped[pokemon_id][location_area_id][version_id] = new Map([[encounter_hash, encounter]]);
       }
     } else {
-      encounters_grouped[pokemon_id][location_area_id] = { [version_id]: [encounter] };
+      encounters_grouped[pokemon_id][location_area_id] = { [version_id]: new Map([[encounter_hash, encounter]]) };
     }
   } else {
-    encounters_grouped[pokemon_id] = { [location_area_id]: { [version_id]: [encounter] } };
+    encounters_grouped[pokemon_id] = { [location_area_id]: { [version_id]: new Map([[encounter_hash, encounter]]) } };
   }
 }
 
