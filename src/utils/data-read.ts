@@ -1,5 +1,5 @@
+import { LANGUAGE_ID } from "./constants";
 import { parseCsvFile } from "./csv-parse";
-import { LANGUAGE_ID } from "./language";
 
 const tableCsvPaths: [string][] = [
   ["data/csv/abilities.csv"],
@@ -19,6 +19,7 @@ const tableCsvPaths: [string][] = [
   ["data/csv/items.csv"],
   ["data/csv/location_areas.csv"],
   ["data/csv/locations.csv"],
+  ["data/csv/machines.csv"],
   ["data/csv/move_damage_class_prose.csv"],
   ["data/csv/move_effects.csv"],
   ["data/csv/move_targets.csv"],
@@ -63,6 +64,7 @@ const [
   Item,
   location_areas,
   locations,
+  machines,
   MoveDamageClassProse,
   MoveEffect,
   MoveTarget,
@@ -184,6 +186,11 @@ for (let i = 0; i < GenerationName.length; i++) {
   }
 }
 
+const item_by_id = {};
+for (let i = 0; i < Item.length; i++) {
+  item_by_id[Item[i].id] = Item[i];
+}
+
 const location_areas_by_id = {};
 for (let i = 0; i < location_areas.length; i++) {
   location_areas_by_id[location_areas[i].id] = location_areas[i];
@@ -192,6 +199,17 @@ for (let i = 0; i < location_areas.length; i++) {
 const location_by_id = {};
 for (let i = 0; i < locations.length; i++) {
   location_by_id[locations[i].id] = locations[i];
+}
+
+const machine_by_move_id_version_group_id = {};
+for (let i = 0; i < machines.length; i++) {
+  if (machines[i].move_id in machine_by_move_id_version_group_id) {
+    machine_by_move_id_version_group_id[machines[i].move_id][machines[i].version_group_id] = machines[i];
+  } else {
+    machine_by_move_id_version_group_id[machines[i].move_id] = {
+      [machines[i].version_group_id]: machines[i]
+    }
+  }
 }
 
 const MoveDamageClassProseById = {};
@@ -407,11 +425,13 @@ export {
   GenerationNameById,
   GrowthRate,
   Item,
+  item_by_id,
   ItemCategory,
   ItemFlingEffect,
   ItemPocket,
   location_areas_by_id,
   location_by_id,
+  machine_by_move_id_version_group_id,
   Move,
   MoveById,
   MoveDamageClassProseById,
@@ -454,5 +474,6 @@ export {
   VersionGroupByGenerationId,
   VersionGroupById,
   VersionGroupIdByPokemon,
-  VersionNameById,
+  VersionNameById
 };
+

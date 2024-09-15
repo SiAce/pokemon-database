@@ -1,5 +1,11 @@
 ---
-import { MoveById, PokemonMoveMethodProseById } from "src/utils/data-read";
+import { POKEMON_MOVE_METHOD_ID_MACHINE } from "src/utils/constants";
+import {
+  item_by_id,
+  machine_by_move_id_version_group_id,
+  MoveById,
+  PokemonMoveMethodProseById,
+} from "src/utils/data-read";
 import { capitalizeSnakeCase } from "src/utils/string";
 import TypeBadge from "../TypeBadge.astro";
 
@@ -25,13 +31,25 @@ const { pokemon_move_method_id, pokemonMoveByMove, versionGroupIds } =
         <td>{MoveById[move_id].power}</td>
         <td>{MoveById[move_id].accuracy}</td>
         <td>{MoveById[move_id].pp}</td>
-        {versionGroupIds.map((versionGroupId) => (
-          <td>
-            {pokemonMoveByMove[move_id][versionGroupId]
-              ?.map((pokemonMove) => pokemonMove.level)
-              .join(", ")}
-          </td>
-        ))}
+        {versionGroupIds.map((versionGroupId) => {
+          const pokemonMoves = pokemonMoveByMove[move_id][versionGroupId]
+            ?.map((pokemonMove) => pokemonMove.level)
+            .join(", ");
+          return (
+            <td>
+              {pokemonMoves
+                ? pokemon_move_method_id ===
+                  String(POKEMON_MOVE_METHOD_ID_MACHINE)
+                  ? (item_by_id[
+                      machine_by_move_id_version_group_id[move_id]?.[
+                        versionGroupId
+                      ]?.item_id
+                    ]?.identifier?.toUpperCase() ?? pokemonMoves)
+                  : pokemonMoves
+                : undefined}
+            </td>
+          );
+        })}
       </tr>
     ))
   }
