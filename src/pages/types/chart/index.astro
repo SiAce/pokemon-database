@@ -12,7 +12,10 @@ const headings = [{ depth: 2, slug: "type-chart", text: "Type Chart" }];
 
 <StarlightPage frontmatter={{ title: "Type Chart" }} headings={headings}>
   <Heading heading={headings[0]} />
-  <table data-pagefind-ignore="all" class="not-content !table text-center border-collapse mx-auto">
+  <table
+    data-pagefind-ignore="all"
+    class="not-content !table text-center border-collapse mx-auto"
+  >
     <thead>
       <tr>
         <th class="text-sm"
@@ -24,7 +27,11 @@ const headings = [{ depth: 2, slug: "type-chart", text: "Type Chart" }];
           Object.keys(TypeEfficacyByAttack).map((type_id) => (
             <th>
               <div class="w-8">
-                <TypeBadge type_id={type_id} class="aspect-square text-sm" formatter={abbreviation} />
+                <TypeBadge
+                  type_id={type_id}
+                  class="aspect-square text-sm"
+                  formatter={abbreviation}
+                />
               </div>
             </th>
           ))

@@ -4,7 +4,13 @@ import typeColorJson from "src/utils/color/type-color.json";
 import { TypeById } from "src/utils/data-read";
 import { capitalizeFirstLetter } from "src/utils/string";
 
-const { class: className, id, Tag = "a", link = `/types/type/${id}`, formatter = capitalizeFirstLetter } = Astro.props;
+const {
+  class: className,
+  id,
+  Tag = "a",
+  link = `/types/type/${id}`,
+  formatter = capitalizeFirstLetter,
+} = Astro.props;
 ---
 
 <Tag
@@ -14,7 +20,10 @@ const { class: className, id, Tag = "a", link = `/types/type/${id}`, formatter =
 border-radius: 0.3em;
 background-color: ${typeColorJson[id]}; --tw-ring-color: ${typeColorJson[id]};`}
 >
-  <img class="!inline p-[0.1em] w-[1.5em] h-[1.5em]" src={`/images/type/${id}.svg`} />
+  <img
+    class="!inline p-[0.1em] w-[1.5em] h-[1.5em]"
+    src={`/images/type/${id}.svg`}
+  />
   <span
     style={`flex: 1 1 auto; border-radius: 0 0.3em 0.3em 0; background: linear-gradient(110deg, transparent 11%, ${typeColorLightJson[id]} 11.4%);
     color: ${typeColorJson[id]};

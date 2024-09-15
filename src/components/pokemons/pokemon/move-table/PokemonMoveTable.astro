@@ -84,18 +84,29 @@ const { pokemonMoveByMethod, versionGroupIds } = Astro.props;
   const sorted_trs = {};
   for (pokemon_move_method_id in pokemonMoveByMethod) {
     const pokemonMoveByMove = pokemonMoveByMethod[pokemon_move_method_id];
-    tbodys[pokemon_move_method_id] = document.getElementById(`move|tbody|${pokemon_move_method_id}`);
-    original_trs[pokemon_move_method_id] = Object.keys(pokemonMoveByMove).map((move_id) =>
-      document.getElementById(`move|tr|${pokemon_move_method_id}|${move_id}`)
+    tbodys[pokemon_move_method_id] = document.getElementById(
+      `move|tbody|${pokemon_move_method_id}`,
+    );
+    original_trs[pokemon_move_method_id] = Object.keys(pokemonMoveByMove).map(
+      (move_id) =>
+        document.getElementById(`move|tr|${pokemon_move_method_id}|${move_id}`),
     );
     versionGroupIds.forEach((versionGroupId) => {
       sorted_trs[pokemon_move_method_id] ??= {};
-      sorted_trs[pokemon_move_method_id][versionGroupId] = original_trs[pokemon_move_method_id]
-        .filter((original_tr) => versionGroupId in pokemonMoveByMove[original_tr.id.split("|").at(-1)])
+      sorted_trs[pokemon_move_method_id][versionGroupId] = original_trs[
+        pokemon_move_method_id
+      ]
+        .filter(
+          (original_tr) =>
+            versionGroupId in
+            pokemonMoveByMove[original_tr.id.split("|").at(-1)],
+        )
         .toSorted((a, b) => {
           return (
-            pokemonMoveByMove[a.id.split("|").at(-1)][versionGroupId].at(-1).level -
-            pokemonMoveByMove[b.id.split("|").at(-1)][versionGroupId].at(-1).level
+            pokemonMoveByMove[a.id.split("|").at(-1)][versionGroupId].at(-1)
+              .level -
+            pokemonMoveByMove[b.id.split("|").at(-1)][versionGroupId].at(-1)
+              .level
           );
         });
     });
@@ -116,8 +127,8 @@ const { pokemonMoveByMethod, versionGroupIds } = Astro.props;
         });
         for (pokemon_move_method_id in pokemonMoveByMethod) {
           tbodys[pokemon_move_method_id].textContent = "";
-          sorted_trs[pokemon_move_method_id][versionGroupId].forEach((move_tr) =>
-            tbodys[pokemon_move_method_id].appendChild(move_tr)
+          sorted_trs[pokemon_move_method_id][versionGroupId].forEach(
+            (move_tr) => tbodys[pokemon_move_method_id].appendChild(move_tr),
           );
         }
 
@@ -136,7 +147,7 @@ const { pokemonMoveByMethod, versionGroupIds } = Astro.props;
         for (pokemon_move_method_id in pokemonMoveByMethod) {
           tbodys[pokemon_move_method_id].textContent = "";
           original_trs[pokemon_move_method_id].forEach((move_tr) =>
-            tbodys[pokemon_move_method_id].appendChild(move_tr)
+            tbodys[pokemon_move_method_id].appendChild(move_tr),
           );
         }
 

@@ -37,7 +37,10 @@ const headings = [
 ];
 ---
 
-<StarlightPage frontmatter={{ title: `${typeName} (Type)` }} headings={headings}>
+<StarlightPage
+  frontmatter={{ title: `${typeName} (Type)` }}
+  headings={headings}
+>
   <Heading heading={headings[0]} />
   <TypeIcon id={id} class="mx-auto text-4xl" />
   <Heading heading={headings[1]} />
@@ -46,7 +49,11 @@ const headings = [
   {
     damage_class_id ? (
       <dl>
-        <dt class="text-2xl">{capitalizeFirstLetter(MoveDamageClassProseById[damage_class_id].name)}</dt>
+        <dt class="text-2xl">
+          {capitalizeFirstLetter(
+            MoveDamageClassProseById[damage_class_id].name,
+          )}
+        </dt>
         <dd>{MoveDamageClassProseById[damage_class_id].description}.</dd>
       </dl>
     ) : (
@@ -72,7 +79,10 @@ const headings = [
           {TypeEfficacyByAttack[id].map((typeEfficacy) => (
             <tr>
               <td>
-                <TypeBadge type_id={typeEfficacy.target_type_id} class="max-w-20" />
+                <TypeBadge
+                  type_id={typeEfficacy.target_type_id}
+                  class="max-w-20"
+                />
               </td>
               <td>{typeEfficacy.damage_factor}%</td>
               <td>
@@ -107,7 +117,10 @@ const headings = [
           {TypeEfficacyByDefense[id].map((typeEfficacy) => (
             <tr>
               <td>
-                <TypeBadge type_id={typeEfficacy.damage_type_id} class="max-w-20" />
+                <TypeBadge
+                  type_id={typeEfficacy.damage_type_id}
+                  class="max-w-20"
+                />
               </td>
               <td>{typeEfficacy.damage_factor}%</td>
               <td>
@@ -124,7 +137,11 @@ const headings = [
       </table>
     )
   }
-  <p>For more information about eype efficacy see <a href="/types/chart">Type Chart</a>.</p>
+  <p>
+    For more information about eype efficacy see <a href="/types/chart"
+      >Type Chart</a
+    >.
+  </p>
   <Heading heading={headings[6]} />
   <div class="flex flex-col">
     <a class="border rounded-xl p-4" href={`/pokemons/by-type/${id}`}>

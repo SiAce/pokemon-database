@@ -9,18 +9,27 @@ const numberOfPages = endPage - startPage + 1;
 {
   numberOfPages < 5 ? (
     range(startPage, endPage + 1).map((pageNumber) => (
-      <PageNumberLink pageUrl={`${baseUrl}${pageNumber}`} pageNumber={pageNumber} />
+      <PageNumberLink
+        pageUrl={`${baseUrl}${pageNumber}`}
+        pageNumber={pageNumber}
+      />
     ))
   ) : (
     <>
       {range(startPage, startPage + 2).map((pageNumber) => (
-        <PageNumberLink pageUrl={`${baseUrl}${pageNumber}`} pageNumber={pageNumber} />
+        <PageNumberLink
+          pageUrl={`${baseUrl}${pageNumber}`}
+          pageNumber={pageNumber}
+        />
       ))}
       <span class="text-center px-2 text-gray-700 ring-1 ring-inset ring-gray-300 ">
         ...
       </span>
       {range(endPage - 1, endPage + 1).map((pageNumber) => (
-        <PageNumberLink pageUrl={`${baseUrl}${pageNumber}`} pageNumber={pageNumber} />
+        <PageNumberLink
+          pageUrl={`${baseUrl}${pageNumber}`}
+          pageNumber={pageNumber}
+        />
       ))}
     </>
   )

@@ -87,7 +87,9 @@ const [
   VersionGroup,
   VersionName,
   Version,
-] = await Promise.all(tableCsvPaths.map(([csvFilePath]) => parseCsvFile(csvFilePath)));
+] = await Promise.all(
+  tableCsvPaths.map(([csvFilePath]) => parseCsvFile(csvFilePath)),
+);
 
 const AbilityById = {};
 for (let i = 0; i < Ability.length; i++) {
@@ -96,20 +98,24 @@ for (let i = 0; i < Ability.length; i++) {
 
 const encounter_condition_value_map_by_encounter_id = {};
 for (let i = 0; i < encounter_condition_value_map.length; i++) {
-  if (encounter_condition_value_map[i].encounter_id in encounter_condition_value_map_by_encounter_id) {
-    encounter_condition_value_map_by_encounter_id[encounter_condition_value_map[i].encounter_id].push(
-      encounter_condition_value_map[i]
-    );
+  if (
+    encounter_condition_value_map[i].encounter_id in
+    encounter_condition_value_map_by_encounter_id
+  ) {
+    encounter_condition_value_map_by_encounter_id[
+      encounter_condition_value_map[i].encounter_id
+    ].push(encounter_condition_value_map[i]);
   } else {
-    encounter_condition_value_map_by_encounter_id[encounter_condition_value_map[i].encounter_id] = [
-      encounter_condition_value_map[i],
-    ];
+    encounter_condition_value_map_by_encounter_id[
+      encounter_condition_value_map[i].encounter_id
+    ] = [encounter_condition_value_map[i]];
   }
 }
 
 const encounter_condition_values_by_id = {};
 for (let i = 0; i < encounter_condition_values.length; i++) {
-  encounter_condition_values_by_id[encounter_condition_values[i].id] = encounter_condition_values[i];
+  encounter_condition_values_by_id[encounter_condition_values[i].id] =
+    encounter_condition_values[i];
 }
 
 const encounter_methods_by_id = {};
@@ -141,17 +147,32 @@ for (let i = 0; i < encounters.length; i++) {
   if (pokemon_id in encounters_grouped) {
     if (location_area_id in encounters_grouped[pokemon_id]) {
       if (version_id in encounters_grouped[pokemon_id][location_area_id]) {
-        if (!encounters_grouped[pokemon_id][location_area_id][version_id].has(encounter_hash)) {
-          encounters_grouped[pokemon_id][location_area_id][version_id].set(encounter_hash, encounter);
+        if (
+          !encounters_grouped[pokemon_id][location_area_id][version_id].has(
+            encounter_hash,
+          )
+        ) {
+          encounters_grouped[pokemon_id][location_area_id][version_id].set(
+            encounter_hash,
+            encounter,
+          );
         }
       } else {
-        encounters_grouped[pokemon_id][location_area_id][version_id] = new Map([[encounter_hash, encounter]]);
+        encounters_grouped[pokemon_id][location_area_id][version_id] = new Map([
+          [encounter_hash, encounter],
+        ]);
       }
     } else {
-      encounters_grouped[pokemon_id][location_area_id] = { [version_id]: new Map([[encounter_hash, encounter]]) };
+      encounters_grouped[pokemon_id][location_area_id] = {
+        [version_id]: new Map([[encounter_hash, encounter]]),
+      };
     }
   } else {
-    encounters_grouped[pokemon_id] = { [location_area_id]: { [version_id]: new Map([[encounter_hash, encounter]]) } };
+    encounters_grouped[pokemon_id] = {
+      [location_area_id]: {
+        [version_id]: new Map([[encounter_hash, encounter]]),
+      },
+    };
   }
 }
 
@@ -175,7 +196,8 @@ for (let i = 0; i < locations.length; i++) {
 
 const MoveDamageClassProseById = {};
 for (let i = 0; i < MoveDamageClassProse.length; i++) {
-  const { move_damage_class_id, local_language_id, name, description } = MoveDamageClassProse[i];
+  const { move_damage_class_id, local_language_id, name, description } =
+    MoveDamageClassProse[i];
   if (local_language_id === LANGUAGE_ID) {
     MoveDamageClassProseById[move_damage_class_id] = { name, description };
   }
@@ -199,7 +221,9 @@ for (let i = 0; i < PokemonAbility.length; i++) {
 const PokemonMoveMethodProseById = {};
 for (let i = 0; i < PokemonMoveMethodProse.length; i++) {
   if (PokemonMoveMethodProse[i].local_language_id === LANGUAGE_ID) {
-    PokemonMoveMethodProseById[PokemonMoveMethodProse[i].pokemon_move_method_id] = PokemonMoveMethodProse[i];
+    PokemonMoveMethodProseById[
+      PokemonMoveMethodProse[i].pokemon_move_method_id
+    ] = PokemonMoveMethodProse[i];
   }
 }
 
@@ -207,7 +231,8 @@ const PokemonMoveGrouped = {};
 const VersionGroupIdByPokemon = {};
 for (let i = 0; i < PokemonMove.length; i++) {
   const pokemon_move = PokemonMove[i];
-  const { pokemon_id, version_group_id, move_id, pokemon_move_method_id } = pokemon_move;
+  const { pokemon_id, version_group_id, move_id, pokemon_move_method_id } =
+    pokemon_move;
   if (pokemon_id in VersionGroupIdByPokemon) {
     VersionGroupIdByPokemon[pokemon_id].add(version_group_id);
   } else {
@@ -217,20 +242,33 @@ for (let i = 0; i < PokemonMove.length; i++) {
   if (pokemon_id in PokemonMoveGrouped) {
     if (pokemon_move_method_id in PokemonMoveGrouped[pokemon_id]) {
       if (move_id in PokemonMoveGrouped[pokemon_id][pokemon_move_method_id]) {
-        if (version_group_id in PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id]) {
-          PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id][version_group_id].push(pokemon_move);
+        if (
+          version_group_id in
+          PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id]
+        ) {
+          PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id][
+            version_group_id
+          ].push(pokemon_move);
         } else {
-          PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id][version_group_id] = [pokemon_move];
+          PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id][
+            version_group_id
+          ] = [pokemon_move];
         }
       } else {
-        PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id] = { [version_group_id]: [pokemon_move] };
+        PokemonMoveGrouped[pokemon_id][pokemon_move_method_id][move_id] = {
+          [version_group_id]: [pokemon_move],
+        };
       }
     } else {
-      PokemonMoveGrouped[pokemon_id][pokemon_move_method_id] = { [move_id]: { [version_group_id]: [pokemon_move] } };
+      PokemonMoveGrouped[pokemon_id][pokemon_move_method_id] = {
+        [move_id]: { [version_group_id]: [pokemon_move] },
+      };
     }
   } else {
     PokemonMoveGrouped[pokemon_id] = {
-      [pokemon_move_method_id]: { [move_id]: { [version_group_id]: [pokemon_move] } },
+      [pokemon_move_method_id]: {
+        [move_id]: { [version_group_id]: [pokemon_move] },
+      },
     };
   }
 }
@@ -242,14 +280,22 @@ for (let i = 0; i < PokemonSpecies.length; i++) {
   const pokemonSpecies = PokemonSpecies[i];
   PokemonSpeciesById[pokemonSpecies.id] = pokemonSpecies;
   if (pokemonSpecies.evolution_chain_id in PokemonSpeciesByEvolutionChain) {
-    PokemonSpeciesByEvolutionChain[pokemonSpecies.evolution_chain_id].push(pokemonSpecies);
+    PokemonSpeciesByEvolutionChain[pokemonSpecies.evolution_chain_id].push(
+      pokemonSpecies,
+    );
   } else {
-    PokemonSpeciesByEvolutionChain[pokemonSpecies.evolution_chain_id] = [pokemonSpecies];
+    PokemonSpeciesByEvolutionChain[pokemonSpecies.evolution_chain_id] = [
+      pokemonSpecies,
+    ];
   }
   if (pokemonSpecies.generation_id in PokemonSpeciesByGenerationId) {
-    PokemonSpeciesByGenerationId[pokemonSpecies.generation_id].push(pokemonSpecies);
+    PokemonSpeciesByGenerationId[pokemonSpecies.generation_id].push(
+      pokemonSpecies,
+    );
   } else {
-    PokemonSpeciesByGenerationId[pokemonSpecies.generation_id] = [pokemonSpecies];
+    PokemonSpeciesByGenerationId[pokemonSpecies.generation_id] = [
+      pokemonSpecies,
+    ];
   }
 }
 

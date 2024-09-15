@@ -14,16 +14,21 @@ export const getStaticPaths = (({ paginate }) => {
     Pokemon.map(({ id }) => ({
       id,
     })),
-    { pageSize: 80 }
+    { pageSize: 80 },
   );
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
-const headings = [{ depth: 2, slug: "list-of-pokemon", text: "List of Pokemon" }];
+const headings = [
+  { depth: 2, slug: "list-of-pokemon", text: "List of Pokemon" },
+];
 ---
 
 <!--Display the current page number. Astro.params.page can also be used!-->
-<StarlightPage frontmatter={{ title: "Pokemon", pagefind: false }} headings={headings}>
+<StarlightPage
+  frontmatter={{ title: "Pokemon", pagefind: false }}
+  headings={headings}
+>
   <Heading heading={headings[0]} />
   <div class="pokemon-grid not-content">
     {
@@ -33,7 +38,8 @@ const headings = [{ depth: 2, slug: "list-of-pokemon", text: "List of Pokemon" }
     }
   </div>
   <div class="text-center">
-    No.<strong>{page.start + 1}</strong> - <strong>{page.end + 1}</strong> of total <strong>{page.total}</strong> Pokemon
+    No.<strong>{page.start + 1}</strong> - <strong>{page.end + 1}</strong> of total
+    <strong>{page.total}</strong> Pokemon
   </div>
   <div class="not-content flex justify-center">
     <nav class="flex flex-wrap rounded-md shadow-sm -space-x-px">
@@ -43,9 +49,17 @@ const headings = [{ depth: 2, slug: "list-of-pokemon", text: "List of Pokemon" }
       >
         <Icon name="left-arrow" />
       </a>
-      <PageNumberLinkEllipsis baseUrl="/pokemons/list/" startPage={1} endPage={page.currentPage - 1} />
+      <PageNumberLinkEllipsis
+        baseUrl="/pokemons/list/"
+        startPage={1}
+        endPage={page.currentPage - 1}
+      />
       <PageNumberLink pageNumber={page.currentPage} isHighlighted={true} />
-      <PageNumberLinkEllipsis baseUrl="/pokemons/list/" startPage={page.currentPage + 1} endPage={page.lastPage} />
+      <PageNumberLinkEllipsis
+        baseUrl="/pokemons/list/"
+        startPage={page.currentPage + 1}
+        endPage={page.lastPage}
+      />
       <a
         class="inline-flex items-center px-2 text-gray-900 rounded-e-md ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
         href={page.url.next}

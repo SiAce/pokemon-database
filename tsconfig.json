@@ -5,7 +5,7 @@
     "allowArbitraryExtensions": true,
     "baseUrl": ".",
     "paths": {
-      "@data/*": ["data/*"],
+      "@data/*": ["data/*"]
     }
   }
 }

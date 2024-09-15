@@ -3,7 +3,8 @@ import { PokemonSpeciesByEvolutionChain } from "src/utils/data-read";
 import EvolutionNode from "./EvolutionNode.astro";
 
 const { evolutionChainId } = Astro.props;
-const pokemonsInEvolutionChain = PokemonSpeciesByEvolutionChain[evolutionChainId];
+const pokemonsInEvolutionChain =
+  PokemonSpeciesByEvolutionChain[evolutionChainId];
 const evolvesTo = {};
 let rootPokemonId = pokemonsInEvolutionChain[0].id;
 

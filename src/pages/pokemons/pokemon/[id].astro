@@ -31,7 +31,8 @@ export function getStaticPaths() {
 
 const { id } = Astro.params;
 const pokemon = PokemonById[id];
-const { identifier, species_id, height, weight, base_experience, is_default } = pokemon;
+const { identifier, species_id, height, weight, base_experience, is_default } =
+  pokemon;
 const [name] = [identifier].map(capitalizeSnakeCase);
 const pokemonMoveByMethod = PokemonMoveGrouped[id];
 const encounters_by_location_area_id = encounters_grouped[id];
@@ -59,7 +60,10 @@ const headings = [
       }
       {
         pokemon.next && (
-          <a href={`/pokemons/pokemon/${pokemon.next}`} class="ml-auto flex flex-col items-end">
+          <a
+            href={`/pokemons/pokemon/${pokemon.next}`}
+            class="ml-auto flex flex-col items-end"
+          >
             <Icon name="right-arrow" />
             <span>Next #{pokemon.next}</span>
           </a>
@@ -81,7 +85,10 @@ const headings = [
           <div class="flex gap-4">
             {
               PokemonTypeByPokemonId[id].map((pokemonType) => (
-                <TypeBadge type_id={pokemonType.type_id} class="text-2xl px-3 py-1" />
+                <TypeBadge
+                  type_id={pokemonType.type_id}
+                  class="text-2xl px-3 py-1"
+                />
               ))
             }
           </div>
@@ -92,7 +99,9 @@ const headings = [
             {
               PokemonAbilityByPokemonId[id].map((pokemonAbility) => (
                 <a class="inline-block rounded px-2 py-1 mr-2 mb-2 bg-gray-400 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
-                  {capitalizeSnakeCase(AbilityById[pokemonAbility.ability_id].identifier)}
+                  {capitalizeSnakeCase(
+                    AbilityById[pokemonAbility.ability_id].identifier,
+                  )}
                 </a>
               ))
             }
@@ -106,11 +115,16 @@ const headings = [
                 <a
                   class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                   style={{
-                    backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
+                    backgroundColor:
+                      statColorJson[StatById[pokemonStat.stat_id].identifier],
                   }}
                 >
                   <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
-                    <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
+                    <div>
+                      {capitalizeSnakeCase(
+                        StatById[pokemonStat.stat_id].identifier,
+                      )}
+                    </div>
                     <div>{pokemonStat.base_stat}</div>
                   </div>
                 </a>
@@ -126,11 +140,16 @@ const headings = [
                 <a
                   class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
                   style={{
-                    backgroundColor: statColorJson[StatById[pokemonStat.stat_id].identifier],
+                    backgroundColor:
+                      statColorJson[StatById[pokemonStat.stat_id].identifier],
                   }}
                 >
                   <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
-                    <div>{capitalizeSnakeCase(StatById[pokemonStat.stat_id].identifier)}</div>
+                    <div>
+                      {capitalizeSnakeCase(
+                        StatById[pokemonStat.stat_id].identifier,
+                      )}
+                    </div>
                     <div>{pokemonStat.effort}</div>
                   </div>
                 </a>
@@ -161,24 +180,32 @@ const headings = [
     </div>
     <Heading heading={headings[2]} />
 
-    <div class="overflow-x-auto not-content text-sm whitespace-nowrap text-center">
+    <div
+      class="overflow-x-auto not-content text-sm whitespace-nowrap text-center"
+    >
       {
         pokemonMoveByMethod && (
           <PokemonMoveTable
             pokemonMoveByMethod={pokemonMoveByMethod}
-            versionGroupIds={[...VersionGroupIdByPokemon[id]].sort((a, b) => a - b)}
+            versionGroupIds={[...VersionGroupIdByPokemon[id]].sort(
+              (a, b) => a - b,
+            )}
           />
         )
       }
     </div>
     <Heading heading={headings[3]} />
 
-    <div class="overflow-x-auto not-content text-sm whitespace-nowrap text-center">
+    <div
+      class="overflow-x-auto not-content text-sm whitespace-nowrap text-center"
+    >
       {
         encounters_by_location_area_id && (
           <PokemonEncounterTable
             encounters_by_location_area_id={encounters_by_location_area_id}
-            encounter_version_ids={[...encounter_version_ids_by_pokemon_id[id]].sort((a, b) => a - b)}
+            encounter_version_ids={[
+              ...encounter_version_ids_by_pokemon_id[id],
+            ].sort((a, b) => a - b)}
           />
         )
       }

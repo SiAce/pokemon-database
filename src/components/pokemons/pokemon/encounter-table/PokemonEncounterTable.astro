@@ -12,7 +12,9 @@ import {
 import { capitalizeSnakeCase, versionAbbreviation } from "src/utils/string";
 
 const { encounters_by_location_area_id, encounter_version_ids } = Astro.props;
-const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sort((a, b) => Number(a) - Number(b));
+const location_area_ids_sorted = Object.keys(
+  encounters_by_location_area_id,
+).sort((a, b) => Number(a) - Number(b));
 ---
 
 <table class="mx-auto !table w-full border-collapse">
@@ -62,33 +64,45 @@ const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sor
       <th colspan="100%">Detail</th>
     </tr>
   </thead>
-  <tbody id=`encounter|tbody` style="text-align: left;" >
+  <tbody id=`encounter|tbody` style="text-align: left;">
     {
       location_area_ids_sorted.map((location_area_id) => (
         <tr id={`encounter|tr|${location_area_id}`}>
           <th>{`${capitalizeSnakeCase(location_by_id[location_areas_by_id[location_area_id].location_id].identifier)} ${capitalizeSnakeCase(location_areas_by_id[location_area_id].identifier)}`}</th>
           {encounter_version_ids.map((version_id) => (
             <td>
-
-                {[...(encounters_by_location_area_id[location_area_id][version_id] ?? [])].map(([,encounter]: any) => (
-                  <p>
-                    {
-                      `${capitalizeSnakeCase(
-                        encounter_methods_by_id[encounter_slots_by_id[encounter.encounter_slot_id].encounter_method_id]
-                          .identifier
-                      ) + (
-                          encounter_condition_value_map_by_encounter_id[encounter.id]
-                            ? " [" + encounter_condition_value_map_by_encounter_id[encounter.id]?.map((encounter_condition_value_map) =>
-                              capitalizeSnakeCase(encounter_condition_values_by_id[encounter_condition_value_map.encounter_condition_value_id]
-                                .identifier)
-                            ).join() + "]"
-                            : ""
-                        )
-                        }`
-                    }
-                  </p>
-                ))}
-
+              {[
+                ...(encounters_by_location_area_id[location_area_id][
+                  version_id
+                ] ?? []),
+              ].map(([, encounter]: any) => (
+                <p>
+                  {`${
+                    capitalizeSnakeCase(
+                      encounter_methods_by_id[
+                        encounter_slots_by_id[encounter.encounter_slot_id]
+                          .encounter_method_id
+                      ].identifier,
+                    ) +
+                    (encounter_condition_value_map_by_encounter_id[encounter.id]
+                      ? " [" +
+                        encounter_condition_value_map_by_encounter_id[
+                          encounter.id
+                        ]
+                          ?.map((encounter_condition_value_map) =>
+                            capitalizeSnakeCase(
+                              encounter_condition_values_by_id[
+                                encounter_condition_value_map
+                                  .encounter_condition_value_id
+                              ].identifier,
+                            ),
+                          )
+                          .join() +
+                        "]"
+                      : "")
+                  }`}
+                </p>
+              ))}
             </td>
           ))}
         </tr>
@@ -100,33 +114,48 @@ const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sor
   th {
     padding: 0 0.5em;
   }
-  thead>tr>th {
+  thead > tr > th {
     font-weight: 900;
   }
-  tbody>tr>th {
+  tbody > tr > th {
     font-weight: 500;
   }
-  tbody>tr>td {
+  tbody > tr > td {
     padding: 0.25em;
   }
   tr {
     border-bottom: 1px solid var(--sl-color-gray-6);
   }
 </style>
-<script define:vars={{ encounter_version_ids, encounters_by_location_area_id, location_area_ids_sorted }}>
+<script
+  define:vars={{
+    encounter_version_ids,
+    encounters_by_location_area_id,
+    location_area_ids_sorted,
+  }}
+>
   const tbody = document.getElementById("encounter|tbody");
   const original_trs = location_area_ids_sorted.map((location_area_id) =>
-    document.getElementById(`encounter|tr|${location_area_id}`)
+    document.getElementById(`encounter|tr|${location_area_id}`),
   );
   const sorted_trs = {};
   encounter_version_ids.forEach((encounter_version_id) => {
     sorted_trs[encounter_version_id] = original_trs
-      .filter((original_tr) => encounter_version_id in encounters_by_location_area_id[original_tr.id.split("|").at(-1)])
-      .toSorted((a, b) => Number(a.id.split("|").at(-1)) - Number(b.id.split("|").at(-1)));
+      .filter(
+        (original_tr) =>
+          encounter_version_id in
+          encounters_by_location_area_id[original_tr.id.split("|").at(-1)],
+      )
+      .toSorted(
+        (a, b) =>
+          Number(a.id.split("|").at(-1)) - Number(b.id.split("|").at(-1)),
+      );
   });
 
   encounter_version_ids.forEach((encounter_version_id) => {
-    const button = document.getElementById(`encounter|button|${encounter_version_id}`);
+    const button = document.getElementById(
+      `encounter|button|${encounter_version_id}`,
+    );
     button.addEventListener("click", () => {
       if (button.ariaExpanded === "true") {
         encounter_version_ids.forEach((id) => {
@@ -140,7 +169,9 @@ const location_area_ids_sorted = Object.keys(encounters_by_location_area_id).sor
         });
 
         tbody.textContent = "";
-        sorted_trs[encounter_version_id].forEach((encounter_tr) => tbody.appendChild(encounter_tr));
+        sorted_trs[encounter_version_id].forEach((encounter_tr) =>
+          tbody.appendChild(encounter_tr),
+        );
 
         button.ariaExpanded = false;
         button.innerHTML = "+";
