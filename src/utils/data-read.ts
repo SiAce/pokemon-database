@@ -10,6 +10,8 @@ const tableCsvPaths: [string][] = [
   ["data/csv/encounter_slots.csv"],
   ["data/csv/encounters.csv"],
   ["data/csv/evolution_chains.csv"],
+  ["data/csv/evolution_triggers.csv"],
+  ["data/csv/genders.csv"],
   ["data/csv/generation_names.csv"],
   ["data/csv/generations.csv"],
   ["data/csv/growth_rates.csv"],
@@ -26,6 +28,7 @@ const tableCsvPaths: [string][] = [
   ["data/csv/moves.csv"],
   ["data/csv/pokemon_abilities.csv"],
   ["data/csv/pokemon_colors.csv"],
+  ["data/csv/pokemon_evolution.csv"],
   ["data/csv/pokemon_forms.csv"],
   ["data/csv/pokemon_game_indices.csv"],
   ["data/csv/pokemon_habitats.csv"],
@@ -55,6 +58,8 @@ const [
   encounter_slots,
   encounters,
   EvolutionChain,
+  EvolutionTrigger,
+  Gender,
   GenerationName,
   Generation,
   GrowthRate,
@@ -71,6 +76,7 @@ const [
   Move,
   PokemonAbility,
   PokemonColor,
+  PokemonEvolution,
   PokemonForm,
   PokemonGameIndex,
   PokemonHabitat,
@@ -178,6 +184,16 @@ for (let i = 0; i < encounters.length; i++) {
   }
 }
 
+const EvolutionTriggerById = {};
+for (let i = 0; i < EvolutionTrigger.length; i++) {
+  EvolutionTriggerById[EvolutionTrigger[i].id] = EvolutionTrigger[i];
+}
+
+const GenderById = {};
+for (let i = 0; i < Gender.length; i++) {
+  GenderById[Gender[i].id] = Gender[i];
+}
+
 const GenerationNameById = {};
 for (let i = 0; i < GenerationName.length; i++) {
   const { generation_id, local_language_id, name } = GenerationName[i];
@@ -233,6 +249,15 @@ for (let i = 0; i < PokemonAbility.length; i++) {
     PokemonAbilityByPokemonId[pokemon_ability.pokemon_id].push(pokemon_ability);
   } else {
     PokemonAbilityByPokemonId[pokemon_ability.pokemon_id] = [pokemon_ability];
+  }
+}
+
+const PokemonEvolutionBySpeciesId = {};
+for (let i = 0; i < PokemonEvolution.length; i++) {
+  if (PokemonEvolution[i].evolved_species_id in PokemonEvolutionBySpeciesId) {
+    PokemonEvolutionBySpeciesId[PokemonEvolution[i].evolved_species_id].push(PokemonEvolution[i]);
+  } else {
+    PokemonEvolutionBySpeciesId[PokemonEvolution[i].evolved_species_id] = [PokemonEvolution[i]];
   }
 }
 
@@ -420,7 +445,8 @@ export {
   encounter_slots_by_id,
   encounter_version_ids_by_pokemon_id,
   encounters_grouped,
-  EvolutionChain,
+  EvolutionTriggerById,
+  GenderById,
   Generation,
   GenerationNameById,
   GrowthRate,
@@ -442,6 +468,7 @@ export {
   PokemonAbilityByPokemonId,
   PokemonById,
   PokemonColor,
+  PokemonEvolutionBySpeciesId,
   PokemonForm,
   PokemonGameIndex,
   PokemonHabitat,
