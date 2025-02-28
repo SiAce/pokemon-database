@@ -2,15 +2,15 @@
 import { Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
-import PokemonCard from "src/components/pokemons/PokemonCard.astro";
+import PokemonGrid from "src/components/pokemons/pokemon/PokemonGrid.astro";
 import versionColorJson from "src/utils/color/version-color.json";
 import {
-  Generation,
-  GenerationNameById,
-  PokemonSpeciesByGenerationId,
-  VersionByVersionGroup,
-  VersionGroupByGenerationId,
-  VersionNameById,
+Generation,
+GenerationNameById,
+PokemonSpeciesByGenerationId,
+VersionByVersionGroup,
+VersionGroupByGenerationId,
+VersionNameById,
 } from "src/utils/data-read";
 
 export function getStaticPaths() {
@@ -70,17 +70,5 @@ const headings = [
       }
     </ul>
   </dd>
-  <div data-pagefind-ignore="all" class="pokemon-grid not-content">
-    {
-      PokemonSpeciesByGenerationId[id].map(({ id }) => {
-        return <PokemonCard id={id} />;
-      })
-    }
-  </div>
+  <PokemonGrid idList={PokemonSpeciesByGenerationId[id]} />
 </StarlightPage>
-<style>
-  .pokemon-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(max(144px, 100% / 9), 1fr));
-  }
-</style>

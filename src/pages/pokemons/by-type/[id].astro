@@ -2,6 +2,7 @@
 import { Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
+import PokemonGrid from "src/components/pokemons/pokemon/PokemonGrid.astro";
 import PokemonCard from "src/components/pokemons/PokemonCard.astro";
 import TypeIcon from "src/components/type/TypeIcon.astro";
 import { PokemonTypeByType, Type, TypeById } from "src/utils/data-read";
@@ -51,10 +52,9 @@ const headings = [
   <TypeIcon id={id} class="mx-auto text-4xl" />
   <Heading heading={headings[0]} />
   <div data-pagefind-ignore="all" class="not-content flex flex-wrap">
-    {
-      PokemonTypeByType[id]?.map(({ pokemon_id }) => (
-        <PokemonCard id={pokemon_id} class="w-32" />
-      ))
-    }
+    {}
   </div>
+  <PokemonGrid
+    idList={PokemonTypeByType[id]?.map(({ pokemon_id }) => ({id: pokemon_id}))}
+  />
 </StarlightPage>
