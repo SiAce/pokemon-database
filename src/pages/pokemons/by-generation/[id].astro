@@ -70,11 +70,17 @@ const headings = [
       }
     </ul>
   </dd>
-  <div data-pagefind-ignore="all" class="not-content flex flex-wrap">
+  <div data-pagefind-ignore="all" class="pokemon-grid not-content">
     {
-      PokemonSpeciesByGenerationId[id].map(({ id }) => (
-        <PokemonCard id={id} class="w-32" />
-      ))
+      PokemonSpeciesByGenerationId[id].map(({ id }) => {
+        return <PokemonCard id={id} />;
+      })
     }
   </div>
 </StarlightPage>
+<style>
+  .pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(max(144px, 100% / 9), 1fr));
+  }
+</style>
