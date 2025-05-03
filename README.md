@@ -33,47 +33,51 @@ This website delivers detailed Pokémon information through modern, responsive w
 Follow these steps to set up the project locally:
 
 1. **Clone the Repository**
-  ```
-  git clone https://github.com/yourusername/pokemon-database.git
-  ```
-
+```
+git clone https://github.com/yourusername/pokemon-database.git
+```
 2. **Navigate to the Project Directory**
-  ```
-  cd pokemon-database
-  ```
+```
+cd pokemon-database
+```
 
-3. **Install Dependencies**
-  ```
-  bun install
-  ```
+3. **Initialize Git Submodules**
+```
+git submodule init && git submodule update
+```
 
-4. **Launch the Development Server**
-  ```
-  bun dev
-  ```
-  ## Build
+4. **Install Dependencies**
+```
+bun install
+```
 
-  To create a production build of the project using Bun, run:
-  ```
-  bun build
-  ```
+5. **Launch the Development Server**
+```
+bun run dev
+```
+## Build
 
-  ## Usage
+To create a production build of the project using Bun, run:
+```
+bun run build
+```
 
-  Once the development server is running, visit the provided URL to explore the Pokémon database. Enjoy real-time insights and robust interactivity.
+## Usage
 
-  ## Branch Overview
+Once the development server is running, visit the provided URL to explore the Pokémon database. Enjoy real-time insights and robust interactivity.
 
-  This repository contains multiple branches illustrating various approaches to data management:
+## Branch Overview
 
-  - **Version 1:** Uses the Pokémon API for real-time data retrieval.
-  - **Version 2:** Leverages Astro DB to seed and query a SQLite table.
-  - **Version 3:** Reads and processes data from JSON files.
-  - **Version 4:** Implements drizzle ORM for a comprehensive database schema with CSV-sourced data.
-  - **Version 5 (Current):** Loads CSV data directly into memory for efficient processing.
+This repository contains multiple branches illustrating various approaches to data management:
 
-  Switch branches to experience the distinct functionalities and design choices implemented in each version.
+- **Version 1:** Uses the Pokémon API for real-time data retrieval.
+- **Version 2:** Leverages Astro DB to seed and query a SQLite table.
+- **Version 3:** Reads and processes data from JSON files.
+- **Version 4:** Implements drizzle ORM for a comprehensive database schema with CSV-sourced data.
+- **Version 5 (Current):** Loads CSV data directly into memory for efficient processing.
 
-  ## Community Showcase
+Switch branches to experience the distinct functionalities and design choices implemented in each version.
 
-  The Pokémon Database project is proudly featured in the Astro Starlight community [site showcase](https://starlight.astro.build/resources/showcase/#:~:text=grpcmd-,Pokemon%20Database,-Cloudflare%20Docs). Explore similar projects at [Astro Starlight Showcase](https://starlight.astro.build/resources/showcase).
+## Community Showcase
+
+The Pokémon Database project is proudly featured in the Astro Starlight community [site showcase](https://starlight.astro.build/resources/showcase/#:~:text=grpcmd-,Pokemon%20Database,-Cloudflare%20Docs). Explore similar projects at [Astro Starlight Showcase](https://starlight.astro.build/resources/showcase).
