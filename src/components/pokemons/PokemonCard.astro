@@ -22,6 +22,7 @@ const pokemonName = capitalizeSnakeCase(PokemonById[id].identifier);
       height="96"
       loading="lazy"
       style="image-rendering: pixelated;"
+      onerror=`this.onerror=null; this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png';`
     />
   </a>
   <div class="flex justify-around gap-1">

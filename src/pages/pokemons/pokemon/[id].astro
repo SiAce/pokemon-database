@@ -72,7 +72,7 @@ const headings = [
     </div>
     <Heading heading={headings[0]} />
     <Card title={`#${id} ${name}`}>
-      <div class="flex flex-col divide-y-2 gap-4">
+      <div class="flex flex-col gap-4">
         <img
           class="mx-auto"
           src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
@@ -161,7 +161,7 @@ const headings = [
           <h4>Base Experience</h4>
           <div class="pl-2">{base_experience}</div>
         </div>
-        <div class="flex justify-stretch divide-x-2">
+        <div class="flex justify-stretch">
           <div class="flex-auto mt-4 pl-2">
             <h4>Height</h4>
             <p>{height! / 10} m</p>
@@ -173,7 +173,6 @@ const headings = [
         </div>
       </div>
     </Card>
-    <hr class="!my-4 border-gray-800" />
     <Heading heading={headings[1]} />
     <div class="not-content overflow-x-auto">
       <EvolutionChain evolutionChainId={evolutionChainId} />

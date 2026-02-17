@@ -1,18 +1,20 @@
 import starlight from "@astrojs/starlight";
-import tailwind from "@astrojs/tailwind";
 import { defineConfig, passthroughImageService } from "astro/config";
+
+import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
   image: {
     service: passthroughImageService(),
   },
+
   integrations: [
     starlight({
       title: "Pokémon Database",
-      social: {
-        github: "https://github.com/SiAce/pokemon-database",
-      },
+      social: [
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/SiAce/pokemon-database' },
+      ],
       sidebar: [
         {
           label: "Pokémon",
@@ -51,11 +53,12 @@ export default defineConfig({
       favicon: "/images/favicon.ico",
       customCss: [
         // Path to your Tailwind base styles:
-        "./src/tailwind.css",
+        './src/styles/global.css',
       ],
     }),
-    tailwind({
-      applyBaseStyles: false,
-    }),
   ],
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
