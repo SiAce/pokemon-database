@@ -1,5 +1,5 @@
 ---
-import { Card, Icon } from "@astrojs/starlight/components";
+import { Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
 import PokemonEncounterTable from "src/components/pokemons/pokemon/encounter-table/PokemonEncounterTable.astro";
@@ -71,108 +71,107 @@ const headings = [
       }
     </div>
     <Heading heading={headings[0]} />
-    <Card title={`#${id} ${name}`}>
-      <div class="flex flex-col gap-4">
-        <img
-          class="mx-auto"
-          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
-          width={300}
-          height={300}
-          alt={name}
-        />
-        <div>
-          <h4 class="my-2">Type</h4>
-          <div class="flex gap-4">
+    <div class="border border-gray-300 rounded-lg p-6 mb-6">
+      <h3 class="text-xl font-bold mb-4 pb-4 border-b border-gray-200">{`#${id} ${name}`}</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Image and Quick Stats */}
+        <div class="md:col-span-1">
+          <img
+            class="mx-auto w-full max-w-xs"
+            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+            width={300}
+            height={300}
+            alt={name}
+          />
+        </div>
+
+        {/* Main Info */}
+        <div class="md:col-span-2 space-y-4">
+          {/* Type */}
+          <div>
+            <h4 class="text-sm font-semibold text-gray-600 mb-2 uppercase">Type</h4>
             {
               PokemonTypeByPokemonId[id].map((pokemonType) => (
                 <TypeBadge
                   type_id={pokemonType.type_id}
-                  class="text-2xl px-3 py-1"
+                  class="text-lg px-3 py-1 mr-2 mb-2 inline-block"
                 />
               ))
             }
           </div>
-        </div>
-        <div class="not-content">
-          <h4 class="my-2">Abilities</h4>
-          <div>
+
+          {/* Abilities */}
+          <div class="not-content">
+            <h4 class="text-sm font-semibold text-gray-600 mb-2 uppercase">Abilities</h4>
             {
               PokemonAbilityByPokemonId[id].map((pokemonAbility) => (
-                <a class="inline-block rounded px-2 py-1 mr-2 mb-2 bg-gray-400 font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10">
+                <span class="inline-block rounded-full px-3 py-1 mr-2 mb-2 bg-blue-100 text-blue-900 text-sm font-medium">
                   {capitalizeSnakeCase(
                     AbilityById[pokemonAbility.ability_id].identifier,
                   )}
-                </a>
+                </span>
               ))
             }
           </div>
-        </div>
-        <div>
-          <h4 class="my-2">Base Stats</h4>
-          <div class="flex justify-between flex-wrap gap-1">
-            {
-              PokemonStatByPokemonId[id].map((pokemonStat) => (
-                <a
-                  class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
-                  style={{
-                    backgroundColor:
-                      statColorJson[StatById[pokemonStat.stat_id].identifier],
-                  }}
-                >
-                  <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
-                    <div>
-                      {capitalizeSnakeCase(
-                        StatById[pokemonStat.stat_id].identifier,
-                      )}
-                    </div>
-                    <div>{pokemonStat.base_stat}</div>
-                  </div>
-                </a>
-              ))
-            }
-          </div>
-        </div>
-        <div>
-          <h4 class="my-2">Effort Value Yield</h4>
-          <div class="flex justify-between flex-wrap gap-1">
-            {
-              PokemonStatByPokemonId[id].map((pokemonStat) => (
-                <a
-                  class="flex-1 rounded-md text-center font-semibold text-gray-50 ring-1 ring-inset ring-gray-500/10 flex justify-center"
-                  style={{
-                    backgroundColor:
-                      statColorJson[StatById[pokemonStat.stat_id].identifier],
-                  }}
-                >
-                  <div class="flex flex-col justify-between text-gray-700 p-2 text-sm">
-                    <div>
-                      {capitalizeSnakeCase(
-                        StatById[pokemonStat.stat_id].identifier,
-                      )}
-                    </div>
-                    <div>{pokemonStat.effort}</div>
-                  </div>
-                </a>
-              ))
-            }
-          </div>
-        </div>
-        <div class="py-2">
-          <h4>Base Experience</h4>
-          <div class="pl-2">{base_experience}</div>
-        </div>
-        <div class="flex justify-stretch">
-          <div class="flex-auto mt-4 pl-2">
-            <h4>Height</h4>
-            <p>{height! / 10} m</p>
-          </div>
-          <div class="flex-auto !mt-4 pl-2">
-            <h4>Weight</h4>
-            <p>{weight! / 10} kg</p>
+
+          {/* Physical Properties */}
+          <div class="grid grid-cols-3 gap-3 not-content">
+            <div class="bg-gray-100 rounded-lg p-4 text-center">
+              <p class="text-xs font-semibold text-gray-600 uppercase mb-1">Height</p>
+              <div class="text-lg font-bold text-gray-900">{height! / 10}m</div>
+            </div>
+            <div class="bg-gray-100 rounded-lg p-4 text-center">
+              <p class="text-xs font-semibold text-gray-600 uppercase mb-1">Weight</p>
+              <div class="text-lg font-bold text-gray-900">{weight! / 10}kg</div>
+            </div>
+            <div class="bg-gray-100 rounded-lg p-4 text-center">
+              <p class="text-xs font-semibold text-gray-600 uppercase mb-1">XP</p>
+              <div class="text-lg font-bold text-gray-900">{base_experience}</div>
+            </div>
           </div>
         </div>
       </div>
-    </Card>
+
+      {/* Stats Section */}
+      <div class="mt-6 pt-6 border-t border-gray-200">
+        <h4 class="text-lg font-bold text-gray-900 mb-3 uppercase">Base Stats</h4>
+        <div class="space-y-3">
+          {
+            PokemonStatByPokemonId[id].map((pokemonStat) => {
+              const statName = StatById[pokemonStat.stat_id].identifier;
+              const maxStat = 200;
+              const percentage = (pokemonStat.base_stat / maxStat) * 100;
+              return (
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-gray-700 w-24 whitespace-nowrap">{capitalizeSnakeCase(statName)}</span>
+                  <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                    <div class="h-full rounded-full transition-all" style={{ width: `${Math.min(percentage, 100)}%`, backgroundColor: statColorJson[statName] }} />
+                  </div>
+                  <span class="text-sm font-bold w-12 text-right" style={{ color: statColorJson[statName] }}>{pokemonStat.base_stat}</span>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      {/* EV Yield Section */}
+      <div class="mt-6 pt-6 border-t border-gray-200 not-content">
+        <h4 class="text-lg font-bold text-gray-900 mb-3 uppercase">Effort Value Yield</h4>
+        <div class="flex flex-wrap gap-2">
+          {
+            PokemonStatByPokemonId[id].map((pokemonStat) => {
+              const statName = StatById[pokemonStat.stat_id].identifier;
+              return pokemonStat.effort > 0 && (
+                <div class="px-3 py-2 rounded-lg text-sm font-semibold text-white" style={{ backgroundColor: statColorJson[statName] }}>
+                  +{pokemonStat.effort} {capitalizeSnakeCase(statName)}
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
     <Heading heading={headings[1]} />
     <div class="not-content overflow-x-auto">
       <EvolutionChain evolutionChainId={evolutionChainId} />
