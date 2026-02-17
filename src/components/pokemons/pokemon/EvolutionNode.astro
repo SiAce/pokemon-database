@@ -1,18 +1,8 @@
 ---
 import { Icon } from "@astrojs/starlight/components";
 import PokemonCard from "../PokemonCard.astro";
-import {
-  EvolutionTriggerById,
-  GenderById,
-  PokemonEvolutionBySpeciesId,
-} from "src/utils/data-read";
-import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
-import { item_by_id } from "src/utils/data-read";
-import { location_by_id } from "src/utils/data-read";
-import { MoveById } from "src/utils/data-read";
-import { TypeById } from "src/utils/data-read";
-import { PokemonById } from "src/utils/data-read";
-import { PokemonSpeciesById } from "src/utils/data-read";
+import EvolutionMethod from "./EvolutionMethod.astro";
+import { PokemonEvolutionBySpeciesId } from "src/utils/data-read";
 
 const { id, evolvesTo, isRoot } = Astro.props;
 ---
@@ -20,73 +10,16 @@ const { id, evolvesTo, isRoot } = Astro.props;
 <div class="flex items-center">
   {
     !isRoot && (
-      <>
+      <div class="mr-3">
         <Icon name="right-arrow" size="2em" />
-        <ol type="I">
-          {PokemonEvolutionBySpeciesId[id]?.map(
-            ({
-              evolution_trigger_id,
-              trigger_item_id,
-              minimum_level,
-              gender_id,
-              location_id,
-              held_item_id,
-              time_of_day,
-              known_move_id,
-              known_move_type_id,
-              minimum_happiness,
-              minimum_beauty,
-              minimum_affection,
-              relative_physical_stats,
-              party_species_id,
-              party_type_id,
-              trade_species_id,
-              needs_overworld_rain,
-              turn_upside_down,
-            }) => (
-              <li>
-                {[
-                  evolution_trigger_id &&
-                    `${capitalizeSnakeCase(EvolutionTriggerById[evolution_trigger_id].identifier)}`,
-                  trigger_item_id &&
-                    `Item: ${capitalizeSnakeCase(item_by_id[trigger_item_id].identifier)}`,
-                  minimum_level && `Min Level: ${minimum_level}`,
-                  gender_id &&
-                    `Gender: ${capitalizeFirstLetter(GenderById[gender_id].identifier)}`,
-                  location_id &&
-                    `Location: ${capitalizeSnakeCase(location_by_id[location_id].identifier)}`,
-                  held_item_id &&
-                    `Held Item: ${capitalizeSnakeCase(item_by_id[held_item_id].identifier)}`,
-                  time_of_day && `Time: ${capitalizeFirstLetter(time_of_day)}`,
-                  known_move_id &&
-                    `Known Move: ${capitalizeSnakeCase(MoveById[known_move_id].identifier)}`,
-                  known_move_type_id &&
-                    `Known Move Type: ${capitalizeSnakeCase(TypeById[known_move_type_id].identifier)}`,
-                  minimum_happiness && `Min happiness: ${minimum_happiness}`,
-                  minimum_beauty && `Min beauty: ${minimum_beauty}`,
-                  minimum_affection && `Min affection: ${minimum_affection}`,
-                  relative_physical_stats === null
-                    ? null
-                    : relative_physical_stats == 1
-                      ? "Attack > Defense"
-                      : relative_physical_stats == 0
-                        ? "Attack = Defense"
-                        : "Attack < Defense",
-                  party_species_id &&
-                    `Party Species: ${capitalizeSnakeCase(PokemonSpeciesById[party_species_id].identifier)}`,
-                  party_type_id &&
-                    `Party Type: ${capitalizeSnakeCase(TypeById[party_type_id].identifier)}`,
-                  trade_species_id && `Trade Species: ${trade_species_id}`,
-                  needs_overworld_rain && "Needs overworld rain",
-                  turn_upside_down && "Turn upside down",
-                ]
-                  .filter(Boolean)
-                  .join(" | ")}
-              </li>
-            ),
-          )}
-        </ol>
-      </>
+        <div class="ml-2">
+          {PokemonEvolutionBySpeciesId[id]?.map((evolution, idx) => (
+            <div class={idx > 0 ? "mt-2 border-t border-gray-300 pt-2" : ""}>
+              <EvolutionMethod {...evolution} />
+            </div>
+          ))}
+        </div>
+      </div>
     )
   }
   <PokemonCard id={id} />
