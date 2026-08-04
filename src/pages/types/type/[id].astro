@@ -2,7 +2,7 @@
 import { Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
-import TypeBadge from "src/components/pokemons/pokemon/TypeBadge.astro";
+import TypeBadge from "src/components/pokemon/pokemon/TypeBadge.astro";
 import TypeIcon from "src/components/type/TypeIcon.astro";
 import efficacyColorJson from "src/utils/color/efficacy-color.json";
 import {
@@ -144,7 +144,7 @@ const headings = [
   </p>
   <Heading heading={headings[6]} />
   <div class="flex flex-col">
-    <a class="border rounded-xl p-4" href={`/pokemons/by-type/${id}`}>
+    <a class="border rounded-xl p-4" href={`/pokemon/by-type/${id}`}>
       <div class="flex">
         <div class="text-2xl flex gap-4">
           {`${typeName} Type Pokemon`}
@@ -152,7 +152,7 @@ const headings = [
         </div>
         <Icon class="ml-auto" name="right-arrow" />
       </div>
-      <p>{`Learn more about ${typeName} Type Pokemons`}</p>
+      <p>{`Learn more about ${typeName} Type Pokemon`}</p>
     </a>
   </div>
 </StarlightPage>

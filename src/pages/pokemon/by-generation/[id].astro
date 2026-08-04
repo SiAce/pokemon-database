@@ -2,7 +2,7 @@
 import { Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
-import PokemonGrid from "src/components/pokemons/pokemon/PokemonGrid.astro";
+import PokemonGrid from "src/components/pokemon/pokemon/PokemonGrid.astro";
 import versionColorJson from "src/utils/color/version-color.json";
 import {
 Generation,
@@ -34,7 +34,7 @@ const headings = [
   <div data-pagefind-ignore="all" class="flex">
     {
       id > 1 && (
-        <a href={`/pokemons/by-generation/${id - 1}`} rel="prev">
+        <a href={`/pokemon/by-generation/${id - 1}`} rel="prev">
           <Icon name="left-arrow" size="1.5rem" />
           <span>{`${GenerationNameById[id - 1]} Pokemon`}</span>
         </a>
@@ -43,7 +43,7 @@ const headings = [
     {
       id < Generation.length && (
         <a
-          href={`/pokemons/by-generation/${id + 1}`}
+          href={`/pokemon/by-generation/${id + 1}`}
           rel="next"
           class="ml-auto flex flex-col items-end"
         >

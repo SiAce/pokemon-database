@@ -37,18 +37,18 @@ const getTriggerColor = (triggerId: number): { bg: string; text: string; border:
   const triggerName = EvolutionTriggerById[triggerId]?.identifier || "";
 
   const colorMap: Record<string, { bg: string; text: string; border: string }> = {
-    level: { bg: "bg-green-100", text: "text-green-900", border: "border-l-green-400" },
-    trade: { bg: "bg-orange-100", text: "text-orange-900", border: "border-l-orange-400" },
-    use_item: { bg: "bg-purple-100", text: "text-purple-900", border: "border-l-purple-400" },
-    shed: { bg: "bg-blue-100", text: "text-blue-900", border: "border-l-blue-400" },
-    spin: { bg: "bg-pink-100", text: "text-pink-900", border: "border-l-pink-400" },
-    tower_of_darkness: { bg: "bg-indigo-100", text: "text-indigo-900", border: "border-l-indigo-400" },
-    tower_of_waters: { bg: "bg-cyan-100", text: "text-cyan-900", border: "border-l-cyan-400" },
-    three_critical_hits: { bg: "bg-red-100", text: "text-red-900", border: "border-l-red-400" },
-    take_damage: { bg: "bg-rose-100", text: "text-rose-900", border: "border-l-rose-400" },
+    level: { bg: "#dcfce7", text: "#166534", border: "#4ade80" },
+    trade: { bg: "#fed7aa", text: "#92400e", border: "#fb923c" },
+    use_item: { bg: "#e9d5ff", text: "#581c87", border: "#d8b4fe" },
+    shed: { bg: "#dbeafe", text: "#0c2340", border: "#60a5fa" },
+    spin: { bg: "#fbcfe8", text: "#831843", border: "#f472b6" },
+    tower_of_darkness: { bg: "#e0e7ff", text: "#312e81", border: "#a78bfa" },
+    tower_of_waters: { bg: "#cffafe", text: "#164e63", border: "#06b6d4" },
+    three_critical_hits: { bg: "#fee2e2", text: "#7f1d1d", border: "#f87171" },
+    take_damage: { bg: "#fce7f3", text: "#831843", border: "#fb7185" },
   };
 
-  return colorMap[triggerName] || { bg: "bg-gray-100", text: "text-gray-900", border: "border-l-gray-400" };
+  return colorMap[triggerName] || { bg: "#f3f4f6", text: "#111827", border: "#9ca3af" };
 };
 
 // Build conditions array
@@ -82,10 +82,10 @@ const triggerColor = getTriggerColor(evolution_trigger_id);
 const triggerName = capitalizeSnakeCase(EvolutionTriggerById[evolution_trigger_id].identifier);
 ---
 
-<div class={`${triggerColor.border} border-l-4 bg-gray-50 rounded-r-md p-3 mb-2`}>
+<div style={{ borderLeft: `4px solid ${triggerColor.border}`, backgroundColor: triggerColor.bg }} class="rounded-r-md p-3 mb-2">
   {/* Evolution Method Badge */}
   <div class="mb-3">
-    <span class={`${triggerColor.bg} ${triggerColor.text} inline-block rounded px-3 py-1 text-sm font-semibold`}>
+    <span style={{ backgroundColor: triggerColor.bg, color: triggerColor.text }} class="inline-block rounded px-3 py-1 text-sm font-semibold">
       {triggerName}
     </span>
   </div>

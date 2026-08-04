@@ -2,10 +2,10 @@
 import { Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import Heading from "src/components/Heading.astro";
-import PokemonEncounterTable from "src/components/pokemons/pokemon/encounter-table/PokemonEncounterTable.astro";
-import EvolutionChain from "src/components/pokemons/pokemon/EvolutionChain.astro";
-import PokemonMoveTable from "src/components/pokemons/pokemon/move-table/PokemonMoveTable.astro";
-import TypeBadge from "src/components/pokemons/pokemon/TypeBadge.astro";
+import PokemonEncounterTable from "src/components/pokemon/pokemon/encounter-table/PokemonEncounterTable.astro";
+import EvolutionChain from "src/components/pokemon/pokemon/EvolutionChain.astro";
+import PokemonMoveTable from "src/components/pokemon/pokemon/move-table/PokemonMoveTable.astro";
+import TypeBadge from "src/components/pokemon/pokemon/TypeBadge.astro";
 import statColorJson from "src/utils/color/stat-color.json";
 import {
   AbilityById,
@@ -52,7 +52,7 @@ const headings = [
     <div class="flex">
       {
         pokemon.prev && (
-          <a href={`/pokemons/pokemon/${pokemon.prev}`}>
+          <a href={`/pokemon/pokemon/${pokemon.prev}`}>
             <Icon name="left-arrow" />
             <span>Previous #{pokemon.prev}</span>
           </a>
@@ -61,7 +61,7 @@ const headings = [
       {
         pokemon.next && (
           <a
-            href={`/pokemons/pokemon/${pokemon.next}`}
+            href={`/pokemon/pokemon/${pokemon.next}`}
             class="ml-auto flex flex-col items-end"
           >
             <Icon name="right-arrow" />

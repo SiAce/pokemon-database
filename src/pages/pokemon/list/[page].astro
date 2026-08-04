@@ -7,7 +7,7 @@ import { Pokemon } from "src/utils/data-read";
 
 import { Icon } from "@astrojs/starlight/components";
 import Heading from "src/components/Heading.astro";
-import PokemonGrid from "src/components/pokemons/pokemon/PokemonGrid.astro";
+import PokemonGrid from "src/components/pokemon/pokemon/PokemonGrid.astro";
 
 export const getStaticPaths = (({ paginate }) => {
   return paginate(
@@ -33,7 +33,7 @@ const headings = [
   <PokemonGrid idList={page.data} />
   <div class="text-center">
     No.<strong>{page.start + 1}</strong> - <strong>{page.end + 1}</strong> of total
-    <strong>{page.total}</strong> Pokemons
+    <strong>{page.total}</strong> Pokemon
   </div>
   <div class="not-content flex justify-center">
     <nav class="flex flex-wrap rounded-md shadow-sm -space-x-px">
@@ -44,13 +44,13 @@ const headings = [
         <Icon name="left-arrow" />
       </a>
       <PageNumberLinkEllipsis
-        baseUrl="/pokemons/list/"
+        baseUrl="/pokemon/list/"
         startPage={1}
         endPage={page.currentPage - 1}
       />
       <PageNumberLink pageNumber={page.currentPage} isHighlighted={true} />
       <PageNumberLinkEllipsis
-        baseUrl="/pokemons/list/"
+        baseUrl="/pokemon/list/"
         startPage={page.currentPage + 1}
         endPage={page.lastPage}
       />
