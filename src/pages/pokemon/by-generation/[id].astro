@@ -15,7 +15,7 @@ VersionNameById,
 
 export function getStaticPaths() {
   return Generation.map(({ id }) => ({
-    params: { id: id },
+    params: { id: String(id) },
   }));
 }
 

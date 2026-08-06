@@ -17,7 +17,7 @@ import { capitalizeFirstLetter, capitalizeSnakeCase } from "src/utils/string";
 
 export function getStaticPaths() {
   return Type.map((type) => ({
-    params: { id: type.id },
+    params: { id: String(type.id) },
   }));
 }
 

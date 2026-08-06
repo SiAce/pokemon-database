@@ -10,7 +10,7 @@ import { capitalizeFirstLetter } from "src/utils/string";
 
 export function getStaticPaths() {
   return Type.map(({ id }) => ({
-    params: { id: id },
+    params: { id: String(id) },
   }));
 }
 

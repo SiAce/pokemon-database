@@ -25,7 +25,7 @@ import { capitalizeSnakeCase } from "src/utils/string";
 
 export function getStaticPaths() {
   return Pokemon.map((pokemon) => ({
-    params: { id: pokemon.id },
+    params: { id: String(pokemon.id) },
   }));
 }
 
