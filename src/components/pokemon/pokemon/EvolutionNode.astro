@@ -4,7 +4,7 @@ import PokemonCard from "../PokemonCard.astro";
 import EvolutionMethod from "./EvolutionMethod.astro";
 import { PokemonEvolutionBySpeciesId } from "src/utils/data-read";
 
-const { id, evolvesTo, isRoot } = Astro.props;
+const { id, evolvesTo } = Astro.props;
 ---
 
 <div class="flex items-center gap-4">
@@ -14,15 +14,13 @@ const { id, evolvesTo, isRoot } = Astro.props;
       <div class="flex flex-col gap-8">
         {evolvesTo[id].map((evolvesToId) => (
           <div class="flex items-center gap-3">
-            <div class="flex-shrink-0">
+            <div class="shrink-0">
               <Icon name="right-arrow" size="1.5em" />
             </div>
             <div class="flex items-center gap-3">
-              <div class="flex flex-col gap-2 min-w-max">
-                {PokemonEvolutionBySpeciesId[evolvesToId]?.map((evolution, idx) => (
-                  <div class={idx > 0 ? "border-t border-gray-300 pt-2" : ""}>
-                    <EvolutionMethod {...evolution} />
-                  </div>
+              <div class="mb-2 flex max-w-md flex-col gap-1">
+                {PokemonEvolutionBySpeciesId[evolvesToId]?.map((evolution) => (
+                  <EvolutionMethod {...evolution} />
                 ))}
               </div>
               <Astro.self id={evolvesToId} evolvesTo={evolvesTo} />

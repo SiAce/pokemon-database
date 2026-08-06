@@ -32,75 +32,72 @@ const {
   turn_upside_down,
 } = Astro.props;
 
-// Map evolution trigger to color
-const getTriggerColor = (triggerId: number): { bg: string; text: string; border: string } => {
-  const triggerName = EvolutionTriggerById[triggerId]?.identifier || "";
+const triggerId = EvolutionTriggerById[evolution_trigger_id]?.identifier ?? "other";
 
-  const colorMap: Record<string, { bg: string; text: string; border: string }> = {
-    level: { bg: "#dcfce7", text: "#166534", border: "#4ade80" },
-    trade: { bg: "#fed7aa", text: "#92400e", border: "#fb923c" },
-    use_item: { bg: "#e9d5ff", text: "#581c87", border: "#d8b4fe" },
-    shed: { bg: "#dbeafe", text: "#0c2340", border: "#60a5fa" },
-    spin: { bg: "#fbcfe8", text: "#831843", border: "#f472b6" },
-    tower_of_darkness: { bg: "#e0e7ff", text: "#312e81", border: "#a78bfa" },
-    tower_of_waters: { bg: "#cffafe", text: "#164e63", border: "#06b6d4" },
-    three_critical_hits: { bg: "#fee2e2", text: "#7f1d1d", border: "#f87171" },
-    take_damage: { bg: "#fce7f3", text: "#831843", border: "#fb7185" },
-  };
-
-  return colorMap[triggerName] || { bg: "#f3f4f6", text: "#111827", border: "#9ca3af" };
+const triggerLabels: Record<string, string> = {
+  "level-up": "Level up",
+  trade: "Trade",
+  "use-item": "Use item",
+  shed: "Shed",
+  spin: "Spin",
+  "tower-of-darkness": "Tower of Darkness",
+  "tower-of-waters": "Tower of Waters",
+  "three-critical-hits": "Three critical hits",
+  "take-damage": "Take damage",
+  "agile-style-move": "Agile-style move",
+  "strong-style-move": "Strong-style move",
+  "recoil-damage": "Recoil damage",
+  "use-move": "Use move",
+  "three-defeated-bisharp": "Defeat three Bisharp",
+  "gimmighoul-coins": "999 Gimmighoul Coins",
 };
 
-// Build conditions array
-const conditions: Array<{ label: string; value: string }> = [
-  minimum_level && { label: "Min Level", value: String(minimum_level) },
-  gender_id && { label: "Gender", value: capitalizeFirstLetter(GenderById[gender_id].identifier) },
-  location_id && { label: "Location", value: capitalizeSnakeCase(location_by_id[location_id].identifier) },
-  trigger_item_id && { label: "Trigger Item", value: capitalizeSnakeCase(item_by_id[trigger_item_id].identifier) },
-  held_item_id && { label: "Held Item", value: capitalizeSnakeCase(item_by_id[held_item_id].identifier) },
-  time_of_day && { label: "Time of Day", value: capitalizeFirstLetter(time_of_day) },
-  known_move_id && { label: "Known Move", value: capitalizeSnakeCase(MoveById[known_move_id].identifier) },
-  known_move_type_id && { label: "Known Move Type", value: capitalizeSnakeCase(TypeById[known_move_type_id].identifier) },
-  minimum_happiness && { label: "Min Happiness", value: String(minimum_happiness) },
-  minimum_beauty && { label: "Min Beauty", value: String(minimum_beauty) },
-  minimum_affection && { label: "Min Affection", value: String(minimum_affection) },
-  relative_physical_stats === null
-    ? null
-    : relative_physical_stats === 1
-      ? { label: "Stats", value: "Attack > Defense" }
-      : relative_physical_stats === 0
-        ? { label: "Stats", value: "Attack = Defense" }
-        : { label: "Stats", value: "Attack < Defense" },
-  party_species_id && { label: "Party Species", value: capitalizeSnakeCase(PokemonSpeciesById[party_species_id].identifier) },
-  party_type_id && { label: "Party Type", value: capitalizeSnakeCase(TypeById[party_type_id].identifier) },
-  trade_species_id && { label: "Trade With", value: capitalizeSnakeCase(PokemonSpeciesById[trade_species_id].identifier) },
-  needs_overworld_rain && { label: "Condition", value: "Needs Overworld Rain" },
-  turn_upside_down && { label: "Condition", value: "Turn Console Upside Down" },
-].filter(Boolean) as Array<{ label: string; value: string }>;
+const triggerClasses: Record<string, string> = {
+  "level-up": "bg-emerald-50 text-emerald-800 ring-emerald-200",
+  trade: "bg-amber-50 text-amber-800 ring-amber-200",
+  "use-item": "bg-violet-50 text-violet-800 ring-violet-200",
+  shed: "bg-sky-50 text-sky-800 ring-sky-200",
+  spin: "bg-pink-50 text-pink-800 ring-pink-200",
+  "tower-of-darkness": "bg-indigo-50 text-indigo-800 ring-indigo-200",
+  "tower-of-waters": "bg-cyan-50 text-cyan-800 ring-cyan-200",
+  "three-critical-hits": "bg-red-50 text-red-800 ring-red-200",
+  "take-damage": "bg-rose-50 text-rose-800 ring-rose-200",
+};
 
-const triggerColor = getTriggerColor(evolution_trigger_id);
-const triggerName = capitalizeSnakeCase(EvolutionTriggerById[evolution_trigger_id].identifier);
+const conditions = [
+  minimum_level != null && `Level ${minimum_level}`,
+  gender_id && capitalizeFirstLetter(GenderById[gender_id].identifier),
+  location_id && `at ${capitalizeSnakeCase(location_by_id[location_id].identifier)}`,
+  trigger_item_id && `with ${capitalizeSnakeCase(item_by_id[trigger_item_id].identifier)}`,
+  held_item_id && `holding ${capitalizeSnakeCase(item_by_id[held_item_id].identifier)}`,
+  time_of_day && `at ${capitalizeFirstLetter(time_of_day)}`,
+  known_move_id && `knows ${capitalizeSnakeCase(MoveById[known_move_id].identifier)}`,
+  known_move_type_id && `knows a ${capitalizeSnakeCase(TypeById[known_move_type_id].identifier)} move`,
+  minimum_happiness && `Happiness ${minimum_happiness}`,
+  minimum_beauty && `Beauty ${minimum_beauty}`,
+  minimum_affection && `Affection ${minimum_affection}`,
+  relative_physical_stats === 1 && "Attack > Defense",
+  relative_physical_stats === 0 && "Attack = Defense",
+  relative_physical_stats != null && relative_physical_stats < 0 && "Attack < Defense",
+  party_species_id && `with ${capitalizeSnakeCase(PokemonSpeciesById[party_species_id].identifier)} in party`,
+  party_type_id && `with a ${capitalizeSnakeCase(TypeById[party_type_id].identifier)} Pokémon in party`,
+  trade_species_id && `trade for ${capitalizeSnakeCase(PokemonSpeciesById[trade_species_id].identifier)}`,
+  needs_overworld_rain && "in overworld rain",
+  turn_upside_down && "with console upside down",
+].filter(Boolean) as string[];
+
+const triggerName = triggerLabels[triggerId] ?? capitalizeSnakeCase(triggerId);
+const triggerClass =
+  triggerClasses[triggerId] ?? "bg-slate-50 text-slate-700 ring-slate-200";
 ---
 
-<div style={{ borderLeft: `4px solid ${triggerColor.border}`, backgroundColor: triggerColor.bg }} class="rounded-r-md p-3 mb-2">
-  {/* Evolution Method Badge */}
-  <div class="mb-3">
-    <span style={{ backgroundColor: triggerColor.bg, color: triggerColor.text }} class="inline-block rounded px-3 py-1 text-sm font-semibold">
-      {triggerName}
-    </span>
-  </div>
-
-  {/* Conditions */}
-  {conditions.length > 0 ? (
-    <div>
-      <p class="text-xs font-semibold text-gray-600 uppercase mb-2">Conditions:</p>
-      <div class={`grid gap-2 ${conditions.length >= 4 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}>
-        {conditions.map(({ label, value }) => (
-          <div class="text-sm text-gray-800">
-            <span class="font-medium">{label}:</span> <span class="text-gray-700">{value}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  ) : null}
+<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5">
+  <span class:list={["rounded-full px-2 py-0.5 font-medium ring-1", triggerClass]}>
+    {triggerName}
+  </span>
+  {
+    conditions.map((condition) => (
+      <span class="text-slate-600">{condition}</span>
+    ))
+  }
 </div>
