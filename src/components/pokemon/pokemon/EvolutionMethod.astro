@@ -24,13 +24,15 @@ const {
   minimum_happiness,
   minimum_beauty,
   minimum_affection,
-  relative_physical_stats,
+  relative_physical_stats: raw_relative_physical_stats,
   party_species_id,
   party_type_id,
   trade_species_id,
   needs_overworld_rain,
   turn_upside_down,
 } = Astro.props;
+
+const relative_physical_stats = Number(raw_relative_physical_stats)
 
 const triggerId = EvolutionTriggerById[evolution_trigger_id]?.identifier ?? "other";
 
