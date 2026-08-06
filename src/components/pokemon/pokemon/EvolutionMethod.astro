@@ -24,15 +24,13 @@ const {
   minimum_happiness,
   minimum_beauty,
   minimum_affection,
-  relative_physical_stats: raw_relative_physical_stats,
+  relative_physical_stats,
   party_species_id,
   party_type_id,
   trade_species_id,
   needs_overworld_rain,
   turn_upside_down,
 } = Astro.props;
-
-const relative_physical_stats = Number(raw_relative_physical_stats)
 
 const triggerId = EvolutionTriggerById[evolution_trigger_id]?.identifier ?? "other";
 
@@ -78,9 +76,9 @@ const conditions = [
   minimum_happiness && `Happiness ${minimum_happiness}`,
   minimum_beauty && `Beauty ${minimum_beauty}`,
   minimum_affection && `Affection ${minimum_affection}`,
-  relative_physical_stats === 1 && "Attack > Defense",
-  relative_physical_stats === 0 && "Attack = Defense",
-  relative_physical_stats != null && relative_physical_stats < 0 && "Attack < Defense",
+  relative_physical_stats === "1" && "Attack > Defense",
+  relative_physical_stats === "0" && "Attack = Defense",
+  relative_physical_stats === "-1" && "Attack < Defense",
   party_species_id && `with ${capitalizeSnakeCase(PokemonSpeciesById[party_species_id].identifier)} in party`,
   party_type_id && `with a ${capitalizeSnakeCase(TypeById[party_type_id].identifier)} Pokémon in party`,
   trade_species_id && `trade for ${capitalizeSnakeCase(PokemonSpeciesById[trade_species_id].identifier)}`,
